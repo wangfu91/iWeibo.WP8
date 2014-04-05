@@ -5,12 +5,15 @@
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:viewmodels="clr-namespace:iWeibo.WP8.ViewModels"
     >
 
     <!--应用程序资源-->
     <Application.Resources>
         <local:LocalizedStrings xmlns:local="clr-namespace:iWeibo.WP8" x:Key="LocalizedStrings"/>
 
+        <viewmodels:ViewModelLocator x:Key="ViewModelLocator"/>
+        
         <Style x:Key="TransitionPageStyle" TargetType="phone:PhoneApplicationPage">
             <Setter Property="toolkit:TransitionService.NavigationInTransition">
                 <Setter.Value>

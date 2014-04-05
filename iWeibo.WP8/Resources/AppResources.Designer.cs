@@ -187,6 +187,15 @@ namespace iWeibo.WP8.Resources {
         }
         
         /// <summary>
+        ///   查找类似 绑定新浪微博 的本地化字符串。
+        /// </summary>
+        public static string SinaBindingText {
+            get {
+                return ResourceManager.GetString("SinaBindingText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 新浪微博 的本地化字符串。
         /// </summary>
         public static string SinaTitle {

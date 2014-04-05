@@ -8,7 +8,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 
-namespace iWeibo.WP8.Views.SinaViews
+namespace iWeibo.WP8.Views.Sina
 {
     public partial class Timeline : PhoneApplicationPage
     {

@@ -18,6 +18,7 @@
     Style="{StaticResource TransitionPageStyle}"
     toolkit:TiltEffect.IsTiltEnabled="True"
     BackKeyPress="PhoneApplicationPage_BackKeyPress"
+    DataContext="{Binding Source={StaticResource ViewModelLocator},Path=MainPageViewModel}"
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot 是包含所有页面内容的根网格-->

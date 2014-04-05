@@ -14,7 +14,7 @@ namespace iWeibo.WP8
         public const string SettingsView = "/Views/Settings.xaml";
         public const string PictureView = "/Views/PictureView.xaml";
 
-        public const string SinaLoginView = "/Views/SinaViews/SinaLogin.xaml";
+        public const string SinaLoginView = "/Views/Sina/Login.xaml";
         public const string SinaTimelineView = "/Views/SinaViews/SinaTimeline.xaml";
         public const string SinaStatusDetailView = "/Views/SinaViews/SinaStatusDetail.xaml";
         public const string SinaRepostView = "/Views/SinaViews/SinaRepost.xaml";

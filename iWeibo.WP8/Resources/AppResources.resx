@@ -167,4 +167,7 @@
   <data name="MessageText" xml:space="preserve">
     <value>消息</value>
   </data>
+  <data name="SinaBindingText" xml:space="preserve">
+    <value>绑定新浪微博</value>
+  </data>
 </root>
