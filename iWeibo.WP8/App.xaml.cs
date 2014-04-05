@@ -7,6 +7,9 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using iWeibo.WP8.Resources;
+using iWeibo.WP8.Models.TencentModels;
+using iWeibo.WP8.Models.SinaModels;
+using System.IO.IsolatedStorage;
 
 namespace iWeibo.WP8
 {
@@ -38,6 +41,9 @@ namespace iWeibo.WP8
             // 调试时显示图形分析信息。
             if (Debugger.IsAttached)
             {
+                //显示内存使用计数器
+                Utils.MemoryDiagnosticsHelper.Start(new TimeSpan(0, 0, 1), true);
+
                 // 显示当前帧速率计数器。
                 Application.Current.Host.Settings.EnableFrameRateCounter = true;
 
@@ -55,6 +61,32 @@ namespace iWeibo.WP8
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
+
+            TencentWeiboSDK.OAuthConfigruation.APP_KEY = TencentConfig.AppKey;
+            TencentWeiboSDK.OAuthConfigruation.APP_SECRET = TencentConfig.AppSecret;
+            TencentWeiboSDK.OAuthConfigruation.IfSaveAccessToken = false;
+
+            WeiboSdk.SdkData.AppKey = SinaConfig.AppKey;
+            WeiboSdk.SdkData.AppSecret = SinaConfig.AppSecret;
+            WeiboSdk.SdkData.RedirectUri = SinaConfig.ReDirectUri;
+
+            CreateDirectories();
+
+        }
+
+        private void CreateDirectories()
+        {
+            using(IsolatedStorageFile isf=IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!isf.DirectoryExists("Tencent"))
+                {
+                    isf.CreateDirectory("Tencent");
+                }
+                if (!isf.DirectoryExists("Sina"))
+                {
+                    isf.CreateDirectory("Sina");
+                }
+            }
         }
 
         // 应用程序启动(例如，从“开始”菜单启动)时执行的代码
@@ -114,7 +146,8 @@ namespace iWeibo.WP8
 
             // 创建框架但先不将它设置为 RootVisual；这允许初始
             // 屏幕保持活动状态，直到准备呈现应用程序时。
-            RootFrame = new PhoneApplicationFrame();
+            //RootFrame = new PhoneApplicationFrame();
+            RootFrame = new TransitionFrame();
             RootFrame.Navigated += CompleteInitializePhoneApplication;
 
             // 处理导航故障

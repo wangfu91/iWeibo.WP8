@@ -7,9 +7,10 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Coding4Fun.Toolkit.Controls;
 using iWeibo.WP8.Resources;
 
-namespace iWeibo.WP8
+namespace iWeibo.WP8.Views
 {
     public partial class MainPage : PhoneApplicationPage
     {
@@ -20,6 +21,33 @@ namespace iWeibo.WP8
 
             // 用于本地化 ApplicationBar 的示例代码
             //BuildLocalizedApplicationBar();
+        }
+
+        private bool isLeaving = false;
+        
+        private void PhoneApplicationPage_BackKeyPress(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if(!isLeaving)
+            {
+                e.Cancel = true;
+                isLeaving = true;
+                var toast = new ToastPrompt()
+                {
+                    Message = AppResources.ExitText,
+                    MillisecondsUntilHidden = 3000
+                };
+                toast.Show();
+                toast.Completed += toast_Completed;
+            }
+            else
+            {
+                App.Current.Terminate();
+            }
+        }
+
+        void toast_Completed(object sender, PopUpEventArgs<string, PopUpResult> e)
+        {
+            this.isLeaving = false;
         }
 
         // 用于生成本地化 ApplicationBar 的示例代码
@@ -37,5 +65,6 @@ namespace iWeibo.WP8
         //    ApplicationBarMenuItem appBarMenuItem = new ApplicationBarMenuItem(AppResources.AppBarMenuItemText);
         //    ApplicationBar.MenuItems.Add(appBarMenuItem);
         //}
+
     }
 }

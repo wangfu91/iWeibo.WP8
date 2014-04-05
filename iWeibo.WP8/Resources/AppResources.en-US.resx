@@ -122,49 +122,49 @@
     <comment>Controls the FlowDirection for all elements in the RootFrame. Set to the traditional direction of this resource file's language</comment>
   </data>
   <data name="ResourceLanguage" xml:space="preserve">
-    <value>zh-CN</value>
+    <value>en-US</value>
     <comment>Controls the Language and ensures that the font for all elements in the RootFrame aligns with the app's language. Set to the language code of this resource file's language.</comment>
   </data>
   <data name="ApplicationTitle" xml:space="preserve">
-    <value>爱微博</value>
+    <value>iWeibo</value>
   </data>
   <data name="AppBarButtonText" xml:space="preserve">
-    <value>添加</value>
+    <value>Add</value>
   </data>
   <data name="AppBarMenuItemText" xml:space="preserve">
-    <value>菜单项</value>
+    <value>Menu Item</value>
   </data>
   <data name="CreateNewText" xml:space="preserve">
-    <value>写微博</value>
+    <value>Create New</value>
   </data>
   <data name="SettingsText" xml:space="preserve">
-    <value>设置</value>
+    <value>Settings</value>
   </data>
   <data name="SinaTitle" xml:space="preserve">
-    <value>新浪微博</value>
+    <value>Sina</value>
   </data>
   <data name="TencentTitle" xml:space="preserve">
-    <value>腾讯微博</value>
+    <value>Tencent</value>
   </data>
   <data name="AboutText" xml:space="preserve">
-    <value>关于</value>
+    <value>About</value>
   </data>
   <data name="AccountText" xml:space="preserve">
-    <value>帐号</value>
+    <value>Account</value>
   </data>
   <data name="ExitText" xml:space="preserve">
-    <value>再按一次后退键退出</value>
+    <value>Press back key again to exit</value>
   </data>
   <data name="FavoritesText" xml:space="preserve">
-    <value>收藏</value>
+    <value>Favorites</value>
   </data>
   <data name="HomePageText" xml:space="preserve">
-    <value>首页</value>
+    <value>Home</value>
   </data>
   <data name="MainPageText" xml:space="preserve">
-    <value>主页</value>
+    <value>Timeline</value>
   </data>
   <data name="MessageText" xml:space="preserve">
-    <value>消息</value>
+    <value>Message</value>
   </data>
 </root>
