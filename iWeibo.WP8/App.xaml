@@ -10,7 +10,12 @@
 
     <!--应用程序资源-->
     <Application.Resources>
-        <local:LocalizedStrings xmlns:local="clr-namespace:iWeibo.WP8" x:Key="LocalizedStrings"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Themes/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <local:LocalizedStrings xmlns:local="clr-namespace:iWeibo.WP8" x:Key="LocalizedStrings"/>
 
         <viewmodels:ViewModelLocator x:Key="ViewModelLocator"/>
         
@@ -40,7 +45,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
+        </ResourceDictionary>
     </Application.Resources>
 
     <Application.ApplicationLifetimeObjects>

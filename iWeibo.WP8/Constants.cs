@@ -8,6 +8,12 @@ namespace iWeibo.WP8
 {
     public class Constants
     {
+
+        #region User Info Storage Path
+        public const string TencentOAuthedUser = "/Tencent/OAuthedUserInfo.dat";
+        public const string SinaOAuthedUser = "/Sina/OAuthedUserInfo.dat";
+        #endregion
+
         #region Views Path
         public const string MainPageView = "/Views/MainPage.xaml";
         public const string PostNewView = "/Views/PostNew.xaml";
@@ -24,6 +30,23 @@ namespace iWeibo.WP8
         public const string TencentStatusDetailView = "/Views/TencentViews/TencentStatusDetail.xaml";
         public const string TencentRepostView = "/Views/TencentViews/TencentRepost.xaml";
 
+        #endregion
+
+
+        #region Timeline Storage Path
+        public const string SinaHomeTime = "/Sina/HomeTimeline.dat";
+        public const string SinaMentionsTimeline = "/Sina/MentionsTimeline.dat";
+        public const string SinaFavoritesTimeline = "/Sina/FavoritesTimeline.dat";
+
+        public const string TencentHomeTimeline = "/Tencent/HomeTimeline.dat";
+        public const string TencentMentionsTimeline = "/Tencent/MentionsTimeline.dat";
+        public const string TencentFavoritesTimeline = "/Tencent/FavoritesTimeline.dat";
+
+        #endregion
+
+        #region Status Storage Path
+        public const string TencentSelectedStatus = "/Tencent/SelectedStatus.dat";
+        public const string SinaSelectedStatus = "/Sina/SelectedStatus.dat";
         #endregion
 
     }

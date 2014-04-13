@@ -169,6 +169,20 @@ namespace WeiboSdk.Models
             }
         }
 
+
+        public DateTime CreateDateTime
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(this.CreatedAt))
+                    return DateTime.MinValue;
+                string[] array = this.CreatedAt.Split(' ');
+                array[4] = array[4].Substring(0, 3) + ":" + array[4].Substring(3, 2);
+                string text = string.Join(" ", array);
+                return DateTime.ParseExact(text, "ddd MMM dd HH:mm:ff zzz yyyy", new System.Globalization.CultureInfo("en-US"));
+            }
+        }
+
         /// <summary>
         /// 图片是否包含gif格式 
         /// </summary>

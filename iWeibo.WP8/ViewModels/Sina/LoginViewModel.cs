@@ -41,7 +41,7 @@ namespace iWeibo.WP8.ViewModels.Sina
 
         public DelegateCommand OAuthBrowserCanceledCommand { get; set; }
 
-        public DelegateCommand<OAuthControl> OAuthVerifyCompletedCommand { get; set; }
+        public DelegateCommand OAuthVerifyCompletedCommand { get; set; }
 
 
 
@@ -59,7 +59,7 @@ namespace iWeibo.WP8.ViewModels.Sina
 
             this.OAuthBrowserCanceledCommand = new DelegateCommand(OAuthBrowserCanceled);
 
-            this.OAuthVerifyCompletedCommand = new DelegateCommand<OAuthControl>(OAuthVerifyCompleted);
+            this.OAuthVerifyCompletedCommand = new DelegateCommand(OAuthVerifyCompleted);
         }
 
         private void OAuthBrowserNavigating()
@@ -80,41 +80,42 @@ namespace iWeibo.WP8.ViewModels.Sina
             }
         }
 
-        private void OAuthVerifyCompleted(OAuthControl control)
+        private void OAuthVerifyCompleted()
         {
-            control.OAuth2VerifyCompleted += ((isSuccess, err, response) =>
-                {
-                    if (err.errCode == SdkErrCode.SUCCESS)
-                    {
-                        if (null != response)
-                        {
-                            SinaAccessToken token = new SinaAccessToken
-                            {
-                                Token = response.accesssToken,
-                                TokenSecret = response.refleshToken
-                            };
-                            //accessToken = token;
-                            //保存Token
-                            TokenIsoStorage.SinaTokenStorage.SaveData(token);
-                            //GetMyInfoAndNavigate();
 
-                            //await GetUserInfo(token);
-                        } 
+            //control.OAuth2VerifyCompleted += ((isSuccess, err, response) =>
+            //    {
+            //        if (err.errCode == SdkErrCode.SUCCESS)
+            //        {
+            //            if (null != response)
+            //            {
+            //                SinaAccessToken token = new SinaAccessToken
+            //                {
+            //                    Token = response.accesssToken,
+            //                    TokenSecret = response.refleshToken
+            //                };
+            //                //accessToken = token;
+            //                //保存Token
+            //                TokenIsoStorage.SinaTokenStorage.SaveData(token);
+            //                //GetMyInfoAndNavigate();
 
-                    }
-                    else if (err.errCode == SdkErrCode.NET_UNUSUAL)
-                    {
-                        this.messageBox.Show("网络异常，请检查网络后重试...");
-                    }
-                    else if (err.errCode == SdkErrCode.SERVER_ERR)
-                    {
-                        this.messageBox.Show("服务器返回错误，错误代码：" + err.specificCode);
-                    }
-                    else
-                    {
-                        this.messageBox.Show("未知错误，请稍后重试...");
-                    }
-                });
+            //                //await GetUserInfo(token);
+            //            } 
+
+            //        }
+            //        else if (err.errCode == SdkErrCode.NET_UNUSUAL)
+            //        {
+            //            this.messageBox.Show("网络异常，请检查网络后重试...");
+            //        }
+            //        else if (err.errCode == SdkErrCode.SERVER_ERR)
+            //        {
+            //            this.messageBox.Show("服务器返回错误，错误代码：" + err.specificCode);
+            //        }
+            //        else
+            //        {
+            //            this.messageBox.Show("未知错误，请稍后重试...");
+            //        }
+            //    });
 
         }
 

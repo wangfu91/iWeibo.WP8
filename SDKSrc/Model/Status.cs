@@ -340,5 +340,20 @@ namespace TencentWeiboSDK.Model
                 return Source == null ? false : true;
             }
         }
+
+        /// <summary>
+        /// （自定义只读属性）此微博创建时间的DateTime格式
+        /// </summary>
+        public DateTime CreateDateTime
+        {
+            get
+            {
+                if (this.TimeStamp <= 0)
+                    return DateTime.MinValue;
+
+                DateTime TimestampLocalZero = TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), TimeZoneInfo.Local);
+                return TimestampLocalZero.AddSeconds(this.TimeStamp);
+            }
+        }
     }
 }

@@ -8,6 +8,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:utils="clr-namespace:iWeibo.Utils;assembly=iWeibo.Utils"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:bar="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
+    xmlns:prismInteractivity="clr-namespace:Microsoft.Practices.Prism.Interactivity;assembly=Microsoft.Practices.Prism.Interactivity" 
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -31,20 +34,80 @@
             </utils:MTPivot.Title>
             <!--枢轴项一-->
             <phone:PivotItem Header="{Binding Path=LocalizedResources.MainPageText,Source={StaticResource LocalizedStrings}}">
-                <Grid/>
+                <Grid>
+                    <phone:LongListSelector 
+                        ItemsSource="{Binding HomeTimeline}"
+                        ItemTemplate="{StaticResource SinaTimelineTemplate}"
+                        SelectedItem="{Binding SelectedStatus, Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="StretchingButtom">
+                                <i:InvokeCommandAction 
+                                    Command="{Binding HomeTimelineCommmand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </phone:LongListSelector>
+                </Grid>
             </phone:PivotItem>
 
             <!--枢轴项二-->
             <phone:PivotItem Header="{Binding Path=LocalizedResources.MessageText,Source={StaticResource LocalizedStrings}}">
-                <Grid/>
+                <Grid>
+                    <phone:LongListSelector 
+                        ItemsSource="{Binding MentionsTimeline}"
+                        ItemTemplate="{StaticResource SinaTimelineTemplate}"
+                        SelectedItem="{Binding SelectedStatus,Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="StretchingButtom">
+                                <i:InvokeCommandAction 
+                                    Command="{Binding MentionsTimelineComamnd}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </phone:LongListSelector>
+                </Grid>
             </phone:PivotItem>
 
             <!--枢轴项三-->
             <phone:PivotItem Header="{Binding Path=LocalizedResources.FavoritesText,Source={StaticResource LocalizedStrings}}">
-                <Grid/>
+                <Grid>
+                    <phone:LongListSelector
+                        ItemsSource="{Binding FavoritesTimeline}"
+                        ItemTemplate="{StaticResource SinaTimelineTemplate}"
+                        SelectedItem="{Binding SelectedStatus,Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="StretchingButtom">
+                                <i:InvokeCommandAction 
+                                    Command="{Binding FavoritesTimelineCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </phone:LongListSelector>
+                </Grid>
             </phone:PivotItem>
 
         </utils:MTPivot>
     </Grid>
     
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding PageLoadCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <bar:Bindable.ApplicationBar>
+        <bar:BindableApplicationBar IsMenuEnabled="True" Mode="Default">
+            <bar:BindableApplicationBarButton
+                Text="{Binding Path=LocalizedResources.RefreshText,Source={StaticResource LocalizedStrings}}"
+                IconUri="/Assets/AppBar/appbar.refresh.png"
+                Command="{Binding RefreshCommand}"/>
+            <bar:BindableApplicationBarButton 
+                Text="{Binding Path=LocalizedResources.CreateNewText,Source={StaticResource LocalizedStrings}}"
+                IconUri="/Assets/AppBar/appbar.edit.png"
+                Command="{Binding CreateNewCommand}"/>
+            <!--<bar:BindableApplicationBar.MenuItems>
+                <bar:BindableApplicationBarMenuItem 
+                    Text="{Binding Path=LocalizedResources.SettingsText,Source={StaticResource LocalizedStrings}}"
+                    Command="{Binding EnterSettingsCommand}"/>
+            </bar:BindableApplicationBar.MenuItems>-->
+        </bar:BindableApplicationBar>
+    </bar:Bindable.ApplicationBar>
+
 </phone:PhoneApplicationPage>

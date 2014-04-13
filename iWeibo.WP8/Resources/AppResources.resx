@@ -170,4 +170,10 @@
   <data name="SinaBindingText" xml:space="preserve">
     <value>绑定新浪微博</value>
   </data>
+  <data name="LoadingText" xml:space="preserve">
+    <value>数据请求中...</value>
+  </data>
+  <data name="RefreshText" xml:space="preserve">
+    <value>刷新</value>
+  </data>
 </root>

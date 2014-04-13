@@ -93,6 +93,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Constants.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\IntToVisibilityConverter.cs" />
+    <Compile Include="Converters\SourceConverter.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Models\SinaModels\SinaConfig.cs" />
     <Compile Include="Models\TencentModels\TencentConfig.cs" />
@@ -105,6 +108,7 @@
     <Compile Include="Services\ContainerLocator.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\Sina\LoginViewModel.cs" />
+    <Compile Include="ViewModels\Sina\TimelineViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Views\MainPage.xaml.cs">
@@ -125,6 +129,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Themes\Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -151,16 +159,37 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AlignmentGrid.png" />
+    <Content Include="Assets\AppBar\appbar.at.png" />
+    <Content Include="Assets\AppBar\appbar.back.png" />
+    <Content Include="Assets\AppBar\appbar.camera.png" />
+    <Content Include="Assets\AppBar\appbar.chat.png" />
+    <Content Include="Assets\AppBar\appbar.check.png" />
+    <Content Include="Assets\AppBar\appbar.close.png" />
+    <Content Include="Assets\AppBar\appbar.comment.png" />
+    <Content Include="Assets\AppBar\appbar.delete.png" />
+    <Content Include="Assets\AppBar\appbar.edit.png" />
+    <Content Include="Assets\AppBar\appbar.face.png" />
+    <Content Include="Assets\AppBar\appbar.favor.png" />
+    <Content Include="Assets\AppBar\appbar.forward.png" />
+    <Content Include="Assets\AppBar\appbar.refresh.png" />
+    <Content Include="Assets\AppBar\appbar.save.png" />
+    <Content Include="Assets\AppBar\appbar.search.png" />
+    <Content Include="Assets\AppBar\appbar.send.png" />
+    <Content Include="Assets\AppBar\appbar.settings.png" />
+    <Content Include="Assets\AppBar\appbar.topic.png" />
+    <Content Include="Assets\AppBar\appbar.unfavor.png" />
     <Content Include="Assets\ApplicationIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Icons\authen.png" />
+    <Content Include="Assets\Icons\Authen.png" />
     <Content Include="Assets\Icons\Cancel.png" />
     <Content Include="Assets\Icons\CreatNew.png" />
+    <Content Include="Assets\Icons\Image.png" />
     <Content Include="Assets\Icons\settings.png" />
     <Content Include="Assets\Icons\Message-Edit.png" />
     <Content Include="Assets\Icons\reply.png" />
     <Content Include="Assets\Icons\repost.png" />
+    <Content Include="Assets\Icons\User.png" />
     <Content Include="Assets\Logos\sinalogo30.png" />
     <Content Include="Assets\Logos\sinalogo.png" />
     <Content Include="Assets\Logos\tencentLogo.png" />
@@ -238,7 +267,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\AppBar\" />
     <Folder Include="ViewModels\Tencent\" />
     <Folder Include="Views\Tencent\" />
   </ItemGroup>

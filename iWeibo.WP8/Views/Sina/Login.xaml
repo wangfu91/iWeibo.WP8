@@ -13,8 +13,12 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
-    DataContext="{Binding Source={StaticResource ViewModelLocator},Path=SinaLoginViewModel}"
     shell:SystemTray.IsVisible="True">
+    <!--DataContext="{Binding Source={StaticResource ViewModelLocator},Path=SinaLoginViewModel}"-->
+
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator x:Name="Indicator" IsIndeterminate="True" IsVisible="False" Text="{Binding LocalResources.LoadingText,Source={StaticResource LocalizedStrings}}"/>
+    </shell:SystemTray.ProgressIndicator>
 
     <!--LayoutRoot 是包含所有页面内容的根网格-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -31,7 +35,7 @@
         <!--ContentPanel - 在此处放置其他内容-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <weibosdk:OAuthControl Margin="10" x:Name="OAuthControl">
-                <i:Interaction.Triggers>
+                <!--<i:Interaction.Triggers>
                     <i:EventTrigger EventName="OBrowserNavigating">
                         <i:InvokeCommandAction Command="{Binding OAuthBrowserNavigatingCommand}"/>
                     </i:EventTrigger>
@@ -42,9 +46,9 @@
                         <i:InvokeCommandAction Command="{Binding OAuthBrowserCanceledCommand}"/>
                     </i:EventTrigger>
                     <i:EventTrigger EventName="OAuth2VerifyCompleted">
-                        <i:InvokeCommandAction Command="{Binding OAuthVerifyCompletedCommand}" CommandParameter="{Binding ElementName=OAuthControl}"/>
+                        <i:InvokeCommandAction Command="{Binding OAuthVerifyCompletedCommand}" />
                     </i:EventTrigger>
-                </i:Interaction.Triggers>
+                </i:Interaction.Triggers>-->
                 
             </weibosdk:OAuthControl>
 
