@@ -13,6 +13,7 @@ using iWeibo.Services;
 using System.Threading;
 using WeiboSdk.Services;
 using iWeibo.WP8.Services;
+using System.Threading.Tasks;
 
 namespace iWeibo.WP8.Views.Sina
 {
@@ -22,7 +23,7 @@ namespace iWeibo.WP8.Views.Sina
 
         public Login()
         {
-            InitializeComponent();
+             InitializeComponent();
         }
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
@@ -56,7 +57,7 @@ namespace iWeibo.WP8.Views.Sina
                                 accessToken = token;
                                 //save Token
                                 TokenIsoStorage.SinaTokenStorage.SaveData(token);
-
+                                //Task.Factory.StartNew(GetMyInfoAndNavigate);
                                 GetMyInfoAndNavigate();
                             }
                             break;

@@ -69,6 +69,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ApplicationFrameNavigationService.cs" />
+    <Compile Include="GeoCoordinateWatcherAdapter.cs" />
+    <Compile Include="IGeoCoordinateWatcher.cs" />
     <Compile Include="IMessageBox.cs" />
     <Compile Include="MessageBoxAdapter.cs" />
     <Compile Include="PhotoChooserTaskAdapter.cs" />

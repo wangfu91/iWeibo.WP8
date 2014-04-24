@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using sinavm = iWeibo.WP8.ViewModels.Sina;
 
 namespace iWeibo.WP8.ViewModels
 {
@@ -58,13 +59,13 @@ namespace iWeibo.WP8.ViewModels
         //    }
         //}
 
-        //public SinaTimelineViewModel SinaTimelineViewModel
-        //{
-        //    get
-        //    {
-        //        return this.containerLocator.Container.Resolve<SinaTimelineViewModel>();
-        //    }
-        //}
+        public sinavm.TimelineViewModel SinaTimelineViewModel
+        {
+            get
+            {
+                return this.containerLocator.Container.Resolve<sinavm.TimelineViewModel>();
+            }
+        }
 
         //public SinaStatusDetailViewModel SinaStatusDetailViewModel
         //{

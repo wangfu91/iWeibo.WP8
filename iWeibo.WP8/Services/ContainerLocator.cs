@@ -65,12 +65,12 @@ namespace iWeibo.WP8.Services
             //        c.Resolve<IPhoneApplicationServiceFacade>()))
             //        .ReusedWithin(ReuseScope.None);
 
-            //this.Container.Register(
-            //    c => new SinaTimelineViewModel(
-            //        c.Resolve<INavigationService>(),
-            //        c.Resolve<IPhoneApplicationServiceFacade>(),
-            //        c.Resolve<IMessageBox>()))
-            //        .ReusedWithin(ReuseScope.None);
+            this.Container.Register(
+                c => new sinavm.TimelineViewModel(
+                    c.Resolve<INavigationService>(),
+                    c.Resolve<IPhoneApplicationServiceFacade>(),
+                    c.Resolve<IMessageBox>()))
+                    .ReusedWithin(ReuseScope.None);
 
             //this.Container.Register(
             //    c => new SinaStatusDetailViewModel(

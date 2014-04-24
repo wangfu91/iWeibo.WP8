@@ -132,7 +132,7 @@
     <value>Add</value>
   </data>
   <data name="AppBarMenuItemText" xml:space="preserve">
-    <value>Menu Item</value>
+    <value>MenuItem</value>
   </data>
   <data name="CreateNewText" xml:space="preserve">
     <value>Create New</value>
@@ -153,18 +153,27 @@
     <value>Account</value>
   </data>
   <data name="ExitText" xml:space="preserve">
-    <value>Press back key again to exit</value>
+    <value>Press back key again to exit...</value>
   </data>
   <data name="FavoritesText" xml:space="preserve">
     <value>Favorites</value>
   </data>
   <data name="HomePageText" xml:space="preserve">
-    <value>Home</value>
+    <value>HomePage</value>
   </data>
   <data name="MainPageText" xml:space="preserve">
-    <value>Timeline</value>
+    <value>MainPage</value>
   </data>
   <data name="MessageText" xml:space="preserve">
-    <value>Message</value>
+    <value>Mentions</value>
+  </data>
+  <data name="SinaBindingText" xml:space="preserve">
+    <value>Binding Your Sina Weibo Account</value>
+  </data>
+  <data name="LoadingText" xml:space="preserve">
+    <value>Loading</value>
+  </data>
+  <data name="RefreshText" xml:space="preserve">
+    <value>Refresh</value>
   </data>
 </root>

@@ -18,8 +18,13 @@
     SupportedOrientations="Portrait"  Orientation="Portrait"
     Style="{StaticResource TransitionPageStyle}"
     toolkit:TiltEffect.IsTiltEnabled="True"
+    DataContext="{Binding Source={StaticResource ViewModelLocator},Path=SinaTimelineViewModel}"
     shell:SystemTray.IsVisible="True">
-
+    
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator IsIndeterminate="True" IsVisible="{Binding IsSyncing}" Text="{Binding LocalResources.LoadingText,Source={StaticResource LocalizedStrings}}"/>
+    </shell:SystemTray.ProgressIndicator>
+    
     <!--LayoutRoot 是包含所有页面内容的根网格-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <!--枢轴控件-->
@@ -35,51 +40,59 @@
             <!--枢轴项一-->
             <phone:PivotItem Header="{Binding Path=LocalizedResources.MainPageText,Source={StaticResource LocalizedStrings}}">
                 <Grid>
-                    <phone:LongListSelector 
+                    <utils:PullRefreshListBox
                         ItemsSource="{Binding HomeTimeline}"
                         ItemTemplate="{StaticResource SinaTimelineTemplate}"
                         SelectedItem="{Binding SelectedStatus, Mode=TwoWay}">
                         <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="StretchingButtom">
+                            <i:EventTrigger EventName="RefreshActivated">
                                 <i:InvokeCommandAction 
-                                    Command="{Binding HomeTimelineCommmand}"/>
+                                    Command="{Binding HomeTimelineCommmand}" CommandParameter="Refresh"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="LoadActivated">
+                                <i:InvokeCommandAction Command="{Binding HomeTimelineCommand}" CommandParameter="NextPage"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                    </phone:LongListSelector>
+                    </utils:PullRefreshListBox>
                 </Grid>
             </phone:PivotItem>
 
             <!--枢轴项二-->
             <phone:PivotItem Header="{Binding Path=LocalizedResources.MessageText,Source={StaticResource LocalizedStrings}}">
                 <Grid>
-                    <phone:LongListSelector 
+                    <utils:PullRefreshListBox
                         ItemsSource="{Binding MentionsTimeline}"
                         ItemTemplate="{StaticResource SinaTimelineTemplate}"
                         SelectedItem="{Binding SelectedStatus,Mode=TwoWay}">
                         <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="StretchingButtom">
+                            <i:EventTrigger EventName="RefreshActivated">
                                 <i:InvokeCommandAction 
-                                    Command="{Binding MentionsTimelineComamnd}"/>
+                                    Command="{Binding MentionsTimelineComamnd}" CommandParameter="Refresh"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="LoadActivated">
+                                <i:InvokeCommandAction Command="{Binding MentionsTimelineComamnd}" CommandParameter="NextPage"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                    </phone:LongListSelector>
+                    </utils:PullRefreshListBox>
                 </Grid>
             </phone:PivotItem>
 
             <!--枢轴项三-->
             <phone:PivotItem Header="{Binding Path=LocalizedResources.FavoritesText,Source={StaticResource LocalizedStrings}}">
                 <Grid>
-                    <phone:LongListSelector
+                    <utils:PullRefreshListBox
                         ItemsSource="{Binding FavoritesTimeline}"
                         ItemTemplate="{StaticResource SinaTimelineTemplate}"
                         SelectedItem="{Binding SelectedStatus,Mode=TwoWay}">
                         <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="StretchingButtom">
-                                <i:InvokeCommandAction 
-                                    Command="{Binding FavoritesTimelineCommand}"/>
+                            <i:EventTrigger EventName="RefreshActivated">
+                                <i:InvokeCommandAction Command="{Binding FavoritesTimelineCommand}" CommandParameter="Refresh"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="LoadActivated">
+                                <i:InvokeCommandAction Command="{Binding FavoritesTimelineCommand}" CommandParameter="NextPage"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                    </phone:LongListSelector>
+                    </utils:PullRefreshListBox>
                 </Grid>
             </phone:PivotItem>
 
@@ -89,6 +102,9 @@
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding PageLoadCommand}"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="BackKeyPress">
+            <i:InvokeCommandAction Command="{Binding BackKeyPressCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
 

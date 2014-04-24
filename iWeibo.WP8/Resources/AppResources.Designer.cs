@@ -79,6 +79,42 @@ namespace iWeibo.WP8.Resources {
         }
         
         /// <summary>
+        ///   查找类似 添加位置 的本地化字符串。
+        /// </summary>
+        public static string AddLocationText {
+            get {
+                return ResourceManager.GetString("AddLocationText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 添加图片 的本地化字符串。
+        /// </summary>
+        public static string AddPhotoText {
+            get {
+                return ResourceManager.GetString("AddPhotoText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 同时发送到新浪微博 的本地化字符串。
+        /// </summary>
+        public static string AlsoSendSinaText {
+            get {
+                return ResourceManager.GetString("AlsoSendSinaText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 同时发送到腾讯微博 的本地化字符串。
+        /// </summary>
+        public static string AlsoSendTencentText {
+            get {
+                return ResourceManager.GetString("AlsoSendTencentText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 添加 的本地化字符串。
         /// </summary>
         public static string AppBarButtonText {
@@ -106,6 +142,33 @@ namespace iWeibo.WP8.Resources {
         }
         
         /// <summary>
+        ///   查找类似 提及 的本地化字符串。
+        /// </summary>
+        public static string AtText {
+            get {
+                return ResourceManager.GetString("AtText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 评论 的本地化字符串。
+        /// </summary>
+        public static string CommentText {
+            get {
+                return ResourceManager.GetString("CommentText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 复制 的本地化字符串。
+        /// </summary>
+        public static string CopyText {
+            get {
+                return ResourceManager.GetString("CopyText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 写微博 的本地化字符串。
         /// </summary>
         public static string CreateNewText {
@@ -129,6 +192,15 @@ namespace iWeibo.WP8.Resources {
         public static string FavoritesText {
             get {
                 return ResourceManager.GetString("FavoritesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 转发 的本地化字符串。
+        /// </summary>
+        public static string ForwardText {
+            get {
+                return ResourceManager.GetString("ForwardText", resourceCulture);
             }
         }
         
@@ -196,6 +268,24 @@ namespace iWeibo.WP8.Resources {
         }
         
         /// <summary>
+        ///   查找类似 正在发送... 的本地化字符串。
+        /// </summary>
+        public static string SendingText {
+            get {
+                return ResourceManager.GetString("SendingText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 发送 的本地化字符串。
+        /// </summary>
+        public static string SendText {
+            get {
+                return ResourceManager.GetString("SendText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 设置 的本地化字符串。
         /// </summary>
         public static string SettingsText {
@@ -228,6 +318,15 @@ namespace iWeibo.WP8.Resources {
         public static string TencentTitle {
             get {
                 return ResourceManager.GetString("TencentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 话题 的本地化字符串。
+        /// </summary>
+        public static string TopicText {
+            get {
+                return ResourceManager.GetString("TopicText", resourceCulture);
             }
         }
     }

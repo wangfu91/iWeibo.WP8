@@ -61,7 +61,6 @@
                                     Visibility="{Binding HasPic,Converter={StaticResource BoolToVisibilityConverter}}"
                        util:MTImage.LoadingSource="/Assets/Icons/Image.png"
                        util:MTImage.Source="{Binding Path=ImageUrl,StringFormat=\{0\}/160}">
-                                    <!--util:LowProfileImageLoader.UriSource="{Binding Path=ImageUrl, StringFormat=\{0\}/160}">-->
                     <!--<i:Interaction.Triggers>
                             <i:EventTrigger EventName="Tap">
                                 <i:InvokeCommandAction Command="{Binding Path=DataContext.PictureViewCommand,ElementName=ContentPanel}" CommandParameter="{Binding Path=DataContext,ElementName=ContentPanel}"/>

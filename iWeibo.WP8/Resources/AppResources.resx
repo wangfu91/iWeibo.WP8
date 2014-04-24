@@ -176,4 +176,37 @@
   <data name="RefreshText" xml:space="preserve">
     <value>刷新</value>
   </data>
+  <data name="AddLocationText" xml:space="preserve">
+    <value>添加位置</value>
+  </data>
+  <data name="AddPhotoText" xml:space="preserve">
+    <value>添加图片</value>
+  </data>
+  <data name="AlsoSendSinaText" xml:space="preserve">
+    <value>同时发送到新浪微博</value>
+  </data>
+  <data name="AlsoSendTencentText" xml:space="preserve">
+    <value>同时发送到腾讯微博</value>
+  </data>
+  <data name="AtText" xml:space="preserve">
+    <value>提及</value>
+  </data>
+  <data name="CommentText" xml:space="preserve">
+    <value>评论</value>
+  </data>
+  <data name="CopyText" xml:space="preserve">
+    <value>复制</value>
+  </data>
+  <data name="ForwardText" xml:space="preserve">
+    <value>转发</value>
+  </data>
+  <data name="SendingText" xml:space="preserve">
+    <value>正在发送...</value>
+  </data>
+  <data name="SendText" xml:space="preserve">
+    <value>发送</value>
+  </data>
+  <data name="TopicText" xml:space="preserve">
+    <value>话题</value>
+  </data>
 </root>

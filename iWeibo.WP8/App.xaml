@@ -12,7 +12,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Themes/Styles.xaml"/>
+                <ResourceDictionary Source="Themes/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <local:LocalizedStrings xmlns:local="clr-namespace:iWeibo.WP8" x:Key="LocalizedStrings"/>
