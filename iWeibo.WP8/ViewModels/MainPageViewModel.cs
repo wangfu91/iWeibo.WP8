@@ -56,7 +56,7 @@ namespace iWeibo.WP8.ViewModels
 
         private void EnterPostNew()
         {
-            this.NavigationService.Navigate(new Uri(Constants.PostNewView, UriKind.Relative));
+            this.NavigationService.Navigate(new Uri(Constants.CreateNewView, UriKind.Relative));
         }
 
         public override void OnPageResumeFromTombstoning()

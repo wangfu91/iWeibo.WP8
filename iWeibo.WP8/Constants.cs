@@ -16,7 +16,7 @@ namespace iWeibo.WP8
 
         #region Views Path
         public const string MainPageView = "/Views/MainPage.xaml";
-        public const string PostNewView = "/Views/CreateNew.xaml";
+        public const string CreateNewView = "/Views/CreateNew.xaml";
         public const string SettingsView = "/Views/Settings.xaml";
         public const string PictureView = "/Views/PictureView.xaml";
 

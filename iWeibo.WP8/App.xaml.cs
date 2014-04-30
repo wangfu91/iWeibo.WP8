@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Diagnostics;
 using System.Resources;
 using System.Windows;
@@ -10,6 +10,7 @@ using iWeibo.WP8.Resources;
 using iWeibo.WP8.Models.TencentModels;
 using iWeibo.WP8.Models.SinaModels;
 using System.IO.IsolatedStorage;
+using Windows.Storage;
 
 namespace iWeibo.WP8
 {
@@ -70,23 +71,26 @@ namespace iWeibo.WP8
             WeiboSdk.SdkData.AppSecret = SinaConfig.AppSecret;
             WeiboSdk.SdkData.RedirectUri = SinaConfig.ReDirectUri;
 
-            CreateDirectories();
+            CreateDirectoriesAsync();
 
         }
 
-        private void CreateDirectories()
+        private async void CreateDirectoriesAsync()
         {
-            using(IsolatedStorageFile isf=IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (!isf.DirectoryExists("Tencent"))
-                {
-                    isf.CreateDirectory("Tencent");
-                }
-                if (!isf.DirectoryExists("Sina"))
-                {
-                    isf.CreateDirectory("Sina");
-                }
-            }
+            await ApplicationData.Current.LocalFolder.CreateFolderAsync("Tencent", CreationCollisionOption.OpenIfExists);
+            await ApplicationData.Current.LocalFolder.CreateFolderAsync("Sina", CreationCollisionOption.OpenIfExists);
+
+            //using(IsolatedStorageFile isf=IsolatedStorageFile.GetUserStoreForApplication())
+            //{
+            //    if (!isf.DirectoryExists("Tencent"))
+            //    {
+            //        isf.CreateDirectory("Tencent");
+            //    }
+            //    if (!isf.DirectoryExists("Sina"))
+            //    {
+            //        isf.CreateDirectory("Sina");
+            //    }
+            //}
         }
 
         // 应用程序启动(例如，从“开始”菜单启动)时执行的代码

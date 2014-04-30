@@ -86,12 +86,13 @@ namespace iWeibo.WP8.Services
             //        c.Resolve<IMessageBox>()))
             //        .ReusedWithin(ReuseScope.None);
 
-            //this.Container.Register(
-            //    c => new PostNewViewModel(
-            //        c.Resolve<INavigationService>(),
-            //        c.Resolve<IPhoneApplicationServiceFacade>(),
-            //        c.Resolve<IPhotoChooserTask>()))
-            //        .ReusedWithin(ReuseScope.None);
+            this.Container.Register(
+                c => new CreateNewViewModel(
+                    c.Resolve<INavigationService>(),
+                    c.Resolve<IPhoneApplicationServiceFacade>(),
+                    c.Resolve<IMessageBox>(),
+                    c.Resolve<IPhotoChooserTask>()))
+                    .ReusedWithin(ReuseScope.None);
 
             //this.Container.Register(
             //    c => new TencentStatusDetailViewModel(

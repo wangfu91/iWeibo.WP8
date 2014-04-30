@@ -40,7 +40,22 @@
             <!--枢轴项一-->
             <phone:PivotItem Header="{Binding Path=LocalizedResources.MainPageText,Source={StaticResource LocalizedStrings}}">
                 <Grid>
-                    <utils:PullRefreshListBox
+                    <phone:LongListSelector 
+                        ItemsSource="{Binding HomeTimeline}"
+                        ItemTemplate="{StaticResource SinaTimelineTemplate}"
+                        SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
+                        IsGroupingEnabled="False">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="StretchingButtom">
+                                <i:InvokeCommandAction Command="{Binding HomeTimeline,ConverterParameter=Next}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="StretchingTop">
+                                <i:InvokeCommandAction Command="{Binding HomeTimeline,ConverterParameter=Refresh}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>                        
+                    </phone:LongListSelector>
+                        
+                    <!--<utils:PullRefreshListBox
                         ItemsSource="{Binding HomeTimeline}"
                         ItemTemplate="{StaticResource SinaTimelineTemplate}"
                         SelectedItem="{Binding SelectedStatus, Mode=TwoWay}">
@@ -53,14 +68,29 @@
                                 <i:InvokeCommandAction Command="{Binding HomeTimelineCommand}" CommandParameter="NextPage"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                    </utils:PullRefreshListBox>
+                    </utils:PullRefreshListBox>-->
                 </Grid>
             </phone:PivotItem>
 
             <!--枢轴项二-->
             <phone:PivotItem Header="{Binding Path=LocalizedResources.MessageText,Source={StaticResource LocalizedStrings}}">
                 <Grid>
-                    <utils:PullRefreshListBox
+
+                    <phone:LongListSelector 
+                        ItemsSource="{Binding MentionsTimeline}"
+                        ItemTemplate="{StaticResource SinaTimelineTemplate}"
+                        SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
+                        IsGroupingEnabled="False">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="StretchingButtom">
+                                <i:InvokeCommandAction Command="{Binding MentionsTimeline,ConverterParameter=Next}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="StretchingTop">
+                                <i:InvokeCommandAction Command="{Binding MentionsTimeline,ConverterParameter=Refresh}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </phone:LongListSelector>
+                    <!--<utils:PullRefreshListBox
                         ItemsSource="{Binding MentionsTimeline}"
                         ItemTemplate="{StaticResource SinaTimelineTemplate}"
                         SelectedItem="{Binding SelectedStatus,Mode=TwoWay}">
@@ -73,14 +103,29 @@
                                 <i:InvokeCommandAction Command="{Binding MentionsTimelineComamnd}" CommandParameter="NextPage"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                    </utils:PullRefreshListBox>
+                    </utils:PullRefreshListBox>-->
                 </Grid>
             </phone:PivotItem>
 
             <!--枢轴项三-->
             <phone:PivotItem Header="{Binding Path=LocalizedResources.FavoritesText,Source={StaticResource LocalizedStrings}}">
                 <Grid>
-                    <utils:PullRefreshListBox
+                    <phone:LongListSelector 
+                        ItemsSource="{Binding FavoritesTimeline}"
+                        ItemTemplate="{StaticResource SinaTimelineTemplate}"
+                        SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
+                        IsGroupingEnabled="False">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="StretchingButtom">
+                                <i:InvokeCommandAction Command="{Binding FavoritesTimeline,ConverterParameter=Next}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="StretchingTop">
+                                <i:InvokeCommandAction Command="{Binding FavoritesTimeline,ConverterParameter=Refresh}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </phone:LongListSelector>
+                    
+                    <!--<utils:PullRefreshListBox
                         ItemsSource="{Binding FavoritesTimeline}"
                         ItemTemplate="{StaticResource SinaTimelineTemplate}"
                         SelectedItem="{Binding SelectedStatus,Mode=TwoWay}">
@@ -92,7 +137,7 @@
                                 <i:InvokeCommandAction Command="{Binding FavoritesTimelineCommand}" CommandParameter="NextPage"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                    </utils:PullRefreshListBox>
+                    </utils:PullRefreshListBox>-->
                 </Grid>
             </phone:PivotItem>
 

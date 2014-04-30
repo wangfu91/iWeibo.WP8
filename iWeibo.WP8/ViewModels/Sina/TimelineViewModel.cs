@@ -1,5 +1,6 @@
 ﻿using iWeibo.Adapters;
 using iWeibo.Services;
+using iWeibo.WP8.Models;
 using Microsoft.Practices.Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -102,9 +103,9 @@ namespace iWeibo.WP8.ViewModels.Sina
         public DelegateCommand BackKeyPressCommand { get; set; }
         public DelegateCommand RefreshCommand { get; set; }
         public DelegateCommand CreateNewCommand { get; set; }
-        public DelegateCommand HomeTimelineCommand { get; set; }
-        public DelegateCommand MentionsTimelineCommand { get; set; }
-        public DelegateCommand FavoritesTimelineCommand { get; set; }
+        public DelegateCommand<string> HomeTimelineCommand { get; set; }
+        public DelegateCommand<string> MentionsTimelineCommand { get; set; }
+        public DelegateCommand<string> FavoritesTimelineCommand { get; set; }
         
 
 
@@ -122,10 +123,30 @@ namespace iWeibo.WP8.ViewModels.Sina
             this.PageLoadedCommand = new DelegateCommand(LoadDataFromCache, () => !this.IsSyncing);
             this.BackKeyPressCommand = new DelegateCommand(OnBackKeyPress, () => true);
             this.RefreshCommand = new DelegateCommand(Refresh, () => !this.IsSyncing);
-            this.CreateNewCommand = new DelegateCommand(() => this.NavigationService.Navigate(new Uri(Constants.PostNewView, UriKind.Relative)));
-            this.HomeTimelineCommand = new DelegateCommand(() => GetHomeTimeline(htNextCursor), () => !this.IsSyncing);
-            this.MentionsTimelineCommand = new DelegateCommand(() => GetMentionsTimeline(mtNextCursor), () => !this.IsSyncing);
-            this.FavoritesTimelineCommand = new DelegateCommand(() => GetFavoritesTimeline(ftNextCursor), () => !this.IsSyncing);
+            this.CreateNewCommand = new DelegateCommand(() => this.NavigationService.Navigate(new Uri(Constants.CreateNewView, UriKind.Relative)));
+            this.HomeTimelineCommand = new DelegateCommand<string>(p =>
+                {
+                    if (p == "Next")
+                        GetHomeTimeline(htNextCursor);
+                    else
+                        GetHomeTimeline();
+                }, p => !this.IsSyncing);
+
+            this.MentionsTimelineCommand = new DelegateCommand<string>(p =>
+                {
+                    if (p == "Next")
+                        GetMentionsTimeline(mtNextCursor);
+                    else
+                        GetMentionsTimeline();
+                }, p => !this.IsSyncing);
+
+            this.FavoritesTimelineCommand = new DelegateCommand<string>(p =>
+                {
+                    if (p == "Next")
+                        GetFavoritesTimeline(ftNextCursor);
+                    else
+                        GetFavoritesTimeline();
+                }, p => !this.IsSyncing);
 
         }
 

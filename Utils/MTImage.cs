@@ -99,6 +99,7 @@ namespace iWeibo.Utils
 
         private static async void SetRealImageSource(Image image, string imageurl)
         {
+            if (imageurl == null) return;
             //如果不是网络图片则将图片路径给Image进行展示
             if (!imageurl.StartsWith("http"))
                 image.Source = new BitmapImage(new Uri(imageurl, UriKind.RelativeOrAbsolute));
