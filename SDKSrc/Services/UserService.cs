@@ -32,7 +32,7 @@ namespace TencentWeiboSDK.Services
 
 
         /// <summary>
-        /// 获取自己的详细资料.
+        /// 获取已授权用户的详细资料.
         /// </summary>
         /// <param name="callback">回调返回 User 对象.</param>
         public void UserInfo(Action<Callback<User>> callback)

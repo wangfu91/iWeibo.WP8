@@ -55,7 +55,7 @@ namespace TencentWeiboSDK.Hammock.Authentication.OAuth
         public virtual OAuthSignatureTreatment SignatureTreatment { get; set; }
 
         internal virtual string ConsumerSecret { get; set; }
-        
+
         internal virtual string TokenSecret { get; set; }
 
         internal virtual bool FirstUse { get; set; }

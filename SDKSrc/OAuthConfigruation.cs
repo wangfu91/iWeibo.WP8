@@ -70,12 +70,6 @@ namespace TencentWeiboSDK
         public static TencentAccessToken AccessToken { get; set; }
 
         /// <summary>
-        /// 获取或设置当前用户的 AccessToken集合.
-        /// </summary>
-        /// <remarks>若 IfSaveAccessToken == true, 则请不要手动设置该值.</remarks>
-        public static AccessTokens AccessTokens { get; set; }
-
-        /// <summary>
         /// 获取或设置在用户授权成功后，是否需要 SDK 帮助你储存用户的 AccessToken.
         /// </summary>
         /// <remarks>
@@ -108,7 +102,7 @@ namespace TencentWeiboSDK
             {
                 throw new MissingAppKeyOrAppSecretException();
             }
-            
+
             if (string.IsNullOrEmpty(Authority))
             {
                 throw new OAuthException("Authority 不能为空!");
@@ -116,20 +110,7 @@ namespace TencentWeiboSDK
 
             if (IfSaveAccessToken)
             {
-                AccessTokens tokens = TokenIso.Current.LoadData();
-                TencentAccessToken token = null;
-
-                if (tokens.Count != 0)
-                {
-                    foreach (TencentAccessToken item in tokens)
-                    {
-                        if (item.Open == true)
-                        {
-                            token = item;
-                            break;
-                        }
-                    }
-                }
+                TencentAccessToken token = TokenIso.Current.LoadData();
 
                 if (null == token)
                 {
@@ -137,7 +118,7 @@ namespace TencentWeiboSDK
                 }
 
 
-                if (token == null || string.IsNullOrEmpty(token.TokenKey) || string.IsNullOrEmpty(token.TokenSecret))
+                if (token == null || string.IsNullOrEmpty(token.AccessToken))
                 {
                     throw new MissingAccessTokenExcception();
                 }

@@ -15,6 +15,7 @@ using System.IO.IsolatedStorage;
 using TencentWeiboSDK.Services;
 using TencentWeiboSDK.Util;
 using System.Threading;
+using TencentWeiboSDK.Hammock.Authentication.OAuth;
 
 namespace TencentWeiboSDK.Controls
 {
@@ -25,7 +26,7 @@ namespace TencentWeiboSDK.Controls
     {
         private OAuthService service = new OAuthService();
         private const string callbackUrl = "http://t.qq.com";
-        private RequestToken requestToken = null;
+        private AuthorizationCode requestToken = null;
         private Action<Callback<TencentAccessToken>> actionTokenCallback = null;
         UserService userService = new UserService();
 
@@ -64,16 +65,12 @@ namespace TencentWeiboSDK.Controls
                 OnCallbackAccessToken(null);
                 return;
             }
+            string uri = string.Format("{0}/cgi-bin/oauth2/authorize?client_id={1}&response_type=code&redirect_uri={2}&state={3}",
+                @"https://open.t.qq.com", OAuthConfigruation.APP_KEY, @"http://t.qq.com",OAuthTools.GetNonce());
 
-            service.GetRequestTokenRequest(callbackUrl, (action) =>
-            {
-                this.requestToken = action.Data;
 
-                this.Dispatcher.BeginInvoke(() =>
-                {
-                    webBrowser1.Navigate(new Uri(requestToken.AccessUrl));
-                });
-            });
+            webBrowser1.Navigate(new Uri(uri));
+
         }
 
         private void webBrowser1_Navigating(object sender, Microsoft.Phone.Controls.NavigatingEventArgs e)
@@ -89,55 +86,14 @@ namespace TencentWeiboSDK.Controls
                     OBrowserNavigated.Invoke(sender, e);
                 }
                 e.Cancel = true;
-                var result = OAuthHelper.GetQueryParameters(e.Uri.ToString());
-                requestToken.Verifier = result["oauth_verifier"];
-                service.GetAccessTokenRequest(requestToken, MergeAccessToken);
+                var authCode = new AuthorizationCode(e.Uri.ToString());
+                service.GetAccessTokenRequest(callbackUrl, authCode, TokenCallback);
             }
         }
-        /// <summary>
-        /// 合并AccessToken并清空缓存
-        /// </summary>
-        /// <param name="callback"></param>
-        private void MergeAccessToken(Callback<TencentAccessToken> callback)
-        {
-            if (OAuthConfigruation.IfSaveAccessToken)
-            {
-                AccessTokens oldAccessTokens = TokenIso.Current.LoadData();
-                if (oldAccessTokens.Count == 0)
-                {
-                    OAuthConfigruation.AccessToken = callback.Data;
-                    using (AutoResetEvent are = new AutoResetEvent(false))
-                    {
-                        userService.UserInfo((userInfocallback) =>
-                        {
-                            callback.Data.Head = userInfocallback.Data.Head;
-                            oldAccessTokens.Add(callback.Data);
-                            TokenIso.Current.SaveData(oldAccessTokens);
-                            are.Set();
-                        });
-                        are.WaitOne();
-                    }
-                    
-                }
-                else
-                {
-                    oldAccessTokens.ForEach((item) => { item.Open = false; });
-                    OAuthConfigruation.AccessToken = callback.Data;
-                    using (AutoResetEvent are = new AutoResetEvent(false))
-                    {
-                        userService.UserInfo((userInfocallback) =>
-                        {
-                            callback.Data.Head = userInfocallback.Data.Head;
-                            oldAccessTokens.Add(callback.Data);
-                            TokenIso.Current.SaveData(oldAccessTokens);
-                            are.Set();
-                        });
-                        are.WaitOne();
-                    }
-                }
-               
-            }
 
+
+        private void TokenCallback(Callback<TencentAccessToken> callback)
+        {
             this.Dispatcher.BeginInvoke(() =>
             {
                 if (actionTokenCallback != null)
@@ -146,7 +102,6 @@ namespace TencentWeiboSDK.Controls
                 }
             });
         }
-
 
         private void UserControl_SizeChanged_1(object sender, SizeChangedEventArgs e)
         {

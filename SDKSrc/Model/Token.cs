@@ -1,113 +1,110 @@
-﻿using TencentWeiboSDK.Util;
+﻿using System.Runtime.Serialization;
+using TencentWeiboSDK.Util;
 
 namespace TencentWeiboSDK.Model
 {
     /// <summary>
-    /// Access Token 和 Request Token 的基类.
+    /// Access Toekn 类，用于表示服务器所返回的 Access Token 对象.
     /// </summary>
-    public abstract class Token
+    [DataContract]
+    public class TencentAccessToken
     {
         /// <summary>
         /// 构造函数.
         /// </summary>
         /// <param name="content">回调的字符串.</param>
-        internal Token(string content)
+        internal TencentAccessToken(string content)
         {
 
             var result = OAuthHelper.GetQueryParameters(content);
 
             // 通过content, 初始化 Key 和 Secret
-            if (result.ContainsKey("oauth_token") && result.ContainsKey("oauth_token_secret"))
-            {
-                this.TokenKey = result["oauth_token"];
-                this.TokenSecret = result["oauth_token_secret"];
-            }
+            if (result.ContainsKey("access_token")) this.AccessToken = result["access_token"];
+            if (result.ContainsKey("expire_in")) this.ExpiresIn = result["expire_in"];
+            if (result.ContainsKey("refresh_token")) this.RefreshToken = result["refresh_token"];
+            if (result.ContainsKey("openid")) this.OpenId = result["openid"];
+            if (result.ContainsKey("name")) this.Name = result["name"];
+            if (result.ContainsKey("nick")) this.Nick = result["nick"];
+
         }
 
         /// <summary>
         /// 构造函数，用于反序列化.
         /// </summary>
-        public Token()
+        public TencentAccessToken()
         { }
 
         /// <summary>
-        /// 获取或设置 Toekn 的 Key.
+        /// 访问第三方资源的凭证 
         /// </summary>
-        public virtual string TokenKey { get; set; }
+        [DataMember(Name = "access_token", IsRequired = true)]
+        public virtual string AccessToken { get; set; }
 
         /// <summary>
-        /// 获取或设置 Toekn 的 Secret.
+        /// accesstoken过期时间，以返回的时间的准，单位为秒，注意过期时提醒用户重新授权 
         /// </summary>
-        public virtual string TokenSecret { get; set; }
+        [DataMember(Name = "expires_in")]
+        public string ExpiresIn { get; set; }
+
+        /// <summary>
+        /// 刷新token 
+        /// </summary>
+        [DataMember(Name = "refresh_token")]
+        public virtual string RefreshToken { get; set; }
+
+        /// <summary>
+        /// 用户统一标识，可以唯一标识一个用户
+        /// </summary>
+        [DataMember(Name = "openid", IsRequired = false)]
+        public string OpenId { get; set; }
+
+        /// <summary>
+        /// 授权用户的用户名
+        /// </summary>
+        [DataMember(Name = "name", IsRequired = false)]
+        public string Name { get; set; }
+
+        /// <summary>
+        /// 授权用户的昵称
+        /// </summary>
+        [DataMember(Name = "nick", IsRequired = false)]
+        public string Nick { get; set; }
 
     }
 
     /// <summary>
     /// Request Toekn 类，用于表示服务器所返回的 Request Token 对象.
     /// </summary>
-    public class RequestToken : Token
+    public class AuthorizationCode
     {
         /// <summary>
         /// 构造函数.
         /// </summary>
-        /// <param name="content">请求 Request Token 后, 服务器返回的结果.</param>
-        public RequestToken(string content)
-            : base(content)
-        {
-            this.AccessUrl = BuildAccessUri(TokenKey);
-        }
-
-        private string BuildAccessUri(string key)
-        {
-            return string.Format(@"https://open.t.qq.com/cgi-bin/authorize?oauth_token={0}", key);
-        }
-
-        /// <summary>
-        /// 获取或设置验证码.
-        /// </summary>
-        public string Verifier { get; set; }
-
-        /// <summary>
-        /// 获取或设置请求用户授址地址.
-        /// </summary>
-        public string AccessUrl { get; set; }
-    }
-
-    /// <summary>
-    /// Access Toekn 类，用于表示服务器所返回的 Access Token 对象.
-    /// </summary>
-    public class TencentAccessToken : Token
-    {
-        /// <summary>
-        /// 构造函数.
-        /// </summary>
-        public TencentAccessToken()
-        { }
-        
-        /// <summary>
-        /// 构造函数.
-        /// </summary>
-        /// <param name="content">请求 Access Token 后, 服务器返回的结果.</param>
-        public TencentAccessToken(string content)
-            : base(content)
+        /// <param name="content">请求 Authorization Code 后, 服务器返回的结果.</param>
+        public AuthorizationCode(string content)
         {
             var result = OAuthHelper.GetQueryParameters(content);
-            this.Name = result["name"];
-            this.Open = true;
+
+            // 通过content, 初始化 Key 和 Secret
+            if (result.ContainsKey("code")) this.Code = result["code"];
+            if (result.ContainsKey("openid")) this.OpenId = result["openid"];
+            if (result.ContainsKey("openkey")) this.OpenKey = result["openkey"];
         }
 
         /// <summary>
-        /// 获取或设置用户头像.
+        /// 用来换取accesstoken的授权码，有效期为10分钟 
         /// </summary>
-        public string Head { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
-        /// 获取或设置 Toekn 用户名.
+        /// 用户统一标识，可以唯一标识一个用户 
         /// </summary>
-        public string Name { get; set; }
+        public string OpenId { get; set; }
+
         /// <summary>
-        /// 当前登录用户标识
+        /// 与openid对应的用户key，是验证openid身份的验证密钥 
         /// </summary>
-        public bool Open { get; set; }
+        public string OpenKey { get; set; }
     }
+
 }

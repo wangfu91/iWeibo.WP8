@@ -192,7 +192,6 @@
     <Compile Include="Hammock\Web\WebQueryRequestEventArgs.cs" />
     <Compile Include="Hammock\Web\WebQueryResponseEventArgs.cs" />
     <Compile Include="Hammock\Web\WebQueryResult.cs" />
-    <Compile Include="Model\AccessTokens.cs" />
     <Compile Include="Model\Company.cs" />
     <Compile Include="Model\Education.cs" />
     <Compile Include="Model\Pictures.cs" />

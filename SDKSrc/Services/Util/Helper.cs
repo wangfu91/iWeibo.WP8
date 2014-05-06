@@ -25,15 +25,19 @@ namespace TencentWeiboSDK.Util
         internal static Dictionary<string, string> GetQueryParameters(string response)
         {
             Dictionary<string, string> nameValueCollection = new Dictionary<string, string>();
-            string[] items = response.Split('&');
+            string[] items;
+            if (response.Contains("?"))
+                items = response.Split('?')[1].Split('&');
+            else
+                items = response.Split('&');
 
             foreach (string item in items)
             {
                 if (item.Contains("="))
                 {
                     string[] nameValue = item.Split('=');
-                    if (nameValue[0].Contains("?"))
-                        nameValue[0] = nameValue[0].Replace("?", "");
+                    //if (nameValue[0].Contains("?"))
+                    //    nameValue[0] = nameValue[0].Replace("?", "");
                     nameValueCollection.Add(nameValue[0], System.Net.HttpUtility.UrlDecode(nameValue[1]));
                 }
             }

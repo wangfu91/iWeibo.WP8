@@ -28,7 +28,7 @@ namespace TencentWeiboSDK.Hammock.Authentication.OAuth
         public virtual string CallbackUrl { get; set; }
         public virtual string Verifier { get; set; }
         public virtual string SessionHandle { get; set; }
-        
+
         public virtual OAuthSignatureMethod SignatureMethod { get; set; }
         public virtual OAuthSignatureTreatment SignatureTreatment { get; set; }
         public virtual OAuthParameterHandling ParameterHandling { get; set; }
@@ -60,7 +60,7 @@ namespace TencentWeiboSDK.Hammock.Authentication.OAuth
 
         public OAuthWorkflow()
         {
-            
+
         }
 
         /// <summary>
@@ -117,21 +117,21 @@ namespace TencentWeiboSDK.Hammock.Authentication.OAuth
             var signature = OAuthTools.GetSignature(SignatureMethod, SignatureTreatment, signatureBase, ConsumerSecret);
 
             var info = new OAuthWebQueryInfo
-                           {
-                               WebMethod = method,
-                               ParameterHandling = ParameterHandling,
-                               ConsumerKey = ConsumerKey,
-                               SignatureMethod = SignatureMethod.ToRequestValue(),
-                               SignatureTreatment = SignatureTreatment,
-                               Signature = signature,
-                               Timestamp = timestamp,
-                               Nonce = nonce,
-                               Version = Version,
-                               Callback = OAuthTools.UrlEncodeRelaxed(CallbackUrl ?? ""),
-                               UserAgent = "Hammock",
-                               TokenSecret = TokenSecret,
-                               ConsumerSecret = ConsumerSecret
-                           };
+            {
+                WebMethod = method,
+                ParameterHandling = ParameterHandling,
+                ConsumerKey = ConsumerKey,
+                SignatureMethod = SignatureMethod.ToRequestValue(),
+                SignatureTreatment = SignatureTreatment,
+                Signature = signature,
+                Timestamp = timestamp,
+                Nonce = nonce,
+                Version = Version,
+                Callback = OAuthTools.UrlEncodeRelaxed(CallbackUrl ?? ""),
+                UserAgent = "Hammock",
+                TokenSecret = TokenSecret,
+                ConsumerSecret = ConsumerSecret
+            };
 
             return info;
         }
@@ -175,23 +175,23 @@ namespace TencentWeiboSDK.Hammock.Authentication.OAuth
             var signature = OAuthTools.GetSignature(SignatureMethod, SignatureTreatment, signatureBase, ConsumerSecret, TokenSecret);
 
             var info = new OAuthWebQueryInfo
-                           {
-                               WebMethod = method,
-                               ParameterHandling = ParameterHandling,
-                               ConsumerKey = ConsumerKey,
-                               Token = Token,
-                               SignatureMethod = SignatureMethod.ToRequestValue(),
-                               SignatureTreatment = SignatureTreatment,
-                               Signature = signature,
-                               Timestamp = timestamp,
-                               Nonce = nonce,
-                               Version = Version,
-                               Verifier = Verifier,
-                               Callback = CallbackUrl,
-                               UserAgent = "Hammock",
-                               TokenSecret = TokenSecret,
-                               ConsumerSecret = ConsumerSecret,
-                           };
+            {
+                WebMethod = method,
+                ParameterHandling = ParameterHandling,
+                ConsumerKey = ConsumerKey,
+                Token = Token,
+                SignatureMethod = SignatureMethod.ToRequestValue(),
+                SignatureTreatment = SignatureTreatment,
+                Signature = signature,
+                Timestamp = timestamp,
+                Nonce = nonce,
+                Version = Version,
+                Verifier = Verifier,
+                Callback = CallbackUrl,
+                UserAgent = "Hammock",
+                TokenSecret = TokenSecret,
+                ConsumerSecret = ConsumerSecret,
+            };
 
             return info;
         }
@@ -223,28 +223,28 @@ namespace TencentWeiboSDK.Hammock.Authentication.OAuth
             var signature = OAuthTools.GetSignature(SignatureMethod, SignatureTreatment, signatureBase, ConsumerSecret);
 
             var info = new OAuthWebQueryInfo
-                           {
-                               WebMethod = method,
-                               ParameterHandling = ParameterHandling,
-                               ClientMode = "client_auth",
-                               ClientUsername = ClientUsername,
-                               ClientPassword = ClientPassword,
-                               ConsumerKey = ConsumerKey,
-                               SignatureMethod = SignatureMethod.ToRequestValue(),
-                               SignatureTreatment = SignatureTreatment,
-                               Signature = signature,
-                               Timestamp = timestamp,
-                               Nonce = nonce,
-                               Version = Version,
-                               UserAgent = "Hammock",
-                               TokenSecret = TokenSecret,
-                               ConsumerSecret = ConsumerSecret
-                           };
+            {
+                WebMethod = method,
+                ParameterHandling = ParameterHandling,
+                ClientMode = "client_auth",
+                ClientUsername = ClientUsername,
+                ClientPassword = ClientPassword,
+                ConsumerKey = ConsumerKey,
+                SignatureMethod = SignatureMethod.ToRequestValue(),
+                SignatureTreatment = SignatureTreatment,
+                Signature = signature,
+                Timestamp = timestamp,
+                Nonce = nonce,
+                Version = Version,
+                UserAgent = "Hammock",
+                TokenSecret = TokenSecret,
+                ConsumerSecret = ConsumerSecret
+            };
 
             return info;
         }
 
-        public virtual OAuthWebQueryInfo BuildProtectedResourceInfo(WebMethod method, 
+        public virtual OAuthWebQueryInfo BuildProtectedResourceInfo(WebMethod method,
                                                             WebParameterCollection parameters,
                                                             string url)
         {
@@ -257,13 +257,13 @@ namespace TencentWeiboSDK.Hammock.Authentication.OAuth
 
             // Include url parameters in query pool
             var uri = new Uri(url);
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !MonoTouch
             var urlParameters = System.Compat.Web.HttpUtility.ParseQueryString(uri.Query);
 #else
             var urlParameters = uri.Query.ParseQueryString();
 #endif
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !MonoTouch
             foreach (var parameter in urlParameters.AllKeys)
 #else
             foreach (var parameter in urlParameters.Keys)
@@ -285,7 +285,7 @@ namespace TencentWeiboSDK.Hammock.Authentication.OAuth
 
             // [DC] Make a copy of the parameters so that the signature double-encode isn't used
             var copy = new WebParameterCollection();
-            foreach(var parameter in parameters)
+            foreach (var parameter in parameters)
             {
                 copy.Add(new WebPair(parameter.Name, parameter.Value));
             }
@@ -297,33 +297,26 @@ namespace TencentWeiboSDK.Hammock.Authentication.OAuth
             var signature = OAuthTools.GetSignature(
                 SignatureMethod, SignatureTreatment, signatureBase, ConsumerSecret, TokenSecret
                 );
-            //signature = UrlEncodeUpperCase(signature);
-            
-            var info = new OAuthWebQueryInfo
-                           {
-                               WebMethod = method,
-                               ParameterHandling = ParameterHandling,
-                               ConsumerKey = ConsumerKey,
-                               Token = Token,
-                               SignatureMethod = SignatureMethod.ToRequestValue(),
-                               SignatureTreatment = SignatureTreatment,
-                               Signature = signature,
-                               Timestamp = timestamp,
-                               Nonce = nonce,
-                               Version = Version ?? "1.0",
-                               Callback = CallbackUrl,
-                               UserAgent = "Hammock",
-                               ConsumerSecret = ConsumerSecret,
-                               TokenSecret = TokenSecret
-                           };
-            
-            return info;
-        }
 
-        public string UrlEncodeUpperCase(string value)
-        {
-            value = HttpUtility.UrlDecode(value);
-            return System.Text.RegularExpressions.Regex.Replace(value, "(%[0-9a-f]{2})", c => c.Value.ToUpper());
+            var info = new OAuthWebQueryInfo
+            {
+                WebMethod = method,
+                ParameterHandling = ParameterHandling,
+                ConsumerKey = ConsumerKey,
+                Token = Token,
+                SignatureMethod = SignatureMethod.ToRequestValue(),
+                SignatureTreatment = SignatureTreatment,
+                Signature = signature,
+                Timestamp = timestamp,
+                Nonce = nonce,
+                Version = Version ?? "1.0",
+                Callback = CallbackUrl,
+                UserAgent = "Hammock",
+                ConsumerSecret = ConsumerSecret,
+                TokenSecret = TokenSecret
+            };
+
+            return info;
         }
 
         private void ValidateTokenRequestState()
@@ -441,7 +434,7 @@ namespace TencentWeiboSDK.Hammock.Authentication.OAuth
                 authParameters.Add(new WebPair("oauth_verifier", Verifier));
             }
 
-            if(!SessionHandle.IsNullOrBlank())
+            if (!SessionHandle.IsNullOrBlank())
             {
                 authParameters.Add(new WebPair("oauth_session_handle", SessionHandle));
             }

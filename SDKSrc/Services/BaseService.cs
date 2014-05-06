@@ -179,7 +179,7 @@ namespace TencentWeiboSDK.Services
             {
                 Authority = OAuthConfigruation.Authority,
                 HasElevatedPermissions = true,
-                Credentials = OAuthCredentials.ForTencentProtectedResource(OAuthConfigruation.APP_KEY, OAuthConfigruation.APP_SECRET, token.TokenKey, token.TokenSecret),
+                //Credentials = OAuthCredentials.ForTencentProtectedResource(OAuthConfigruation.APP_KEY, OAuthConfigruation.APP_SECRET, token.AccessToken, token.RefreshToken),
                 Encoding = Encoding.UTF8
             };
 
@@ -189,6 +189,14 @@ namespace TencentWeiboSDK.Services
                 Method = WebMethod.Get,
                 Encoding = Encoding.UTF8
             };
+
+            //request.AddParameter("format", "json");
+            request.AddParameter("access_token", OAuthConfigruation.AccessToken.AccessToken);
+            request.AddParameter("oauth_consumer_key", OAuthConfigruation.APP_KEY);
+            request.AddParameter("openid", OAuthConfigruation.AccessToken.OpenId);
+            request.AddParameter("oauth_version", "2.a");
+            request.AddParameter("scope", "all");
+
 
             foreach (var i in args)
             {
@@ -240,8 +248,8 @@ namespace TencentWeiboSDK.Services
                     SignatureTreatment = OAuthSignatureTreatment.Escaped,
                     ConsumerKey = OAuthConfigruation.APP_KEY,
                     ConsumerSecret = OAuthConfigruation.APP_SECRET,
-                    Token = token.TokenKey,
-                    TokenSecret = token.TokenSecret,
+                    Token = token.AccessToken,
+                    TokenSecret = token.RefreshToken,
                 }
             };
 

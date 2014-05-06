@@ -11,7 +11,7 @@ namespace TencentWeiboSDK.Util
     /// <summary>
     /// TokenIso 用于安全储存 AccessToken.
     /// </summary>
-    public class TokenIso : SafeIsolatedStorage<AccessTokens>
+    public class TokenIso : SafeIsolatedStorage<TencentAccessToken>
     {
         private static TokenIso instance = new TokenIso();
 
