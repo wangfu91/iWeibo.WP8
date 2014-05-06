@@ -313,6 +313,15 @@ namespace iWeibo.WP8.Resources {
         }
         
         /// <summary>
+        ///   查找类似 绑定腾讯微博 的本地化字符串。
+        /// </summary>
+        public static string TencentBindingText {
+            get {
+                return ResourceManager.GetString("TencentBindingText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 腾讯微博 的本地化字符串。
         /// </summary>
         public static string TencentTitle {

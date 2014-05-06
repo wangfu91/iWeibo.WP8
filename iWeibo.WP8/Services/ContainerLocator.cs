@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using sinavm = iWeibo.WP8.ViewModels.Sina;
+using tencentvm = iWeibo.WP8.ViewModels.Tencent;
+
 namespace iWeibo.WP8.Services
 {
     public class ContainerLocator:IDisposable
@@ -59,11 +61,12 @@ namespace iWeibo.WP8.Services
                     c.Resolve<IMessageBox>()))
                     .ReusedWithin(ReuseScope.None);
 
-            //this.Container.Register(
-            //    c => new TencentTimelineViewModel(
-            //        c.Resolve<INavigationService>(),
-            //        c.Resolve<IPhoneApplicationServiceFacade>()))
-            //        .ReusedWithin(ReuseScope.None);
+            this.Container.Register(
+                c => new tencentvm.TimelineViewModel(
+                    c.Resolve<INavigationService>(),
+                    c.Resolve<IPhoneApplicationServiceFacade>(),
+                    c.Resolve<IMessageBox>()))
+                    .ReusedWithin(ReuseScope.None);
 
             this.Container.Register(
                 c => new sinavm.TimelineViewModel(

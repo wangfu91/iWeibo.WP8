@@ -209,4 +209,7 @@
   <data name="TopicText" xml:space="preserve">
     <value>话题</value>
   </data>
+  <data name="TencentBindingText" xml:space="preserve">
+    <value>绑定腾讯微博</value>
+  </data>
 </root>

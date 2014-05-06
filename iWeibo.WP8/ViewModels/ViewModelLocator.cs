@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using sinavm = iWeibo.WP8.ViewModels.Sina;
+using tencentvm = iWeibo.WP8.ViewModels.Tencent;
 
 namespace iWeibo.WP8.ViewModels
 {
@@ -35,13 +36,13 @@ namespace iWeibo.WP8.ViewModels
             }
         }
 
-        //public TencentTimelineViewModel TencentTimelineViewModel
-        //{
-        //    get
-        //    {
-        //        return this.containerLocator.Container.Resolve<TencentTimelineViewModel>();
-        //    }
-        //}
+        public tencentvm.TimelineViewModel TencentTimelineViewModel
+        {
+            get
+            {
+                return this.containerLocator.Container.Resolve<tencentvm.TimelineViewModel>();
+            }
+        }
 
         //public TencentStatusDetailViewModel TencentStatusDetailViewModel
         //{

@@ -15,7 +15,7 @@ using WeiboSdk.Services;
 
 namespace iWeibo.WP8.ViewModels.Sina
 {
-    public class TimelineViewModel:ViewModel
+    public class TimelineViewModel : ViewModel
     {
 
         private IMessageBox messageBox;
@@ -35,7 +35,7 @@ namespace iWeibo.WP8.ViewModels.Sina
 
         private TimelineService timelineService = new TimelineService(TokenIsoStorage.SinaTokenStorage.LoadData<SinaAccessToken>());
 
-        
+
         private bool isSyncing;
 
         public bool IsSyncing
@@ -106,14 +106,14 @@ namespace iWeibo.WP8.ViewModels.Sina
         public DelegateCommand<string> HomeTimelineCommand { get; set; }
         public DelegateCommand<string> MentionsTimelineCommand { get; set; }
         public DelegateCommand<string> FavoritesTimelineCommand { get; set; }
-        
+
 
 
         public TimelineViewModel(
             INavigationService navigationService,
             IPhoneApplicationServiceFacade phoneApplicationServiceFacade,
             IMessageBox messageBox)
-            :base(navigationService,phoneApplicationServiceFacade,new Uri(Constants.SinaTimelineView,UriKind.Relative))
+            : base(navigationService, phoneApplicationServiceFacade, new Uri(Constants.SinaTimelineView, UriKind.Relative))
         {
             this.messageBox = messageBox;
             this.HomeTimeline = new ObservableCollection<WStatus>();
@@ -245,97 +245,105 @@ namespace iWeibo.WP8.ViewModels.Sina
             this.NavigationService.Navigate(new Uri(Constants.MainPageView, UriKind.Relative));
         }
 
-        private void GetHomeTimeline(long maxId = 0)
-        {
-            this.IsSyncing = true;
 
-            new Thread(() =>
+        private Task<Callback<WStatusCollection>> GetStatusesAsync(TimelineType type, long maxId = 0)
+        {
+            var source = new TaskCompletionSource<Callback<WStatusCollection>>();
+            switch (type)
             {
-                timelineService.GetFriendsTimeline(requestCount, maxId, 0, callback =>
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (callback.Succeed)
-                        {
-                            if (maxId == 0)
-                            {
-                                HomeTimeline.Clear();
-                                htStorage.SaveData(callback.Data);
-                                //htPreviousCursor = callback.Data.PreviousCursor;
-                            }
-                            htNextCursor = callback.Data.NextCursor;
-                            callback.Data.Statuses.ForEach(a => HomeTimeline.Add(a));
-                        }
-                        else
-                        {
-                            this.messageBox.Show(callback.ErrorMsg);
-                        }
-                        this.IsSyncing = false;
-                    });
-                });
-            }).Start();
+                case TimelineType.HomeTimeline:
+                    this.timelineService.GetFriendsTimeline(
+                        requestCount, maxId, 0,
+                        callback => source.TrySetResult(callback));
+                    return source.Task;
+                case TimelineType.MentionsTimeline:
+                    this.timelineService.GetMentionsTimeline(
+                        requestCount, maxId, 0,
+                        callback => source.SetResult(callback));
+                    return source.Task;
+                case TimelineType.FavoritesTimeline:
+                    //this.timelineService.GetFavoritesTimeline(
+                    //    requestCount, maxId, 0,
+                    //    callback => source.SetResult(callback));
+                    return source.Task;
+                default:
+                    return source.Task;
+            }
 
         }
 
-        private void GetMentionsTimeline(long maxId = 0)
+        private async void GetHomeTimeline(long maxId = 0)
         {
             this.IsSyncing = true;
-            new Thread(() =>
+            var result = await GetStatusesAsync(TimelineType.HomeTimeline, maxId);
+
+            if (result.Succeed)
             {
-                timelineService.GetMentionsTimeline(requestCount, maxId, 0, callback =>
+                if (maxId == 0)
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (callback.Succeed)
-                        {
-                            if (maxId == 0)
-                            {
-                                MentionsTimeline.Clear();
-                                mtStorage.SaveData(callback.Data);
-                                //mtPreviousCursor=callback.Data.PreviousCursor;
-                            }
-                            mtNextCursor = callback.Data.NextCursor;
-                            callback.Data.Statuses.ForEach(a => MentionsTimeline.Add(a));
-                        }
-                        else
-                        {
-                            this.messageBox.Show(callback.ErrorMsg);
-                        }
-                        this.IsSyncing = false;
-                    });
-                });
-            }).Start();
+                    HomeTimeline.Clear();
+                    htStorage.SaveData(result.Data);
+                    //htPreviousCursor = callback.Data.PreviousCursor;
+                }
+                htNextCursor = result.Data.NextCursor;
+                result.Data.Statuses.ForEach(a => HomeTimeline.Add(a));
+            }
+            else
+            {
+                this.messageBox.Show(result.ErrorMsg);
+            }
+            this.IsSyncing = false;
 
         }
 
-        private void GetFavoritesTimeline(long maxId = 0)
+        private async void GetMentionsTimeline(long maxId = 0)
         {
             this.IsSyncing = true;
-            new Thread(() =>
+            var result = await GetStatusesAsync(TimelineType.MentionsTimeline, maxId);
+
+            if (result.Succeed)
             {
-                timelineService.GetFavoritesTimeline(requestCount, maxId, 0, callback =>
+                if (maxId == 0)
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (callback.Succeed)
-                        {
-                            if (maxId == 0)
-                            {
-                                FavoritesTimeline.Clear();
-                                ftStorage.SaveData(callback.Data);
-                                //ftPreviousCursor=callback.Data.PreviousCursor;
-                            }
-                            ftNextCursor = callback.Data.NextCursor;
-                            callback.Data.Favorites.ForEach(a => FavoritesTimeline.Add(a));
-                        }
-                        else
-                        {
-                            this.messageBox.Show(callback.ErrorMsg);
-                        }
-                        this.IsSyncing = false;
-                    });
-                });
-            }).Start();
+                    MentionsTimeline.Clear();
+                    mtStorage.SaveData(result.Data);
+                    //mtPreviousCursor=callback.Data.PreviousCursor;
+                }
+                mtNextCursor = result.Data.NextCursor;
+                result.Data.Statuses.ForEach(a => MentionsTimeline.Add(a));
+            }
+            else
+            {
+                this.messageBox.Show(result.ErrorMsg);
+            }
+            this.IsSyncing = false;
+
+        }
+
+        private async void GetFavoritesTimeline(long maxId = 0)
+        {
+            this.IsSyncing = true;
+
+            //var result = await GetStatusesAsync(TimelineType.FavoritesTimeline, maxId);
+
+
+            //if (result.Succeed)
+            //{
+            //    if (maxId == 0)
+            //    {
+            //        FavoritesTimeline.Clear();
+            //        ftStorage.SaveData(result.Data);
+            //        //ftPreviousCursor=callback.Data.PreviousCursor;
+            //    }
+            //    ftNextCursor = result.Data.NextCursor;
+            //    result.Data.Favorites.ForEach(a => FavoritesTimeline.Add(a));
+            //}
+            //else
+            //{
+            //    this.messageBox.Show(result.ErrorMsg);
+            //}
+
+            this.IsSyncing = false;
 
         }
 

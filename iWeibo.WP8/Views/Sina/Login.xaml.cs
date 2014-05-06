@@ -31,9 +31,6 @@ namespace iWeibo.WP8.Views.Sina
 
         }
 
-        private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
-        {
-        }
 
         private void OAuth2CallBack(bool isSucess, SdkAuthError err, SdkAuth2Res response)
         {
@@ -57,9 +54,11 @@ namespace iWeibo.WP8.Views.Sina
                         //save Token
                         TokenIsoStorage.SinaTokenStorage.SaveData(token);
 
-                        //GetMyInfoAsync();
-
-                        this.NavigationService.Navigate(new Uri(Constants.SinaTimelineView, UriKind.Relative));
+                        GetOAuthedUserInfo();
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                this.NavigationService.Navigate(new Uri(Constants.SinaTimelineView, UriKind.Relative));
+                            });
                     }
                     break;
                 case SdkErrCode.NET_UNUSUAL:
@@ -99,26 +98,25 @@ namespace iWeibo.WP8.Views.Sina
             Indicator.IsVisible = true;
         }
 
-        private async void GetMyInfoAsync()
+        private void GetOAuthedUserInfo()
         {
+            this.Dispatcher.BeginInvoke(() => Indicator.IsVisible = true);
+            var source = new TaskCompletionSource<Callback<WUser>>();
+            WUserService userService = new WUserService(accessToken);
+            userService.GetMyUserInfo(callback => source.SetResult(callback));
+            source.Task.Wait();
 
-            await Task.Run(() =>
+            var result = source.Task.Result;
+            if (result.Succeed)
+            {
+                if (result.Data != null)
                 {
-                    WUserService userService = new WUserService(accessToken);
-                    userService.GetMyUserInfo(callback =>
-                    {
+                    new SettingStore().AddOrUpdateValue(Constants.SinaUserName, result.Data.ScreenName);
+                    new IsoStorage(Constants.SinaUserInfo).SaveData(result.Data);
+                }
+            }
 
-                        if (callback.Succeed)
-                        {
-                            if (callback.Data != null)
-                            {
-                                new SettingStore().AddOrUpdateValue(Constants.SinaOAuthedUser, callback.Data.ScreenName);
-
-                                new IsoStorage(Constants.SinaOAuthedUser).SaveData(callback.Data);
-                            }
-                        }
-                    });
-                });
+            this.Dispatcher.BeginInvoke(() => Indicator.IsVisible = false);
         }
 
     }

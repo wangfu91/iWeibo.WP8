@@ -11,6 +11,7 @@
     <converter:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
     <converter:SourceConverter x:Key="SourceConverter"/>
     <toolkit:DailyDateTimeConverter x:Key="DailyDateTimeConverter"/>
+    
 
     <DataTemplate x:Key="TencentTimelineTemplate">
         <Grid x:Name="ContentPanel" Margin="10,10"  HorizontalAlignment="Stretch" MinWidth="436"   >

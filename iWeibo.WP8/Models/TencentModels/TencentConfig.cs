@@ -30,7 +30,7 @@ namespace iWeibo.WP8.Models.TencentModels
             if (TokenIsoStorage.TencentTokenStorage.TryLoadData<TencentAccessToken>(out accessToken))
             {
 
-                return !string.IsNullOrWhiteSpace(accessToken.TokenKey);
+                return !string.IsNullOrWhiteSpace(accessToken.AccessToken);
             }
             return false;
         }

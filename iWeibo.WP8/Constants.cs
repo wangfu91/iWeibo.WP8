@@ -10,8 +10,11 @@ namespace iWeibo.WP8
     {
 
         #region User Info Storage Path
-        public const string TencentOAuthedUser = "/Tencent/OAuthedUserInfo.dat";
-        public const string SinaOAuthedUser = "/Sina/OAuthedUserInfo.dat";
+        public const string TencentUserInfo = "/Tencent/OAuthedUserInfo.dat";
+        public const string SinaUserInfo = "/Sina/OAuthedUserInfo.dat";
+
+        public const string TencentUserName = "TencentUserName";
+        public const string SinaUserName = "SinaUserName";
         #endregion
 
         #region Views Path
@@ -25,10 +28,10 @@ namespace iWeibo.WP8
         public const string SinaStatusDetailView = "/Views/SinaViews/SinaStatusDetail.xaml";
         public const string SinaRepostView = "/Views/SinaViews/SinaRepost.xaml";
 
-        public const string TencentLoginView = "/Views/TencentViews/TencentLogin.xaml";
-        public const string TencentTimelineView = "/Views/TencentViews/TencentTimeline.xaml";
-        public const string TencentStatusDetailView = "/Views/TencentViews/TencentStatusDetail.xaml";
-        public const string TencentRepostView = "/Views/TencentViews/TencentRepost.xaml";
+        public const string TencentLoginView = "/Views/Tencent/Login.xaml";
+        public const string TencentTimelineView = "/Views/Tencent/Timeline.xaml";
+        public const string TencentStatusDetailView = "/Views/Tencent/StatusDetail.xaml";
+        public const string TencentRepostView = "/Views/Tencent/Repost.xaml";
 
         #endregion
 
