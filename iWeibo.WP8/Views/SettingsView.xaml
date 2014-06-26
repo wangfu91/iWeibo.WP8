@@ -1,0 +1,156 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="iWeibo.WP8.Views.SettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:prismInteractivity="clr-namespace:Microsoft.Practices.Prism.Interactivity;assembly=Microsoft.Practices.Prism.Interactivity.Phone" 
+    xmlns:utils="clr-namespace:iWeibo.Utils;assembly=iWeibo.Utils"
+    xmlns:bar="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait"  Orientation="Portrait"
+    Style="{StaticResource TransitionPageStyle}"
+    toolkit:TiltEffect.IsTiltEnabled="True"
+    DataContext="{Binding Source={StaticResource ViewModelLocator},Path=SettingsViewModel}"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot 是包含所有页面内容的根网格-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <!--枢轴控件-->
+        <utils:MTPivot HeaderTemplate="{StaticResource PivotHeaderTemplate}"
+            SelectedIndex="{Binding SelectedPivotIndex,Mode=TwoWay}">
+            <utils:MTPivot.Title >
+                <StackPanel Orientation="Horizontal">
+                    <Image Height="32" Width="32" Stretch="Uniform" Source="/Assets/Icons/settings.png"/>
+                    <TextBlock Text="{Binding Path=LocalizedResources.SettingsText,Source={StaticResource LocalizedStrings}}" 
+                               Margin="5,0" VerticalAlignment="Center" FontSize="18"/>
+                </StackPanel>
+            </utils:MTPivot.Title>
+
+            <!--枢轴项一-->
+            <phone:PivotItem Header="{Binding Path=LocalizedResources.GeneralText,Source={StaticResource LocalizedStrings}}">
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="45"/>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0" Margin="10,10" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2" Text="长按头像以解除绑定" Style="{StaticResource PhoneTextSmallStyle}"/>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Height="50" HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <Image Height="32" Width="32" Source="/Assets/Logos/sinalogo30.png" Stretch="Uniform" HorizontalAlignment="Left"/>
+                            <TextBlock Text="{Binding SinaUserName}"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <Grid Background="Gray" Grid.Row="1" Height="180" Width="180">
+                            <Image Stretch="Uniform" utils:ImageHelper.LoadingSource="/Assets/Icons/User.png" utils:ImageHelper.Source="{Binding SinaUserPicUrl}" />
+                            <toolkit:ContextMenuService.ContextMenu>
+                                <toolkit:ContextMenu>
+                                    <toolkit:MenuItem Header="解除新浪微博帐号绑定"  Command="{Binding DeleteSinaUserCommand}"/>
+                                </toolkit:ContextMenu>
+                            </toolkit:ContextMenuService.ContextMenu>
+                        </Grid>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Height="50" HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <Image Height="32" Width="32" Source="/Assets/Logos/tencentlogo28.png" Stretch="Uniform" HorizontalAlignment="Left"/>
+                            <TextBlock Text="{Binding TencentUserName}"  HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        </StackPanel>
+                        <Grid Background="Gray" Grid.Row="1" Grid.Column="1" Height="180" Width="180">
+                            <Image Stretch="Uniform" utils:ImageHelper.LoadingSource="/Assets/Icons/User.png" utils:ImageHelper.Source="{Binding TencentUserPicUrl}" />
+                            <toolkit:ContextMenuService.ContextMenu>
+                                <toolkit:ContextMenu>
+                                    <toolkit:MenuItem Header="解除腾讯微博帐号绑定" Command="{Binding DeleteTencentUserCommand}"/>
+                                </toolkit:ContextMenu>
+                            </toolkit:ContextMenuService.ContextMenu>
+                        </Grid>
+                        <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
+                            <Grid Margin="20,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" HorizontalAlignment="Left"  Text="{Binding Path=LocalizedResources.CacheSizeText,Source={StaticResource LocalizedStrings}}"/>
+                                <TextBlock Grid.Column="1" HorizontalAlignment="Right" Text="{Binding TotalCacheSize}"/>
+                            </Grid>
+                            <Button Margin="10,0" Content="清理缓存" VerticalAlignment="Top"
+                                Command="{Binding ClearCacheCommand}"/>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+            </phone:PivotItem>
+
+            <!--枢轴项二-->
+            <phone:PivotItem Header="{Binding Path=LocalizedResources.AboutText,Source={StaticResource LocalizedStrings}}">
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="12,10">
+                            <TextBlock 
+                                Text="iWeibo for Windows Phone" 
+                                Margin="12,0" 
+                                FontSize="{StaticResource PhoneFontSizeLarge}" 
+                                FontFamily="{StaticResource PhoneFontFamilySemiBold}"/>
+                            <TextBlock 
+                                Text="1.0.0.4" 
+                                Margin="12,0" 
+                                FontSize="{StaticResource PhoneFontSizeNormal}"/>
+                        </StackPanel>
+                        <RichTextBox Grid.Row="2" Margin="12,10" IsReadOnly="True" >
+                            <RichTextBox.Blocks>
+                                <Paragraph >
+                                    <Bold>Update History：</Bold> 
+                                </Paragraph>
+                                <Paragraph>
+                                    1.优化微博列表显示效果。
+                                </Paragraph>
+                                <Paragraph>
+                                    2.支持多图查看。
+                                </Paragraph>
+                                <Paragraph>
+                                    3.修复微博列表闪烁的bug。
+                                </Paragraph>
+                                <Paragraph/>
+                                <Paragraph >
+                                    由于水平有限，经验欠缺，应用中难免存在许多不足之处，欢迎批评与吐槽，并反馈您的宝贵意见。
+                                </Paragraph>
+                                <Paragraph/>
+                                <Paragraph >
+                                    这是一个开源的项目，你可以在
+                                    <Hyperlink NavigateUri="https://github.com/coding4u/iWeibo" TargetName="_blank" Foreground="{StaticResource PhoneAccentBrush}">Github</Hyperlink> 上找到源码。
+                                </Paragraph>
+                            </RichTextBox.Blocks>
+                        </RichTextBox>
+                        <StackPanel Grid.Row="3" Margin="12,10" >
+                            <Button Content="建议与批评" Margin="5,0,5,0" Command="{Binding EmailCommand}"/>
+                            <Button Content="评价" Margin="5,0,5,0" Command="{Binding RatingCommand}"/>
+                            <Button Content="检查更新" Margin="5,0,5,0" Command="{Binding MarketDetailCommand}"/>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+            </phone:PivotItem>
+        </utils:MTPivot>
+    </Grid>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding PageLoadedCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+</phone:PhoneApplicationPage>

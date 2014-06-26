@@ -1,0 +1,62 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="iWeibo.WP8.Views.PictureView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:utils="clr-namespace:iWeibo.Utils;assembly=iWeibo.Utils"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:imagetools="clr-namespace:ImageTools.Controls;assembly=ImageTools.Controls"
+    xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
+    xmlns:telerikPrimitivesSlideView="clr-namespace:Telerik.Windows.Controls.SlideView;assembly=Telerik.Windows.Controls.Primitives"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    Style="{StaticResource TransitionPageStyle}"
+    shell:SystemTray.IsVisible="False"
+    Loaded="PhoneApplicationPage_Loaded">
+
+    <!--LayoutRoot 是包含所有页面内容的根网格-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <telerikPrimitives:RadSlideView x:Name="slideView" 
+                                        CacheMode="BitmapCache"
+                                        IsFilmstripModeEnabled="False"
+                                        ItemRealizationMode="Default"
+                                        TransitionMode="Slide"
+                                        IsLoopingEnabled="False"
+                                        SelectionChanged="slideView_SelectionChanged">
+            <telerikPrimitives:RadSlideView.ItemTemplate>
+                <DataTemplate>
+                    <Grid >
+                        <telerikPrimitivesSlideView:PanAndZoomImage
+                            Stretch="Uniform"
+                            Source="{Binding }"
+                            ZoomMode="Free" >
+                            <!--<telerikPrimitivesSlideView:PanAndZoomImage.Template>
+                                <ControlTemplate>
+                                    <Grid>
+                                        <Image x:Name="staticImage"/>
+                                        <imagetools:AnimatedImage x:Name="animatedImage"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </telerikPrimitivesSlideView:PanAndZoomImage.Template>-->
+                        </telerikPrimitivesSlideView:PanAndZoomImage>
+                    </Grid>
+                </DataTemplate>
+            </telerikPrimitives:RadSlideView.ItemTemplate>           
+
+        </telerikPrimitives:RadSlideView>
+        
+        <StackPanel Orientation="Horizontal" Background="Black" Opacity="0.7" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10">
+            <TextBlock x:Name="indexTextBox"  Margin="10,0"/>
+            <TextBlock Text="{Binding Path=ItemsSource.Count,StringFormat=/   \{0\},ElementName=slideView}"  Margin="10,0"/>
+        </StackPanel>
+        
+    </Grid>
+
+</phone:PhoneApplicationPage>
