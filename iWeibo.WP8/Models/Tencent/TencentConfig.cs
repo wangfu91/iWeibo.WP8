@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TencentWeiboSDK.Model;
 
-namespace iWeibo.WP8.Models.TencentModels
+namespace iWeibo.WP8.Models.Tencent
 {
     public class TencentConfig
     {

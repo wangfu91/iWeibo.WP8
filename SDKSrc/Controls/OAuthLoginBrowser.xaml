@@ -10,6 +10,6 @@
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone" SizeChanged="UserControl_SizeChanged_1">
     
     <Grid x:Name="LayoutRoot">
-        <phone:WebBrowser HorizontalAlignment="Center" Name="webBrowser1" VerticalAlignment="Center"  IsScriptEnabled="True" Navigating="webBrowser1_Navigating" Navigated="webBrowser1_Navigated" LoadCompleted="webBrowser1_LoadCompleted"/>
+        <phone:WebBrowser  Name="webBrowser1"  IsScriptEnabled="True" Navigating="webBrowser1_Navigating" Navigated="webBrowser1_Navigated" LoadCompleted="webBrowser1_LoadCompleted"/>
     </Grid>
 </UserControl>

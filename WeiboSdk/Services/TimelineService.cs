@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace WeiboSdk.Services
             {
                 acessToken = this.Token,
                 count = count.ToString(),
-                max_id = maxId.ToString(),
+                max_id=maxId.ToString(),
                 since_id = sinceId.ToString()
             };
 
@@ -61,7 +62,7 @@ namespace WeiboSdk.Services
             {
                 acessToken = this.Token,
                 count = count.ToString(),
-                max_id = maxId.ToString(),
+                max_id=maxId.ToString(),
                 since_id = sinceId.ToString()
             };
 
@@ -96,7 +97,7 @@ namespace WeiboSdk.Services
                 acessToken = this.Token,
                 id=id.ToString(),
                 count = count.ToString(),
-                max_id = maxId.ToString(),
+                max_id =maxId.ToString(),
                 since_id = sinceId.ToString()
             };
 
@@ -121,16 +122,14 @@ namespace WeiboSdk.Services
 
         public void GetFavoritesTimeline(
             int count,
-            long maxId,
-            long sinceId,
+            int page,
             Action<Callback<WFavoriteCollection>> action)
         {
             SdkCmdBase cmdArg = new CmdStatusTimeline
             {
                 acessToken = this.Token,
                 count = count.ToString(),
-                max_id = maxId.ToString(),
-                since_id = sinceId.ToString()
+                page=page.ToString()
             };
 
             this.NetEngine.RequestCmd(SdkRequestType.FAVORITE_TIMLINE, cmdArg, (requestType, response) =>
@@ -143,8 +142,6 @@ namespace WeiboSdk.Services
                             var collection = new WFavoriteCollection();
                             var jo = JObject.Parse(response.content);
                             var ja = jo["favorites"];
-                            if (jo["next_cursor"] != null)
-                                collection.NextCursor = (long)jo["next_cursor"];
                             collection.TotalNumber = (int)jo["total_number"];
                             collection.Favorites = new List<WStatus>();
                             foreach (var j in ja.Children())

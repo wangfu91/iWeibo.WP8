@@ -6,53 +6,22 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:weibosdk="clr-namespace:WeiboSdk;assembly=WeiboSdk"
-    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:weiboSdk="clr-namespace:WeiboSdk;assembly=WeiboSdk"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
+    Style="{StaticResource TransitionPageStyle}"
     shell:SystemTray.IsVisible="True">
-    <!--DataContext="{Binding Source={StaticResource ViewModelLocator},Path=SinaLoginViewModel}"-->
 
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator x:Name="Indicator" IsIndeterminate="True" IsVisible="False" Text="{Binding LocalizedResources.LoadingText,Source={StaticResource LocalizedStrings}}"/>
     </shell:SystemTray.ProgressIndicator>
-
+    
     <!--LayoutRoot 是包含所有页面内容的根网格-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <!--TitlePanel 包含应用程序的名称和页标题-->
-        <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="{Binding LocalizedResources.SinaBindingText,Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
-        </StackPanel>
-
-        <!--ContentPanel - 在此处放置其他内容-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <weibosdk:OAuthControl Margin="10" x:Name="OAuthControl">
-                <!--<i:Interaction.Triggers>
-                    <i:EventTrigger EventName="OBrowserNavigating">
-                        <i:InvokeCommandAction Command="{Binding OAuthBrowserNavigatingCommand}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="OBrowserNavigated">
-                        <i:InvokeCommandAction Command="{Binding OAuthBrowserNavigatedCommand}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="OBrowserCanceled">
-                        <i:InvokeCommandAction Command="{Binding OAuthBrowserCanceledCommand}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="OAuth2VerifyCompleted">
-                        <i:InvokeCommandAction Command="{Binding OAuthVerifyCompletedCommand}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>-->
-                
-            </weibosdk:OAuthControl>
-
-        </Grid>
+        <weiboSdk:OAuthControl x:Name="OAuthControl"/>
     </Grid>
 
 </phone:PhoneApplicationPage>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Shared;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
@@ -147,7 +148,6 @@ namespace WeiboSdk
         COMMENTS_REPLY,               //回复一条评论
         FAVORITES_CREATE,             //添加一条微博到收藏
         FAVORITES_DESTROY             //取消收藏一条微博
-
     }
 
     //鉴权方式
@@ -243,7 +243,7 @@ namespace WeiboSdk
     public class CmdUploadMsgWithPic : CmdUpload
     {
         public string status = "";
-        public UploadPicture pic = null;
+        public UploadPictureHelper pic = null;
     }
 
 

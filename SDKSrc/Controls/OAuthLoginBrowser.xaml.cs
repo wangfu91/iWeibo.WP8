@@ -16,6 +16,7 @@ using TencentWeiboSDK.Services;
 using TencentWeiboSDK.Util;
 using System.Threading;
 using TencentWeiboSDK.Hammock.Authentication.OAuth;
+using Shared;
 
 namespace TencentWeiboSDK.Controls
 {

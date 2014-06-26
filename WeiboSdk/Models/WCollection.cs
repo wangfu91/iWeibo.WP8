@@ -37,7 +37,10 @@ namespace WeiboSdk.Models
         {
             get
             {
-                return this.Statuses.FirstOrDefault().Id;
+                if (this.Statuses.Count > 0)
+                    return this.Statuses.FirstOrDefault().Id;
+                else
+                    return 0;
             }
         }
         
@@ -54,7 +57,10 @@ namespace WeiboSdk.Models
         {
             get
             {
-                return this.Comments.FirstOrDefault().Id;
+                if (this.Comments.Count > 0)
+                    return this.Comments.FirstOrDefault().Id;
+                else
+                    return 0;
             }
         }
 
@@ -70,7 +76,10 @@ namespace WeiboSdk.Models
         {
             get
             {
-                return this.Favorites.FirstOrDefault().Id;
+                if (this.Favorites.Count > 0)
+                    return this.Favorites.FirstOrDefault().Id;
+                else
+                    return 0;
             }
         }
 

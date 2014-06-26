@@ -10,10 +10,10 @@ using Microsoft.Phone.Shell;
 using WeiboSdk.Models;
 using WeiboSdk;
 using iWeibo.Services;
-using System.Threading;
+using System.Threading.Tasks;
 using WeiboSdk.Services;
 using iWeibo.WP8.Services;
-using System.Threading.Tasks;
+using Shared;
 
 namespace iWeibo.WP8.Views.Sina
 {
@@ -55,10 +55,11 @@ namespace iWeibo.WP8.Views.Sina
                         TokenIsoStorage.SinaTokenStorage.SaveData(token);
 
                         GetOAuthedUserInfo();
+
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                this.NavigationService.Navigate(new Uri(Constants.SinaTimelineView, UriKind.Relative));
-                            });
+                        {
+                            this.NavigationService.Navigate(new Uri(Constants.SinaTimelineView, UriKind.Relative));
+                        });
                     }
                     break;
                 case SdkErrCode.NET_UNUSUAL:
@@ -98,25 +99,25 @@ namespace iWeibo.WP8.Views.Sina
             Indicator.IsVisible = true;
         }
 
-        private void GetOAuthedUserInfo()
+        private async void GetOAuthedUserInfo()
         {
-            this.Dispatcher.BeginInvoke(() => Indicator.IsVisible = true);
+            this.Dispatcher.BeginInvoke(() => this.Indicator.IsVisible = true);
+            this.Dispatcher.BeginInvoke(() => this.Indicator.Text = "Retriving user info...");
             var source = new TaskCompletionSource<Callback<WUser>>();
             WUserService userService = new WUserService(accessToken);
             userService.GetMyUserInfo(callback => source.SetResult(callback));
-            source.Task.Wait();
 
-            var result = source.Task.Result;
+            var result = await source.Task;
             if (result.Succeed)
             {
                 if (result.Data != null)
                 {
-                    new SettingStore().AddOrUpdateValue(Constants.SinaUserName, result.Data.ScreenName);
+                    new SettingStore().AddOrUpdateValue(Constants.SinaUserName, result.Data.Name);
                     new IsoStorage(Constants.SinaUserInfo).SaveData(result.Data);
                 }
             }
 
-            this.Dispatcher.BeginInvoke(() => Indicator.IsVisible = false);
+            this.Dispatcher.BeginInvoke(() => this.Indicator.IsVisible = false);
         }
 
     }

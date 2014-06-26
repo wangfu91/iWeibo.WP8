@@ -8,7 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-    xmlns:prismInteractivity="clr-namespace:Microsoft.Practices.Prism.Interactivity;assembly=Microsoft.Practices.Prism.Interactivity.Phone"
     xmlns:bar="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -33,7 +32,7 @@
             <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
             <TextBlock Text="{Binding Path=LocalizedResources.HomePageText,Source={StaticResource LocalizedStrings}}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
-        
+
         <!-- 本地化说明:
             若要本地化显示的字符串，请将其值复制到应用程序的非特定语言资源文件(AppResources.resx)
             中的适当命名的键，然后
@@ -52,7 +51,7 @@
             与应用程序的 CurrentUICulture 匹配的 .resx 文件中
             提取属性的值。
          -->
-        
+
         <!--ContentPanel - 在此处放置其他内容-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <ScrollViewer>
@@ -108,6 +107,22 @@
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </toolkit:HubTile>
+                    
+                    <!--<toolkit:HubTile Grid.Row="1" Grid.Column="1"
+                                     x:Name="SearchHubTile"
+                                     Height="173" Width="173"
+                                     Margin="15,15,0,0"
+                                     VerticalAlignment="Top"
+                                     HorizontalAlignment="Left"
+                                     Title="{Binding Path=LocalizedResources.SearchText,Source={StaticResource LocalizedStrings}}"
+                                     Source="/Assets/Icons/Search.png">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Tap">
+                                <i:InvokeCommandAction Command="{Binding EnterSearchCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </toolkit:HubTile>-->
+
                 </Grid>
             </ScrollViewer>
 
@@ -123,14 +138,6 @@
 
     </Grid>
 
-    <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar Mode="Minimized">
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem x:Name="AppBarMenuSettings" Text="设置" >
-                </shell:ApplicationBarMenuItem>
-            </shell:ApplicationBar.MenuItems>
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
     <bar:Bindable.ApplicationBar>
         <bar:BindableApplicationBar Mode="Minimized">
             <bar:BindableApplicationBar.MenuItems>

@@ -16,7 +16,6 @@ namespace iWeibo.WP8.ViewModels
         private readonly Uri pageUri;
         private static Uri currentPageUri;
 
-
         protected ViewModel(
             INavigationService navigationService,
             IPhoneApplicationServiceFacade phoneApplicationServiceFacade,

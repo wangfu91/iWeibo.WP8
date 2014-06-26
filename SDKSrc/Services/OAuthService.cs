@@ -7,6 +7,7 @@ using TencentWeiboSDK.Services.Util;
 using TencentWeiboSDK.Deserializer;
 using TencentWeiboSDK.Hammock;
 using System.Collections.Generic;
+using Shared;
 
 namespace TencentWeiboSDK.Services
 {

@@ -74,8 +74,9 @@
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
       <HintPath>..\packages\WPtoolkit.4.2013.08.16\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\portable-net45+wp80+win8\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>c:\users\wangfu\documents\visual studio 2013\Projects\iWeibo\packages\Newtonsoft.Json.6.0.3\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -217,7 +218,6 @@
     <Compile Include="Services\TService.cs" />
     <Compile Include="Services\StatusesService.cs" />
     <Compile Include="Services\UserService.cs" />
-    <Compile Include="Services\Util\Callback.cs" />
     <Compile Include="Services\Util\ContentType.cs" />
     <Compile Include="Services\Util\Format.cs" />
     <Compile Include="Services\Util\Helper.cs" />
@@ -225,7 +225,6 @@
     <Compile Include="Services\Util\OAuthException.cs" />
     <Compile Include="OAuthConfigruation.cs" />
     <Compile Include="Services\Util\ServiceArgument.cs" />
-    <Compile Include="Services\Util\UploadPic.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Deserializer\Xml\" />
@@ -260,6 +259,12 @@
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\WangFu\Documents\Visual Studio 2013\Projects\iWeibo\Shared\Shared.csproj">
+      <Project>{17077a04-e91d-4b8f-a3d2-a4828a5032a4}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

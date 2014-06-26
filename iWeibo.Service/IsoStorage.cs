@@ -5,10 +5,12 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace iWeibo.Services
 {
-    public class IsoStorage:IIsoStorage
+    public class IsoStorage : IIsoStorage
     {
         private string fileName = string.Empty;
 
@@ -84,9 +86,9 @@ namespace iWeibo.Services
         /// 从用户独立储存空间的文件中读取数据
         /// </summary>
         /// <returns>返回读取到的数据</returns>
-        public T LoadData<T>() where T:new()
+        public T LoadData<T>() where T : new()
         {
-            T t=new T();
+            T t = new T();
             using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 if (isf.FileExists(fileName))
@@ -106,7 +108,36 @@ namespace iWeibo.Services
             return t;
         }
 
-        public bool TryLoadData<T>(out T t)where T:new()
+
+
+        ///// <summary>
+        ///// 从用户独立储存空间的文件中异步读取数据
+        ///// </summary>
+        ///// <returns>返回包含读取到的数据的Task</returns>
+        //public async Task<T> LoadDataAsync<T>() where T : new()
+        //{
+        //    T t = new T();
+        //    using (var isf = IsolatedStorageFile.GetUserStoreForApplication())
+        //    {
+        //        StorageFile file = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName.Remove(0, 1));
+        //        if (isf.FileExists(fileName))
+        //        {
+        //            //using (IsolatedStorageFileStream stream = isf.OpenFile(fileName, FileMode.Open))
+        //            //{
+        //            //    //读取XML文档并返回反序列化的对象
+        //            //    t = (T)new DataContractSerializer(t.GetType()).ReadObject(stream);
+        //            //}
+
+        //            using (TextReader reader = new StreamReader(await file.OpenStreamForReadAsync()))
+        //            {
+        //                t = (T)new JsonSerializer().Deserialize(reader, t.GetType());
+        //            }
+        //        }
+        //    }
+        //    return t;
+        //}
+
+        public bool TryLoadData<T>(out T t) where T : new()
         {
             t = new T();
             using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
@@ -125,7 +156,7 @@ namespace iWeibo.Services
                             t = (T)new JsonSerializer().Deserialize(reader, t.GetType());
                         }
                     }
-                    catch(Exception ex)
+                    catch
                     {
                         return false;
                     }

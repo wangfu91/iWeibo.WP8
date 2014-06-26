@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Shared;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TencentWeiboSDK.Hammock;
@@ -26,6 +27,8 @@ namespace TencentWeiboSDK.Services
         public BaseService(TencentAccessToken accessToken)
         {
             this.accessToken = accessToken;
+            if (OAuthConfigruation.AccessToken == null)
+                OAuthConfigruation.AccessToken = accessToken;
         }
 
         /// <summary>
@@ -167,7 +170,7 @@ namespace TencentWeiboSDK.Services
         
         private void Get(string path, Dictionary<string, object> args, RestCallback handler)
         {
-            TencentAccessToken token = (this.accessToken == null) ? OAuthConfigruation.AccessToken : this.accessToken;
+            TencentAccessToken token = this.accessToken ?? OAuthConfigruation.AccessToken;
 
             if (null == token)
             {
@@ -240,27 +243,34 @@ namespace TencentWeiboSDK.Services
                 Path = path,
                 CopyFieldToParameters = true,
                 Encoding = Encoding.UTF8,
-                Credentials = new OAuthCredentials
-                {
-                    Type = OAuthType.ProtectedResource,
-                    ParameterHandling = OAuthParameterHandling.UrlOrPostParameters,
-                    SignatureMethod = OAuthSignatureMethod.HmacSha1,
-                    SignatureTreatment = OAuthSignatureTreatment.Escaped,
-                    ConsumerKey = OAuthConfigruation.APP_KEY,
-                    ConsumerSecret = OAuthConfigruation.APP_SECRET,
-                    Token = token.AccessToken,
-                    TokenSecret = token.RefreshToken,
-                }
+                //Credentials = new OAuthCredentials
+                //{
+                //    Type = OAuthType.ProtectedResource,
+                //    ParameterHandling = OAuthParameterHandling.UrlOrPostParameters,
+                //    SignatureMethod = OAuthSignatureMethod.HmacSha1,
+                //    SignatureTreatment = OAuthSignatureTreatment.Escaped,
+                //    ConsumerKey = OAuthConfigruation.APP_KEY,
+                //    ConsumerSecret = OAuthConfigruation.APP_SECRET,
+                //    Token = token.AccessToken,
+                //    TokenSecret = token.RefreshToken,
+                //}
             };
 
-            bool needsPost = (args.Values.FirstOrDefault(a => (a is UploadPic)) == null) ? false : true;
+            request.AddParameter("access_token", OAuthConfigruation.AccessToken.AccessToken);
+            request.AddParameter("oauth_consumer_key", OAuthConfigruation.APP_KEY);
+            request.AddParameter("openid", OAuthConfigruation.AccessToken.OpenId);
+            request.AddParameter("oauth_version", "2.a");
+            request.AddParameter("scope", "all");
+
+
+            bool needsPost = (args.Values.FirstOrDefault(a => (a is UploadPictureHelper)) == null) ? false : true;
 
             foreach (var i in args)
             {
-                if (i.Value is UploadPic)
+                if (i.Value is UploadPictureHelper)
                 {
-                    UploadPic pic = i.Value as UploadPic;
-                    request.AddFile(i.Key, pic.FileName, pic.FullPathName, ((pic.Extention == ".jpg") ? "image/jpeg" : "image/png"));
+                    UploadPictureHelper pic = i.Value as UploadPictureHelper;
+                    request.AddFile(i.Key, pic.FileName, pic.FullPathName, ((pic.Extension == ".jpg") ? "image/jpeg" : "image/png"));
                 }
                 else
                 {

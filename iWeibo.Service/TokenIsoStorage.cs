@@ -7,7 +7,7 @@ namespace iWeibo.Services
 {
     public static class TokenIsoStorage
     {
-        private static SafeIsoStorage tencentTokenIsoStorage = new SafeIsoStorage("/Tencent/TencentAccessTokenToken.dat");
+        private static SafeIsoStorage tencentTokenIsoStorage = new SafeIsoStorage("/Tencent/TencentAccessToken.dat");
         private static SafeIsoStorage sinaTokenIsoStorage = new SafeIsoStorage("Sina/SinaAccessToken.dat");
 
         public static SafeIsoStorage SinaTokenStorage

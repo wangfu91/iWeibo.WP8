@@ -1,4 +1,4 @@
-﻿ using System;
+﻿using System;
 using System.Diagnostics;
 using System.Resources;
 using System.Windows;
@@ -7,10 +7,14 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using iWeibo.WP8.Resources;
-using iWeibo.WP8.Models.TencentModels;
-using iWeibo.WP8.Models.SinaModels;
-using System.IO.IsolatedStorage;
 using Windows.Storage;
+using iWeibo.WP8.Models.Tencent;
+using iWeibo.WP8.Models.Sina;
+using Microsoft.Phone.Tasks;
+using System.Windows.Controls;
+using System.Globalization;
+using System.Threading;
+using Microsoft.Phone.Info;
 
 namespace iWeibo.WP8
 {
@@ -22,6 +26,17 @@ namespace iWeibo.WP8
         /// <returns>电话应用程序的根框架。</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
 
+        /// <summary>
+        /// Get or set UICulture/language for the sample app
+        /// </summary>
+        public static CultureInfo UICultureOverride { get; set; }
+
+        /// <summary>
+        /// Get or set regional format for the sample app
+        /// </summary>
+        public static CultureInfo RegionalCultureOverride { get; set; }
+
+        
         /// <summary>
         /// Application 对象的构造函数。
         /// </summary>
@@ -43,7 +58,7 @@ namespace iWeibo.WP8
             if (Debugger.IsAttached)
             {
                 //显示内存使用计数器
-                Utils.MemoryDiagnosticsHelper.Start(new TimeSpan(0, 0, 1), true);
+                //Utils.MemoryDiagnosticsHelper.Start(new TimeSpan(0, 0, 1), true);
 
                 // 显示当前帧速率计数器。
                 Application.Current.Host.Settings.EnableFrameRateCounter = true;
@@ -62,7 +77,6 @@ namespace iWeibo.WP8
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
-
             TencentWeiboSDK.OAuthConfigruation.APP_KEY = TencentConfig.AppKey;
             TencentWeiboSDK.OAuthConfigruation.APP_SECRET = TencentConfig.AppSecret;
             TencentWeiboSDK.OAuthConfigruation.IfSaveAccessToken = false;
@@ -71,8 +85,8 @@ namespace iWeibo.WP8
             WeiboSdk.SdkData.AppSecret = SinaConfig.AppSecret;
             WeiboSdk.SdkData.RedirectUri = SinaConfig.ReDirectUri;
 
-            CreateDirectoriesAsync();
 
+            CreateDirectoriesAsync();
         }
 
         private async void CreateDirectoriesAsync()
@@ -130,11 +144,64 @@ namespace iWeibo.WP8
         // 出现未处理的异常时执行的代码
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            if (Debugger.IsAttached)
-            {
-                // 出现未处理的异常；强行进入调试器
-                Debugger.Break();
+            e.Handled = true;
+            var phone = Ailon.WP.Utils.PhoneNameResolver.Resolve(DeviceStatus.DeviceManufacturer, DeviceStatus.DeviceName);
+            var phoneInfo=phone.CanonicalManufacturer+"\t"+phone.CanonicalModel+"\t"+phone.Comments;
+
+            var osVersion = Environment.OSVersion.Version.ToString() + Environment.NewLine;
+            var exMsg = "";
+            while (null != e.ExceptionObject)
+            {                
+                exMsg += (e.ExceptionObject.Message + Environment.NewLine);
+                exMsg += (e.ExceptionObject.StackTrace + Environment.NewLine);
+                e.ExceptionObject = e.ExceptionObject.InnerException;
             }
+
+            ScrollViewer scrollViewer = new ScrollViewer();
+            scrollViewer.Content = new TextBlock()
+            {
+                Text = exMsg + Environment.NewLine,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            CustomMessageBox messageBox = new CustomMessageBox()
+            {
+                Caption = "糟糕，程序崩溃了...",
+                Message = "是否将此信息发送给开发者，以帮助其改进此应用？",
+                Content = scrollViewer,
+                LeftButtonContent = "发送",
+                RightButtonContent = "取消",
+                IsFullScreen = true
+            };
+
+            messageBox.Dismissed += (s1, e1) =>
+            {
+
+                if (e1.Result == CustomMessageBoxResult.LeftButton)
+                {
+                    // Send Email
+                    EmailComposeTask ect = new EmailComposeTask();
+                    ect.Subject = "[iWeibo.WP8 unhandled exception feedback]";
+                    ect.Body = phoneInfo + Environment.NewLine
+                        + osVersion + Environment.NewLine
+                        + exMsg + Environment.NewLine;
+                    ect.To = "coding4u@outlook.com";
+                    ect.Show();
+                }
+                if (System.Diagnostics.Debugger.IsAttached)
+                {
+                    // 出现未处理的异常；强行进入调试器
+                    System.Diagnostics.Debugger.Break();
+                }
+                else
+                {
+                    //App.Current.Terminate();
+                }
+
+            };
+
+            messageBox.Show();
+
         }
 
         #region 电话应用程序初始化
@@ -152,6 +219,7 @@ namespace iWeibo.WP8
             // 屏幕保持活动状态，直到准备呈现应用程序时。
             //RootFrame = new PhoneApplicationFrame();
             RootFrame = new TransitionFrame();
+
             RootFrame.Navigated += CompleteInitializePhoneApplication;
 
             // 处理导航故障
@@ -231,6 +299,9 @@ namespace iWeibo.WP8
                 // 如果命中编译器错误，则表示以下对象中缺少 ResourceLanguage
                 // 资源文件。
                 RootFrame.Language = XmlLanguage.GetLanguage(AppResources.ResourceLanguage);
+
+                App.UICultureOverride = new CultureInfo(AppResources.ResourceLanguage);
+                App.RegionalCultureOverride = new CultureInfo(AppResources.ResourceLanguage);
 
                 // 根据以下条件设置根框架下的所有元素的 FlowDirection
                 // 每个以下对象的 ResourceFlowDirection 资源字符串上的

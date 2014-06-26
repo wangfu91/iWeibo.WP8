@@ -1,15 +1,20 @@
 ﻿using Microsoft.Phone.Controls;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
 
 namespace iWeibo.Utils
 {
+    /// <summary>
+    /// 优化的Pivot主要使用方法同Pivot，主要作用是提高页面切换速度，谁用谁知道
+    /// </summary>
     public class MTPivot : Pivot
     {
         private PhoneApplicationFrame _currentApplicationFrame;
@@ -28,12 +33,26 @@ namespace iWeibo.Utils
             {
                 InitilizeEvent();
                 _initilized = true;
+                //dataBinding 的pivot存在一个已知的问题 首次进入不会触发itemloaded事件，selectedItem也为空
+                //因此检测到选中为空的情况下，手动给selectedItem赋值
+                if (SelectedItem == null)
+                {
+                    if (Items != null && Items.Count > 0)
+                        SelectedItem = Items[0];
+                }
             }
         }
 
         private void CurrentPageOnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            SetSelectedItemVisible();
+            if (!Execute.InDesignMode)
+            {
+                ThreadPool.QueueUserWorkItem(state =>
+                {
+                    Thread.Sleep(250);
+                    Dispatcher.BeginInvoke(SetSelectedItemVisible);
+                });
+            }
         }
 
         private void FrameOnNavigated(object sender, NavigationEventArgs e)
@@ -86,17 +105,22 @@ namespace iWeibo.Utils
 
         private void SetSelectedItemCollapse()
         {
-            ((UIElement)((PivotItem)SelectedItem).Content).Visibility = Visibility.Collapsed;
-            Debug.WriteLine("MTPivot in {0} is set to [Collplase]", _currentPage);
+            if (SelectedItem != null)
+            {
+                SetPivotItemVisibility(SelectedItem, Visibility.Collapsed);
+            }
         }
 
         private void SetSelectedItemVisible()
         {
-            ((UIElement)((PivotItem)SelectedItem).Content).Visibility = Visibility.Visible;
-            Debug.WriteLine("MTPivot in {0} is set to [Visible]", _currentPage);
+            if (SelectedItem != null)
+            {
+                SetPivotItemVisibility(SelectedItem, Visibility.Visible);
+            }
         }
+
         /// <summary>
-        ///  注册Frame和Page的事件以根据Page事件控制自身显示
+        ///     注册Frame和Page的事件以根据Page事件控制自身显示
         /// </summary>
         private void InitilizeEvent()
         {
@@ -108,20 +132,17 @@ namespace iWeibo.Utils
                 if (_currentPage != null)
                     _currentPage.Loaded += CurrentPageOnLoaded;
             }
-            Debug.WriteLine("MTPivot in {0} is [regiested] frame and page events", _currentPage);
         }
 
         /// <summary>
-        /// 释放掉引用的资源
+        ///     释放掉引用的资源
         /// </summary>
         private void ReleasePageAndFrame()
         {
-            Debug.WriteLine("MTPivot in {0} is [unregiested] frame and page events", _currentPage);
             _currentApplicationFrame.Navigated -= FrameOnNavigated;
             _currentApplicationFrame = null;
             _currentPage.Loaded -= CurrentPageOnLoaded;
             _currentPage = null;
-
         }
 
         /// <summary>
@@ -131,17 +152,79 @@ namespace iWeibo.Utils
         /// <param name="e"></param>
         private void OnLoadedPivotItem(object sender, PivotItemEventArgs e)
         {
-            foreach (object pivotItem in Items)
+            if (!Execute.InDesignMode)
             {
-                if (pivotItem != e.Item)
-                    //非当前Item则隐藏
-                    ((UIElement)((PivotItem)pivotItem).Content).Visibility = Visibility.Collapsed;
+                //非databinding pivot的item.content是pivotItem类型
+                if (e.Item.Content is UIElement)
+                {
+                    foreach (object pivotItem in Items)
+                    {
+                        if (pivotItem != e.Item)
+                            //非当前Item则隐藏
+                            SetPivotItemVisibility(pivotItem, Visibility.Collapsed);
+                        else
+                        {
+                            //Item为当前选中的Item则显示
+                            SetPivotItemVisibility(pivotItem, Visibility.Visible);
+                        }
+                    }
+                }
+                //dataBinding Pivot
                 else
                 {
-                    //Item为当前选中的Item则显示
-                    ((UIElement)((PivotItem)pivotItem).Content).Visibility = Visibility.Visible;
+                    foreach (object item in Items)
+                    {
+                        if (item != e.Item.Content)
+                        {
+                            SetPivotItemVisibility(item, Visibility.Collapsed);
+                        }
+                        else
+                        {
+                            SetPivotItemVisibility(item, Visibility.Visible);
+                        }
+                    }
                 }
             }
         }
+
+        public void SetPivotItemVisibility(object item, Visibility visibility)
+        {
+            if (item == null) return;
+            UIElement content;
+            if (item is PivotItem)
+            {
+                content = ((PivotItem)item).Content as UIElement;
+            }
+            else
+            {
+                content = ItemContainerGenerator.ContainerFromItem(item) as UIElement;
+            }
+            Execute.BeginInvokeWithDelay(100, () =>
+            {
+                if (content != null)
+                {
+                    content.Visibility = visibility;
+                }
+            });
+        }
+    }
+
+    internal class Execute
+    {
+        //延迟ticks毫秒之后在UI线程上执行
+        public static void BeginInvokeWithDelay(int ticks, Action action)
+        {
+            ThreadPool.QueueUserWorkItem(state =>
+            {
+                Thread.Sleep(ticks);
+                Deployment.Current.Dispatcher.BeginInvoke(action);
+            });
+        }
+
+        public static bool InDesignMode
+        {
+            get { return DesignerProperties.IsInDesignTool; }
+        }
+
     }
 }

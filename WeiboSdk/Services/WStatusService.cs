@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -152,7 +153,7 @@ namespace WeiboSdk.Services
        /// <param name="status">要发布的微博文本内容，不超过140个汉字</param>
        /// <param name="pic">包含要上传的图片的封装类，仅支持JPEG、GIF、PNG格式，图片大小小于5M</param>
         /// <param name="action">回调委托</param>
-       public void AddPic(string status, UploadPicture pic, Action<Callback<bool>> action)
+       public void AddPic(string status, UploadPictureHelper pic, Action<Callback<bool>> action)
        {
            SdkCmdBase cmdArg = new CmdUploadMsgWithPic
            {

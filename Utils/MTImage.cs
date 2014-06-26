@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,12 +21,12 @@ namespace iWeibo.Utils
     /// 功能：同系统Image控件一同使用，接管下载图片的工作，提供缓存功能，对于缓存中已存在的图片，将使用缓存图片
     /// 用法：作为附加属性写到Image控件内，其中Source属性为真实的网络图片地址，LoadingSource为加载图片过程中占位在Image内的“加载中”图片
     /// </summary>
-    public class MTImage
+    public class ImageHelper
     {
         #region Source Attach Property
 
         public static readonly DependencyProperty SourceProperty =
-            DependencyProperty.RegisterAttached("Source", typeof(string), typeof(MTImage), new PropertyMetadata(default(string), SourcePropertyChanged));
+            DependencyProperty.RegisterAttached("Source", typeof(string), typeof(ImageHelper), new PropertyMetadata(default(string), SourcePropertyChanged));
 
         public static void SetSource(Image image, string value)
         {
@@ -56,7 +57,7 @@ namespace iWeibo.Utils
         #region LoadingSource Attach Property
 
         public static readonly DependencyProperty LoadingSourceProperty =
-            DependencyProperty.RegisterAttached("LoadingSource", typeof(string), typeof(MTImage), new PropertyMetadata(default(string)));
+            DependencyProperty.RegisterAttached("LoadingSource", typeof(string), typeof(ImageHelper), new PropertyMetadata(default(string)));
 
         public static void SetLoadingSource(UIElement element, string value)
         {
@@ -99,21 +100,28 @@ namespace iWeibo.Utils
 
         private static async void SetRealImageSource(Image image, string imageurl)
         {
-            if (imageurl == null) return;
-            //如果不是网络图片则将图片路径给Image进行展示
-            if (!imageurl.StartsWith("http"))
-                image.Source = new BitmapImage(new Uri(imageurl, UriKind.RelativeOrAbsolute));
-            else
+            try
             {
-                if (CacheImageExists(imageurl))
-                {
-                    image.Source = await GetImageSourceFromCache(imageurl);
-                }
+                if (string.IsNullOrEmpty(imageurl)) return;
+                //如果不是网络图片则将图片路径给Image进行展示
+                if (!imageurl.StartsWith("http"))
+                    image.Source = new BitmapImage(new Uri(imageurl, UriKind.RelativeOrAbsolute));
                 else
                 {
-                    image.Source = await GetImageFromNetWork(imageurl);
+                    if (CacheImageExists(imageurl))
+                    {
+                        image.Source = await GetImageSourceFromCache(imageurl);
+                    }
+                    else
+                    {
+                        image.Source = await GetImageFromNetWork(imageurl);
+                    }
+                    StartStotyboard(image);
                 }
-                StartStotyboard(image);
+            }
+            catch(Exception e)
+            {
+
             }
         }
 
@@ -136,7 +144,7 @@ namespace iWeibo.Utils
         /// </summary>
         /// <param name="imageurl"></param>
         /// <returns></returns>
-        private static async Task<ImageSource> GetImageFromNetWork(string imageurl)
+        public static async Task<ImageSource> GetImageFromNetWork(string imageurl)
         {
             try
             {
@@ -173,6 +181,10 @@ namespace iWeibo.Utils
             {
                 return new BitmapImage();
             }
+            catch(Exception e)
+            {
+                return new BitmapImage();
+            }
         }
 
         /// <summary>
@@ -183,13 +195,14 @@ namespace iWeibo.Utils
         private static async Task<ImageSource> GetImageSourceFromCache(string imageurl)
         {
             string filePath = GetCacheFilePath(imageurl);
+            BitmapImage bitmapImage;
             StorageFile file = await ApplicationData.Current.LocalFolder.GetFileAsync(filePath);
             using (var stream = await file.OpenStreamForReadAsync())
             {
-                var bitmapImage = new BitmapImage();
-                bitmapImage.SetSource(stream);
-                return bitmapImage;
+                bitmapImage = new BitmapImage();
+                bitmapImage.SetSource(stream);                
             }
+            return bitmapImage;
         }
 
         /// <summary>
@@ -221,16 +234,16 @@ namespace iWeibo.Utils
         /// 获取当前图片缓存占用的空间
         /// </summary>
         /// <returns></returns>
-        public static async Task<string> GetImageCacheSizeAsync()
+        public static async Task<long> GetImageCacheSizeAsync(string cachePath=CachePath)
         {
             var total = await Task.Run(() =>
             {
                 long totalsize = 0;
-                if (IsolatedStorage.DirectoryExists(CachePath))
+                if (IsolatedStorage.DirectoryExists(cachePath))
                 {
-                    foreach (var fileName in IsolatedStorage.GetFileNames(CachePath + "/"))
+                    foreach (var fileName in IsolatedStorage.GetFileNames(cachePath + "/"))
                     {
-                        using (var file = IsolatedStorage.OpenFile(CachePath + "/" + fileName, FileMode.Open))
+                        using (var file = IsolatedStorage.OpenFile(cachePath + "/" + fileName, FileMode.Open))
                         {
                             totalsize += file.Length;
                         }
@@ -238,21 +251,21 @@ namespace iWeibo.Utils
                 }
                 return totalsize;
             });
-            return SizeSuffix(total);
+            return total;
         }
 
         /// <summary>
         /// 清理当前的图片缓存
         /// </summary>
-        public static Task ClearImageCacheAsync()
+        public static Task ClearImageCacheAsync(string cachePath=CachePath)
         {
             return Task.Run(() =>
             {
-                if (IsolatedStorage.DirectoryExists(CachePath))
+                if (IsolatedStorage.DirectoryExists(cachePath))
                 {
-                    foreach (var file in IsolatedStorage.GetFileNames(CachePath + "/"))
+                    foreach (var file in IsolatedStorage.GetFileNames(cachePath + "/"))
                     {
-                        IsolatedStorage.DeleteFile(CachePath + "/" + file);
+                        IsolatedStorage.DeleteFile(cachePath + "/" + file);
                     }
                 }
             });
@@ -268,7 +281,7 @@ namespace iWeibo.Utils
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        static string SizeSuffix(long value)
+        public static string SizeSuffix(long value)
         {
             if (value == 0)
                 return "0 bytes";

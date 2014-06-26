@@ -26,7 +26,7 @@ namespace TencentWeiboSDK
         {
             IfSaveAccessToken = true;
             Format = DataFormat.Json;
-            Authority = "http://open.t.qq.com/api/";
+            Authority = "https://open.t.qq.com/api/";
             
             //AccessTokens = null;
         }

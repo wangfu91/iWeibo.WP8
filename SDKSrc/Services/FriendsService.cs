@@ -14,6 +14,7 @@ using TencentWeiboSDK.Services.Util;
 using TencentWeiboSDK.Deserializer;
 using TencentWeiboSDK.Hammock;
 using Newtonsoft.Json.Linq;
+using Shared;
 
 namespace TencentWeiboSDK.Services
 {

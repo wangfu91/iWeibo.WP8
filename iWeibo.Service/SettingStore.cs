@@ -11,6 +11,11 @@ namespace iWeibo.WP8.Services
     {
         private readonly IsolatedStorageSettings settingStore;
 
+        public SettingStore()
+        {
+            settingStore = IsolatedStorageSettings.ApplicationSettings;
+        }
+
         public void AddOrUpdateValue(string key, object value)
         {
             bool valueChanged = false;

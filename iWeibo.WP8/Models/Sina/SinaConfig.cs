@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WeiboSdk.Models;
 
-namespace iWeibo.WP8.Models.SinaModels
+namespace iWeibo.WP8.Models.Sina
 {
     public class SinaConfig
     {

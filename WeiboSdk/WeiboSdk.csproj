@@ -75,7 +75,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\portable-net45+wp80+win8\Newtonsoft.Json.dll</HintPath>
+      <HintPath>c:\users\wangfu\documents\visual studio 2013\Projects\iWeibo\packages\Newtonsoft.Json.6.0.3\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SinaBase">
       <HintPath>dll\SinaBase.dll</HintPath>
@@ -91,12 +91,10 @@
     <Compile Include="ConstDefine.cs" />
     <Compile Include="SendCompletedEventArgs.cs" />
     <Compile Include="Services\BaseService.cs" />
-    <Compile Include="Services\Callback.cs" />
     <Compile Include="Services\ErrCodeToMsg.cs" />
     <Compile Include="Services\WStatusService.cs" />
     <Compile Include="Services\TimelineService.cs" />
     <Compile Include="Services\WUserService.cs" />
-    <Compile Include="UploadPicture.cs" />
     <Compile Include="UserControl\OAuthControl.xaml.cs">
       <DependentUpon>OAuthControl.xaml</DependentUpon>
     </Compile>
@@ -151,6 +149,12 @@
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\WangFu\Documents\Visual Studio 2013\Projects\iWeibo\Shared\Shared.csproj">
+      <Project>{17077a04-e91d-4b8f-a3d2-a4828a5032a4}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

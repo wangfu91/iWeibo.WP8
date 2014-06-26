@@ -42,7 +42,7 @@ namespace TencentWeiboSDK.Model
         {
             get
             {
-                return this[0].TimeStamp;
+                return this.Count > 0 ? this[0].TimeStamp : 0;
             }
         }
     }

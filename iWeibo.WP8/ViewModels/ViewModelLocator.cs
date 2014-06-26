@@ -20,21 +20,21 @@ namespace iWeibo.WP8.ViewModels
             this.containerLocator = new ContainerLocator();
         }
 
-        public MainPageViewModel MainPageViewModel
+        public MainViewModel MainPageViewModel
         {
             get
             {
-                return this.containerLocator.Container.Resolve<MainPageViewModel>();
+                return this.containerLocator.Container.Resolve<MainViewModel>();
             }
         }
 
-        public Sina.LoginViewModel SinaLoginViewModel
-        {
-            get
-            {
-                return this.containerLocator.Container.Resolve<Sina.LoginViewModel>();
-            }
-        }
+        //public Sina.LoginViewModel SinaLoginViewModel
+        //{
+        //    get
+        //    {
+        //        return this.containerLocator.Container.Resolve<Sina.LoginViewModel>();
+        //    }
+        //}
 
         public tencentvm.TimelineViewModel TencentTimelineViewModel
         {
@@ -44,21 +44,21 @@ namespace iWeibo.WP8.ViewModels
             }
         }
 
-        //public TencentStatusDetailViewModel TencentStatusDetailViewModel
-        //{
-        //    get
-        //    {
-        //        return this.containerLocator.Container.Resolve<TencentStatusDetailViewModel>();
-        //    }
-        //}
+        public tencentvm.StatusDetailViewModel TencentStatusDetailViewModel
+        {
+            get
+            {
+                return this.containerLocator.Container.Resolve<tencentvm.StatusDetailViewModel>();
+            }
+        }
 
-        //public TencentRepostPageViewModel TencentRepostPageViewModel
-        //{
-        //    get
-        //    {
-        //        return this.containerLocator.Container.Resolve<TencentRepostPageViewModel>();
-        //    }
-        //}
+        public RepostViewModel RepostViewModel
+        {
+            get
+            {
+                return this.containerLocator.Container.Resolve<RepostViewModel>();
+            }
+        }
 
         public sinavm.TimelineViewModel SinaTimelineViewModel
         {
@@ -68,23 +68,16 @@ namespace iWeibo.WP8.ViewModels
             }
         }
 
-        //public SinaStatusDetailViewModel SinaStatusDetailViewModel
-        //{
-        //    get
-        //    {
-        //        return this.containerLocator.Container.Resolve<SinaStatusDetailViewModel>();
-        //    }
-        //}
+        public sinavm.StatusDetailViewModel SinaStatusDetailViewModel
+        {
+            get
+            {
+                return this.containerLocator.Container.Resolve<sinavm.StatusDetailViewModel>();
+            }
+        }
 
-        //public SinaRepostPageViewModel SinaRepostPageViewModel
-        //{
-        //    get
-        //    {
-        //        return this.containerLocator.Container.Resolve<SinaRepostPageViewModel>();
-        //    }
-        //}
 
-        public CreateNewViewModel PostNewViewModel
+        public CreateNewViewModel CreateNewViewModel
         {
             get
             {
@@ -100,13 +93,13 @@ namespace iWeibo.WP8.ViewModels
         //    }
         //}
 
-        //public SettingsViewModel SettingsViewModel
-        //{
-        //    get
-        //    {
-        //        return this.containerLocator.Container.Resolve<SettingsViewModel>();
-        //    }
-        //}
+        public SettingsViewModel SettingsViewModel
+        {
+            get
+            {
+                return this.containerLocator.Container.Resolve<SettingsViewModel>();
+            }
+        }
 
         public INavigationService NavigationService
         {

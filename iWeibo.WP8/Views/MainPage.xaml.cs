@@ -9,25 +9,31 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Coding4Fun.Toolkit.Controls;
 using iWeibo.WP8.Resources;
+using System.Globalization;
+using System.Threading;
 
 namespace iWeibo.WP8.Views
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        // 构造函数
         public MainPage()
         {
             InitializeComponent();
 
             // 用于本地化 ApplicationBar 的示例代码
             //BuildLocalizedApplicationBar();
+
+            //App.RegionalCultureOverride = Thread.CurrentThread.CurrentCulture = new CultureInfo("zh-CN");
+            //App.UICultureOverride = Thread.CurrentThread.CurrentUICulture = new CultureInfo("zh-CN");
+
         }
 
         private bool isLeaving = false;
-        
+
         private void PhoneApplicationPage_BackKeyPress(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if(!isLeaving)
+
+            if (!isLeaving)
             {
                 e.Cancel = true;
                 isLeaving = true;
@@ -65,6 +71,5 @@ namespace iWeibo.WP8.Views
         //    ApplicationBarMenuItem appBarMenuItem = new ApplicationBarMenuItem(AppResources.AppBarMenuItemText);
         //    ApplicationBar.MenuItems.Add(appBarMenuItem);
         //}
-
     }
 }

@@ -6,106 +6,152 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:utils="clr-namespace:iWeibo.Utils;assembly=iWeibo.Utils"
+    xmlns:common="clr-namespace:iWeibo.WP8.Common"
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:bar="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
-    xmlns:prismInteractivity="clr-namespace:Microsoft.Practices.Prism.Interactivity;assembly=Microsoft.Practices.Prism.Interactivity" 
-    mc:Ignorable="d"
+    xmlns:telerikCore="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Core"
+    xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  Orientation="Portrait"
-    Style="{StaticResource TransitionPageStyle}"
-    toolkit:TiltEffect.IsTiltEnabled="True"
+    Style="{StaticResource TransitionPageStyle}"    
     DataContext="{Binding Source={StaticResource ViewModelLocator},Path=SinaTimelineViewModel}"
     shell:SystemTray.IsVisible="True">
-    
+
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator IsIndeterminate="True" IsVisible="{Binding IsSyncing}" Text="{Binding LocalizedResources.LoadingText,Source={StaticResource LocalizedStrings}}"/>
     </shell:SystemTray.ProgressIndicator>
-    
+
+
     <!--LayoutRoot 是包含所有页面内容的根网格-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid Background="Transparent">
+        <!--<telerikPrimitives:RadBusyIndicator 
+                                            VerticalAlignment="Center"
+                                            Content="{Binding LocalizedResources.LoadingText,Source={StaticResource LocalizedStrings}}"
+                                            IsRunning="{Binding IsSyncing}"
+                                            AnimationStyle="AnimationStyle7"/>-->
+
         <!--枢轴控件-->
-        <utils:MTPivot SelectedIndex="{Binding SelectedPivotIndex,Mode=TwoWay}">
+        <utils:MTPivot HeaderTemplate="{StaticResource PivotHeaderTemplate}"
+            x:Name="SinaTimelinePivot"            
+            SelectedIndex="{Binding SelectedPivotIndex,Mode=TwoWay}">
             <utils:MTPivot.Title>
                 <StackPanel Orientation="Horizontal">
-                    <Image Height="32" Width="32" Stretch="None"
+                    <Image Height="20" Width="20" Stretch="Uniform"
                            Source="/Assets/Logos/sinalogo30.png"/>
-                    <TextBlock Margin="5,0" VerticalAlignment="Center"
+                    <TextBlock Margin="5,0" VerticalAlignment="Center" FontSize="18"
                                Text="{Binding Path=LocalizedResources.SinaTitle,Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </utils:MTPivot.Title>
             <!--枢轴项一-->
             <phone:PivotItem Header="{Binding Path=LocalizedResources.MainPageText,Source={StaticResource LocalizedStrings}}">
-                <Grid>
-                    <utils:MTLongListSelector 
+                <Grid >
+                    <telerikPrimitives:RadDataBoundListBox 
+                        common:RadDataBoundListBoxExtensions.PullToRefreshEnd="{Binding IsRefreshEnd}"
+                        common:RadDataBoundListBoxExtensions.IsEnd="{Binding IsHTLoadingEnd}"
                         ItemsSource="{Binding HomeTimeline}"
                         ItemTemplate="{StaticResource SinaTimelineTemplate}"
-                        SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
-                        IsGroupingEnabled="False">
+                        SelectedItem="{Binding SelectedStatus,Mode=TwoWay}" 
+                        IsPullToRefreshEnabled="True"
+                        CacheMode="BitmapCache"
+                        ItemLoadingTemplate="{StaticResource ItemLoadingTemplate}" 
+                        ShowPullToRefreshWhenNoData="True"
+                        EmptyContentDisplayMode="DataSourceNull" 
+                        AsyncBalanceMode="FillViewportFirst" 
+                        IsAsyncBalanceEnabled="True" 
+                        >                        
+
                         <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="DataRequest">
+                            <i:EventTrigger EventName="DataRequested">
                                 <i:InvokeCommandAction Command="{Binding HomeTimelineCommand}" CommandParameter="Next"/>
                             </i:EventTrigger>
-                        </i:Interaction.Triggers>                        
-                    </utils:MTLongListSelector>                        
+                            <i:EventTrigger EventName="RefreshRequested">
+                                <i:InvokeCommandAction Command="{Binding HomeTimelineCommand}" CommandParameter="New"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>                      
+                        
+                    </telerikPrimitives:RadDataBoundListBox>                    
 
                 </Grid>
             </phone:PivotItem>
 
             <!--枢轴项二-->
             <phone:PivotItem Header="{Binding Path=LocalizedResources.MessageText,Source={StaticResource LocalizedStrings}}">
-                <Grid>
-
-                    <utils:MTLongListSelector 
+                <Grid >
+                    <telerikPrimitives:RadDataBoundListBox 
+                        common:RadDataBoundListBoxExtensions.PullToRefreshEnd="{Binding IsRefreshEnd}"
+                         common:RadDataBoundListBoxExtensions.IsEnd="{Binding IsMTLoadingEnd}"
                         ItemsSource="{Binding MentionsTimeline}"
                         ItemTemplate="{StaticResource SinaTimelineTemplate}"
-                        SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
-                        IsGroupingEnabled="False">
+                        SelectedItem="{Binding SelectedStatus,Mode=TwoWay}" 
+                        IsPullToRefreshEnabled="True"
+                        CacheMode="BitmapCache"
+                        ItemLoadingTemplate="{StaticResource ItemLoadingTemplate}" 
+                        ShowPullToRefreshWhenNoData="True"
+                        EmptyContentDisplayMode="DataSourceNull" 
+                        AsyncBalanceMode="FillViewportFirst" 
+                        IsAsyncBalanceEnabled="True" 
+                        >
+
                         <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="DataRequest">
+                            <i:EventTrigger EventName="DataRequested">
                                 <i:InvokeCommandAction Command="{Binding MentionsTimelineCommand}" CommandParameter="Next"/>
                             </i:EventTrigger>
+                            <i:EventTrigger EventName="RefreshRequested">
+                                <i:InvokeCommandAction Command="{Binding MentionsTimelineCommand}" CommandParameter="New"/>
+                            </i:EventTrigger>
                         </i:Interaction.Triggers>
-                    </utils:MTLongListSelector>
 
+                    </telerikPrimitives:RadDataBoundListBox>
                 </Grid>
             </phone:PivotItem>
 
             <!--枢轴项三-->
             <phone:PivotItem Header="{Binding Path=LocalizedResources.FavoritesText,Source={StaticResource LocalizedStrings}}">
-                <Grid>
-                    <utils:MTLongListSelector 
+                <Grid >
+                    <telerikPrimitives:RadDataBoundListBox 
+                        common:RadDataBoundListBoxExtensions.PullToRefreshEnd="{Binding IsRefreshEnd}"
+                        common:RadDataBoundListBoxExtensions.IsEnd="{Binding IsFTLoadingEnd}"
                         ItemsSource="{Binding FavoritesTimeline}"
                         ItemTemplate="{StaticResource SinaTimelineTemplate}"
-                        SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
-                        IsGroupingEnabled="False">
+                        SelectedItem="{Binding SelectedStatus,Mode=TwoWay}" 
+                        CacheMode="BitmapCache"
+                        ItemLoadingTemplate="{StaticResource ItemLoadingTemplate}"
+                        EmptyContentDisplayMode="DataSourceNull" 
+                        AsyncBalanceMode="FillViewportFirst" 
+                        IsAsyncBalanceEnabled="True" 
+                        >
+
                         <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="DataRequest">
-                                <i:InvokeCommandAction Command="{Binding FavoritesTimelineCommand}" CommandParameter="Next"/>
+                            <i:EventTrigger EventName="DataRequested">
+                                <i:InvokeCommandAction Command="{Binding FavoritesTimelineCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                    </utils:MTLongListSelector>
-
+                        
+                    </telerikPrimitives:RadDataBoundListBox>
                 </Grid>
             </phone:PivotItem>
-
         </utils:MTPivot>
+        
+
     </Grid>
-    
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding PageLoadCommand}"/>
+            <i:InvokeCommandAction Command="{Binding PageLoadedCommand}"/>
         </i:EventTrigger>
         <i:EventTrigger EventName="BackKeyPress">
             <i:InvokeCommandAction Command="{Binding BackKeyPressCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <bar:Bindable.ApplicationBar>
-        <bar:BindableApplicationBar IsMenuEnabled="True" Mode="Default">
+
+    <bar:Bindable.ApplicationBar >
+        <bar:BindableApplicationBar IsMenuEnabled="True" Mode="Minimized">
             <bar:BindableApplicationBarButton
                 Text="{Binding Path=LocalizedResources.RefreshText,Source={StaticResource LocalizedStrings}}"
                 IconUri="/Assets/AppBar/appbar.refresh.png"
@@ -121,5 +167,6 @@
             </bar:BindableApplicationBar.MenuItems>-->
         </bar:BindableApplicationBar>
     </bar:Bindable.ApplicationBar>
+
 
 </phone:PhoneApplicationPage>

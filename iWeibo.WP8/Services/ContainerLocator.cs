@@ -49,45 +49,45 @@ namespace iWeibo.WP8.Services
 
             //View Model
             this.Container.Register(
-                c => new MainPageViewModel(
+                c => new MainViewModel(
                     c.Resolve<INavigationService>(),
                     c.Resolve<IPhoneApplicationServiceFacade>()))
                     .ReusedWithin(ReuseScope.None);
 
-            this.Container.Register(
-                c => new sinavm.LoginViewModel(
-                    c.Resolve<INavigationService>(),
-                    c.Resolve<IPhoneApplicationServiceFacade>(),
-                    c.Resolve<IMessageBox>()))
-                    .ReusedWithin(ReuseScope.None);
+            //this.Container.Register(
+            //    c => new sinavm.LoginViewModel(
+            //        c.Resolve<INavigationService>(),
+            //        c.Resolve<IPhoneApplicationServiceFacade>(),
+            //        c.Resolve<IMessageBox>()))
+            //        .ReusedWithin(ReuseScope.None);
 
             this.Container.Register(
                 c => new tencentvm.TimelineViewModel(
                     c.Resolve<INavigationService>(),
                     c.Resolve<IPhoneApplicationServiceFacade>(),
                     c.Resolve<IMessageBox>()))
-                    .ReusedWithin(ReuseScope.None);
+                    .ReusedWithin(ReuseScope.Container);
 
             this.Container.Register(
                 c => new sinavm.TimelineViewModel(
                     c.Resolve<INavigationService>(),
                     c.Resolve<IPhoneApplicationServiceFacade>(),
                     c.Resolve<IMessageBox>()))
+                    .ReusedWithin(ReuseScope.Container);
+
+            this.Container.Register(
+                c => new sinavm.StatusDetailViewModel(
+                    c.Resolve<INavigationService>(),
+                    c.Resolve<IPhoneApplicationServiceFacade>(),
+                    c.Resolve<IMessageBox>()))
                     .ReusedWithin(ReuseScope.None);
 
-            //this.Container.Register(
-            //    c => new SinaStatusDetailViewModel(
-            //        c.Resolve<INavigationService>(),
-            //        c.Resolve<IPhoneApplicationServiceFacade>(),
-            //        c.Resolve<IMessageBox>()))
-            //        .ReusedWithin(ReuseScope.None);
-
-            //this.Container.Register(
-            //    c => new SinaRepostPageViewModel(
-            //        c.Resolve<INavigationService>(),
-            //        c.Resolve<IPhoneApplicationServiceFacade>(),
-            //        c.Resolve<IMessageBox>()))
-            //        .ReusedWithin(ReuseScope.None);
+            this.Container.Register(
+                c => new RepostViewModel(
+                    c.Resolve<INavigationService>(),
+                    c.Resolve<IPhoneApplicationServiceFacade>(),
+                    c.Resolve<IMessageBox>()))
+                    .ReusedWithin(ReuseScope.None);
 
             this.Container.Register(
                 c => new CreateNewViewModel(
@@ -95,21 +95,14 @@ namespace iWeibo.WP8.Services
                     c.Resolve<IPhoneApplicationServiceFacade>(),
                     c.Resolve<IMessageBox>(),
                     c.Resolve<IPhotoChooserTask>()))
+                    .ReusedWithin(ReuseScope.Container);
+
+            this.Container.Register(
+                c => new tencentvm.StatusDetailViewModel(
+                    c.Resolve<INavigationService>(),
+                    c.Resolve<IPhoneApplicationServiceFacade>(),
+                    c.Resolve<IMessageBox>()))
                     .ReusedWithin(ReuseScope.None);
-
-            //this.Container.Register(
-            //    c => new TencentStatusDetailViewModel(
-            //        c.Resolve<INavigationService>(),
-            //        c.Resolve<IPhoneApplicationServiceFacade>(),
-            //        c.Resolve<IMessageBox>()))
-            //        .ReusedWithin(ReuseScope.None);
-
-            //this.Container.Register(
-            //    c => new TencentRepostPageViewModel(
-            //        c.Resolve<INavigationService>(),
-            //        c.Resolve<IPhoneApplicationServiceFacade>(),
-            //        c.Resolve<IMessageBox>()))
-            //        .ReusedWithin(ReuseScope.None);
 
             //this.Container.Register(
             //    c => new PictureViewViewModel(
@@ -117,12 +110,12 @@ namespace iWeibo.WP8.Services
             //        c.Resolve<IPhoneApplicationServiceFacade>()))
             //        .ReusedWithin(ReuseScope.None);
 
-            //this.Container.Register(
-            //    c => new SettingsViewModel(
-            //        c.Resolve<INavigationService>(),
-            //        c.Resolve<IPhoneApplicationServiceFacade>(),
-            //        c.Resolve<IMessageBox>()))
-            //        .ReusedWithin(ReuseScope.None);
+            this.Container.Register(
+                c => new SettingsViewModel(
+                    c.Resolve<INavigationService>(),
+                    c.Resolve<IPhoneApplicationServiceFacade>(),
+                    c.Resolve<IMessageBox>()))
+                    .ReusedWithin(ReuseScope.None);
 
         }
 

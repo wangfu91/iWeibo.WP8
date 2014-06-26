@@ -16,6 +16,5 @@ namespace iWeibo.WP8.Views.Tencent
         {
             InitializeComponent();
         }
-
     }
 }

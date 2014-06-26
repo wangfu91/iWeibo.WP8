@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared;
+using System;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
@@ -125,7 +126,7 @@ namespace TencentWeiboSDK.Services.Util
         /// <summary>
         /// 获取或设置需要上传的 Pic.
         /// </summary>
-        public UploadPic Pic { get; set; }
+        public UploadPictureHelper Pic { get; set; }
 
         /// <summary>
         /// 获取或设置返回数据的格式.

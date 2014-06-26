@@ -10,9 +10,9 @@ using Microsoft.Phone.Shell;
 
 namespace iWeibo.WP8.Views
 {
-    public partial class Settings : PhoneApplicationPage
+    public partial class SettingsView : PhoneApplicationPage
     {
-        public Settings()
+        public SettingsView()
         {
             InitializeComponent();
         }

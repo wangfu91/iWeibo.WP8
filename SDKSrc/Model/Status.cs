@@ -221,7 +221,7 @@ namespace TencentWeiboSDK.Model
         /// 图片信息列表
         /// </summary>
         [DataMember(Name = "pic")]
-        public Pictures Pic { get; set; }
+        public Pictures Pics { get; set; }
 
 
         /// <summary>

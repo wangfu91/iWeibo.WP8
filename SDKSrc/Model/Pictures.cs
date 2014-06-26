@@ -1,6 +1,8 @@
 ﻿
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Linq;
+
 namespace TencentWeiboSDK.Model
 {
     [DataContract]
@@ -32,7 +34,23 @@ namespace TencentWeiboSDK.Model
         public List<int> Pic_width { get; set; }
 
         [DataMember(Name="url")]
-        public List<string> Url{ get; set; }
+        public List<string> Urls{ get; set; }
+
+        public string PicUrl
+        {
+            get
+            {
+                return this.Urls.FirstOrDefault();
+            }
+        }
+
+        public bool IsGif
+        {
+            get
+            {
+                return this.Pic_type.First() == 3 ? true : false;
+            }
+        }
 
     }
 }

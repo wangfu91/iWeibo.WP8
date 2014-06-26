@@ -14,6 +14,7 @@ using TencentWeiboSDK.Model;
 using TencentWeiboSDK.Deserializer;
 using System.Collections;
 using TencentWeiboSDK.Hammock;
+using Shared;
 
 namespace TencentWeiboSDK.Services
 {

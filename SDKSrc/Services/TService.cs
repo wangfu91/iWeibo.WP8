@@ -13,6 +13,7 @@ using TencentWeiboSDK.Model;
 using TencentWeiboSDK.Hammock;
 using TencentWeiboSDK.Deserializer;
 using Newtonsoft.Json.Linq;
+using Shared;
 
 namespace TencentWeiboSDK.Services
 {
@@ -173,6 +174,18 @@ namespace TencentWeiboSDK.Services
                 }
             });
         }
+
+
+        //public void Like(ServiceArgument argment, Action<Callback<bool>> callback)
+        //{
+        //    this.Get("t/has_like", argment, (request, response, userState) =>
+        //    {
+        //        if (null != callback)
+        //        {
+        //            InternalCallback(response, callback);
+        //        }
+        //    });
+        //}
 
         //private void InternalCallback(RestResponse response, Action<Callback<Result>> callback)
         //{

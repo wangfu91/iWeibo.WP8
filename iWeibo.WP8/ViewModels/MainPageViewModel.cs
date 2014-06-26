@@ -1,7 +1,7 @@
 ﻿using iWeibo.Adapters;
 using iWeibo.Services;
-using iWeibo.WP8.Models.SinaModels;
-using iWeibo.WP8.Models.TencentModels;
+using iWeibo.WP8.Models.Sina;
+using iWeibo.WP8.Models.Tencent;
 using Microsoft.Practices.Prism.Commands;
 using System;
 using System.Collections.Generic;

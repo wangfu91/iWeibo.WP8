@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    xmlns:prismInteractivity="clr-namespace:Microsoft.Practices.Prism.Interactivity;assembly=Microsoft.Practices.Prism.Interactivity.Phone"
+    xmlns:prismInteractivity="clr-namespace:Microsoft.Practices.Prism.Interactivity;assembly=Microsoft.Practices.Prism.Interactivity.Phone" 
     xmlns:utils="clr-namespace:iWeibo.Utils;assembly=iWeibo.Utils"
     xmlns:bar="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -34,7 +34,7 @@
 
         <!--TitlePanel 包含应用程序的名称和页标题-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28" Orientation="Horizontal">
-            <Image Height="48" Width="48" Source="/Resources/Images/Icons/Message-Edit.png" Stretch="UniformToFill" />
+            <Image Height="48" Width="48" Source="/Assets/Icons/Message-Edit.png" Stretch="UniformToFill" />
             <TextBlock Text="{Binding Path=LocalizedResources.CreateNewText,Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}" Margin="5,0,0,0" VerticalAlignment="Center"/>
         </StackPanel>
 
@@ -48,7 +48,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0">
-                        <TextBox Height="220" 
+                        <TextBox Height="225" 
                                  Text="{Binding StatusText, Mode=TwoWay}" TextWrapping="Wrap"
                                  utils:TextBoxAttach.TextBoxController="{Binding}">
                             <i:Interaction.Behaviors>
@@ -57,9 +57,10 @@
                         </TextBox>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <TextBlock Height="30" TextAlignment="Right" Margin="30,0,0,0"
-                                       Text="{Binding WordsCount}"
-                                       Foreground="{Binding WordsCountColor}"/>
-                            <Image Source="/Resources/Images/Icons/Cancel.png" Stretch="Uniform"
+                                       Text="{Binding WordsCounter}"
+                                       Foreground="{Binding WordsCounterColor}"
+                                       Visibility="{Binding HasText,Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <Image Source="/Assets/Icons/Cancel.png" Stretch="Uniform"
                                    Visibility="{Binding HasText,Converter={StaticResource BoolToVisibilityConverter}}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Tap">
@@ -73,14 +74,14 @@
                         <toolkit:ToggleSwitch  Header="{Binding Path=LocalizedResources.AlsoSendSinaText,Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Height="112"  VerticalAlignment="Top" Width="456" 
                                                IsChecked="{Binding IsSendSina,Mode=TwoWay}"
                                                IsEnabled="{Binding IsSinaAuthorized}"/>
-                        <toolkit:ToggleSwitch  Header="{Binding Path=LocalizedResources.AlsoSnedTencentText,Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Height="112"  VerticalAlignment="Top" Width="456" 
+                        <toolkit:ToggleSwitch  Header="{Binding Path=LocalizedResources.AlsoSendTencentText,Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Height="112"  VerticalAlignment="Top" Width="456" 
                                                IsChecked="{Binding IsSendTencent, Mode=TwoWay}"
                                                IsEnabled="{Binding IsTencentAuthorized}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="2">
-                        <Grid Width="100" HorizontalAlignment="Left" Height="150">
-                            <Image Source="{Binding Picture}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="150" Width="100" Margin="5,5"/>
-                            <Image Source="/Resources/Images/Icons/Cancel.png" Stretch="None" Height="48" Width="48" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-20,-25,0"
+                        <Grid HorizontalAlignment="Left" MaxHeight="200" MaxWidth="300">
+                            <Image Source="{Binding Picture}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,5"/>
+                            <Image Source="/Assets/Icons/Cancel.png" Stretch="None" Height="48" Width="48" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-20,-25,0"
                                 Visibility="{Binding HasPic, Converter={StaticResource BoolToVisibilityConverter}}" >
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Tap">
@@ -106,24 +107,35 @@
                 Text="{Binding Path=LocalizedResources.AddPhotoText,Source={StaticResource LocalizedStrings}}"
                 IconUri="/Assets/AppBar/appbar.camera.png"
                 Command="{Binding ChoosePhotoCommand}"/>
-            <bar:BindableApplicationBarButton 
+            
+            <!--<bar:BindableApplicationBarButton 
                 Text="{Binding Path=LocalizedResources.AtText,Source={StaticResource LocalizedStrings}}"
                 IconUri="/Assets/AppBar/appbar.at.png"
-                Command="{Binding AtCommand}"/>
+                Command="{Binding AtCommand}"/>-->
+            
             <bar:BindableApplicationBarButton 
                 Text="{Binding Path=LocalizedResources.TopicText,Source={StaticResource LocalizedStrings}}"
                 IconUri="/Assets/AppBar/appbar.topic.png"
-                Command="{Binding TopicCommand}"/>
-            <bar:BindableApplicationBar.MenuItems>
+                Command="{Binding AddTopicCommand}"/>
+            <!--<bar:BindableApplicationBar.MenuItems>
                 <bar:BindableApplicationBarMenuItem
                     Text="{Binding Path=LocalizedResources.AddLocationText,Source={StaticResource LocalizedStrings}}"
                     Command="{Binding LocationCommand}"/>
-                <!--<bar:BindableApplicationBarMenuItem
+                --><!--<bar:BindableApplicationBarMenuItem
                     Text="删除"
-                    Command="{Binding DeleteCommand}"/>-->
-            </bar:BindableApplicationBar.MenuItems>
+                    Command="{Binding DeleteCommand}"/>--><!--
+            </bar:BindableApplicationBar.MenuItems>-->
 
         </bar:BindableApplicationBar>
     </bar:Bindable.ApplicationBar>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding PageLoadedCommand}"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="BackKeyPress">
+            <i:InvokeCommandAction Command="{Binding BackKeyPressCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
 </phone:PhoneApplicationPage>

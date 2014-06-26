@@ -41,6 +41,7 @@ namespace iWeibo.Utils
             var newController = e.NewValue as ITextBoxController;
             if (newController != null)
             {
+                elements.Clear();
                 elements.Add(newController, element);
                 newController.Focus += Focus;
                 newController.Select += Select;

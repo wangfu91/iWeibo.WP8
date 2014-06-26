@@ -117,64 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ResourceFlowDirection" xml:space="preserve">
-    <value>LeftToRight</value>
-    <comment>Controls the FlowDirection for all elements in the RootFrame. Set to the traditional direction of this resource file's language</comment>
-  </data>
-  <data name="ResourceLanguage" xml:space="preserve">
-    <value>zh-CN</value>
-    <comment>Controls the Language and ensures that the font for all elements in the RootFrame aligns with the app's language. Set to the language code of this resource file's language.</comment>
-  </data>
-  <data name="ApplicationTitle" xml:space="preserve">
-    <value>爱微博</value>
-  </data>
-  <data name="AppBarButtonText" xml:space="preserve">
-    <value>添加</value>
-  </data>
-  <data name="AppBarMenuItemText" xml:space="preserve">
-    <value>菜单项</value>
-  </data>
-  <data name="CreateNewText" xml:space="preserve">
-    <value>写微博</value>
-  </data>
-  <data name="SettingsText" xml:space="preserve">
-    <value>设置</value>
-  </data>
-  <data name="SinaTitle" xml:space="preserve">
-    <value>新浪微博</value>
-  </data>
-  <data name="TencentTitle" xml:space="preserve">
-    <value>腾讯微博</value>
-  </data>
   <data name="AboutText" xml:space="preserve">
     <value>关于</value>
   </data>
   <data name="AccountText" xml:space="preserve">
     <value>帐号</value>
-  </data>
-  <data name="ExitText" xml:space="preserve">
-    <value>再按一次后退键退出</value>
-  </data>
-  <data name="FavoritesText" xml:space="preserve">
-    <value>收藏</value>
-  </data>
-  <data name="HomePageText" xml:space="preserve">
-    <value>首页</value>
-  </data>
-  <data name="MainPageText" xml:space="preserve">
-    <value>主页</value>
-  </data>
-  <data name="MessageText" xml:space="preserve">
-    <value>消息</value>
-  </data>
-  <data name="SinaBindingText" xml:space="preserve">
-    <value>绑定新浪微博</value>
-  </data>
-  <data name="LoadingText" xml:space="preserve">
-    <value>数据请求中...</value>
-  </data>
-  <data name="RefreshText" xml:space="preserve">
-    <value>刷新</value>
   </data>
   <data name="AddLocationText" xml:space="preserve">
     <value>添加位置</value>
@@ -182,11 +129,17 @@
   <data name="AddPhotoText" xml:space="preserve">
     <value>添加图片</value>
   </data>
+  <data name="AddText" xml:space="preserve">
+    <value>添加</value>
+  </data>
   <data name="AlsoSendSinaText" xml:space="preserve">
     <value>同时发送到新浪微博</value>
   </data>
   <data name="AlsoSendTencentText" xml:space="preserve">
     <value>同时发送到腾讯微博</value>
+  </data>
+  <data name="ApplicationTitle" xml:space="preserve">
+    <value>爱微博</value>
   </data>
   <data name="AtText" xml:space="preserve">
     <value>提及</value>
@@ -197,8 +150,40 @@
   <data name="CopyText" xml:space="preserve">
     <value>复制</value>
   </data>
+  <data name="CreateNewText" xml:space="preserve">
+    <value>写微博</value>
+  </data>
+  <data name="ExitText" xml:space="preserve">
+    <value>再按一次后退键退出</value>
+  </data>
+  <data name="FavoritesText" xml:space="preserve">
+    <value>收藏</value>
+  </data>
   <data name="ForwardText" xml:space="preserve">
     <value>转发</value>
+  </data>
+  <data name="HomePageText" xml:space="preserve">
+    <value>首页</value>
+  </data>
+  <data name="LoadingText" xml:space="preserve">
+    <value>加载中...</value>
+  </data>
+  <data name="MainPageText" xml:space="preserve">
+    <value>主页</value>
+  </data>
+  <data name="MessageText" xml:space="preserve">
+    <value>消息</value>
+  </data>
+  <data name="RefreshText" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="ResourceFlowDirection" xml:space="preserve">
+    <value>LeftToRight</value>
+    <comment>Controls the FlowDirection for all elements in the RootFrame. Set to the traditional direction of this resource file's language</comment>
+  </data>
+  <data name="ResourceLanguage" xml:space="preserve">
+    <value>zh-CN</value>
+    <comment>Controls the Language and ensures that the font for all elements in the RootFrame aligns with the app's language. Set to the language code of this resource file's language.</comment>
   </data>
   <data name="SendingText" xml:space="preserve">
     <value>正在发送...</value>
@@ -206,10 +191,70 @@
   <data name="SendText" xml:space="preserve">
     <value>发送</value>
   </data>
-  <data name="TopicText" xml:space="preserve">
-    <value>话题</value>
+  <data name="SettingsText" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="SinaBindingText" xml:space="preserve">
+    <value>绑定新浪微博</value>
+  </data>
+  <data name="SinaTitle" xml:space="preserve">
+    <value>新浪微博</value>
   </data>
   <data name="TencentBindingText" xml:space="preserve">
     <value>绑定腾讯微博</value>
+  </data>
+  <data name="TencentTitle" xml:space="preserve">
+    <value>腾讯微博</value>
+  </data>
+  <data name="TopicText" xml:space="preserve">
+    <value>话题</value>
+  </data>
+  <data name="AddToFavoriteText" xml:space="preserve">
+    <value>添加收藏</value>
+  </data>
+  <data name="RemoveFromFavoriteText" xml:space="preserve">
+    <value>取消收藏</value>
+  </data>
+  <data name="FavoritedText" xml:space="preserve">
+    <value>收藏成功</value>
+  </data>
+  <data name="UnFavoritedText" xml:space="preserve">
+    <value>取消收藏成功</value>
+  </data>
+  <data name="BodyText" xml:space="preserve">
+    <value>正文</value>
+  </data>
+  <data name="CopiedText" xml:space="preserve">
+    <value>复制成功</value>
+  </data>
+  <data name="SaveText" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="DeleteText" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="CacheSizeText" xml:space="preserve">
+    <value>缓存大小</value>
+  </data>
+  <data name="GeneralText" xml:space="preserve">
+    <value>常规</value>
+  </data>
+  <data name="SearchText" xml:space="preserve">
+    <value>搜索</value>
+  </data>
+  <data name="NoNetworkText" xml:space="preserve">
+    <value>无法连接网络</value>
+  </data>
+  <data name="NoNewText" xml:space="preserve">
+    <value>没有新微博...</value>
+  </data>
+  <data name="ReceivedWeiboText" xml:space="preserve">
+    <value>收到{0}条新微博...</value>
+  </data>
+  <data name="FromText" xml:space="preserve">
+    <value>来自：</value>
+  </data>
+  <data name="DeletedText" xml:space="preserve">
+    <value>已删除</value>
   </data>
 </root>

@@ -6,12 +6,13 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:oauthcontrol="clr-namespace:TencentWeiboSDK.Controls;assembly=TencentWeiboSDK"
+    xmlns:tencentSDK="clr-namespace:TencentWeiboSDK.Controls;assembly=TencentWeiboSDK"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
+    Style="{StaticResource TransitionPageStyle}"
     shell:SystemTray.IsVisible="True"
     Loaded="PhoneApplicationPage_Loaded">
     
@@ -21,21 +22,7 @@
     
     <!--LayoutRoot 是包含所有页面内容的根网格-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <!--TitlePanel 包含应用程序的名称和页标题-->
-        <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="{Binding Path=LocalizedResources.TencentBindingText,Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
-        </StackPanel>
-
-        <!--ContentPanel - 在此处放置其他内容-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <oauthcontrol:OAuthLoginBrowser x:Name="TencentOauthControl" Margin="10" Width="436" Height="676"/>
-
-        </Grid>
+        <tencentSDK:OAuthLoginBrowser x:Name="TencentOauthControl"/>
     </Grid>
 
 </phone:PhoneApplicationPage>

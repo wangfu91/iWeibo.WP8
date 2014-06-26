@@ -11,6 +11,7 @@ using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using System.Reflection;
+using Shared;
 
 namespace WeiboSdk
 {
@@ -203,14 +204,14 @@ namespace WeiboSdk
                         if (message.@long.Length > 0)
                             request.AddField("long", message.@long);
 
-                        UploadPicture pic = message.pic;
+                        UploadPictureHelper pic = message.pic;
                         if (string.IsNullOrWhiteSpace(pic.FullPathName))
                         {
                             errAction("picPath is null.");
                             return false;
                         }
 
-                        if (".png" == pic.Extention)
+                        if (".png" == pic.Extension)
                         {
                             request.AddFile("pic", pic.FileName, pic.FullPathName, "image/png");
                         }
@@ -232,7 +233,7 @@ namespace WeiboSdk
                     break;
                 #endregion
 
-                #region STATUSES_SHOW
+                #region STATUS_SHOW
                 case SdkRequestType.STATUSES_SHOW:
                     {
                         request.Path = "/statuses/show.json";
@@ -241,10 +242,19 @@ namespace WeiboSdk
                     break;
                 #endregion
 
-                #region STATUS_DESTROY
+                #region STATUSES_DESTROY
                 case SdkRequestType.STATUSES_DESTROY:
                     {
                         request.Path = "statuses/destroy.json";
+                        request.Method = WebMethod.Post;
+                    }
+                    break;
+                #endregion
+
+                #region STATUSES_REPOST
+                case SdkRequestType.STATUSES_REPOST:
+                    {
+                        request.Path = "statuses/repost.json";
                         request.Method = WebMethod.Post;
                     }
                     break;
@@ -255,11 +265,29 @@ namespace WeiboSdk
                     {
                         request.Path = "/comments/show.json";
                         request.Method = WebMethod.Get;
-
-
                     }
                     break;
                 #endregion
+
+                #region COMMENTS_CREATE
+                case SdkRequestType.COMMENTS_CREAT:
+                    {
+                        request.Path = "/comments/create.json";
+                        request.Method = WebMethod.Post;
+                    }
+                    break;
+                #endregion
+
+                #region COMMENTS_REPLY
+                case SdkRequestType.COMMENTS_REPLY:
+                    {
+                        request.Path = "/comments/reply.json";
+                        request.Method = WebMethod.Post;
+                    }
+                    break;
+                #endregion
+
+
 
                 #region MENTIONS_TIMELINE
                 case SdkRequestType.MENTIONS_TIMELINE:
@@ -279,7 +307,7 @@ namespace WeiboSdk
                     break;
                     #endregion
 
-                #region FAVORITES_TIMELINE
+                #region FAVORITE_TIMELINE
                 case SdkRequestType.FAVORITE_TIMLINE:
                     {
                         request.Path = "/favorites.json";

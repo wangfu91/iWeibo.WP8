@@ -2,11 +2,14 @@
     x:Class="iWeibo.WP8.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:util="clr-namespace:iWeibo.Utils;assembly=iWeibo.Utils"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:viewmodels="clr-namespace:iWeibo.WP8.ViewModels"
-    >
+    xmlns:telerikCore="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Core"
+    xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives">
 
     <!--应用程序资源-->
     <Application.Resources>
@@ -17,34 +20,9 @@
 
             <local:LocalizedStrings xmlns:local="clr-namespace:iWeibo.WP8" x:Key="LocalizedStrings"/>
 
-        <viewmodels:ViewModelLocator x:Key="ViewModelLocator"/>
-        
-        <Style x:Key="TransitionPageStyle" TargetType="phone:PhoneApplicationPage">
-            <Setter Property="toolkit:TransitionService.NavigationInTransition">
-                <Setter.Value>
-                    <toolkit:NavigationInTransition>
-                        <toolkit:NavigationInTransition.Backward>
-                            <toolkit:TurnstileTransition Mode="BackwardIn"/>
-                        </toolkit:NavigationInTransition.Backward>
-                        <toolkit:NavigationInTransition.Forward>
-                            <toolkit:TurnstileTransition Mode="ForwardIn"/>
-                        </toolkit:NavigationInTransition.Forward>
-                    </toolkit:NavigationInTransition>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="toolkit:TransitionService.NavigationOutTransition">
-                <Setter.Value>
-                    <toolkit:NavigationOutTransition>
-                        <toolkit:NavigationOutTransition.Backward>
-                            <toolkit:TurnstileTransition Mode="BackwardOut"/>
-                        </toolkit:NavigationOutTransition.Backward>
-                        <toolkit:NavigationOutTransition.Forward>
-                            <toolkit:TurnstileTransition Mode="ForwardOut"/>
-                        </toolkit:NavigationOutTransition.Forward>
-                    </toolkit:NavigationOutTransition>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <viewmodels:ViewModelLocator x:Key="ViewModelLocator"/>
+
+
         </ResourceDictionary>
     </Application.Resources>
 

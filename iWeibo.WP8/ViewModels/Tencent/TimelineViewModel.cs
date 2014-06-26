@@ -1,15 +1,21 @@
 ﻿using iWeibo.Adapters;
 using iWeibo.Services;
+using iWeibo.WP8.Common;
 using iWeibo.WP8.Models;
+using iWeibo.WP8.Resources;
 using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using TencentWeiboSDK.Model;
 using TencentWeiboSDK.Services;
 using TencentWeiboSDK.Services.Util;
@@ -19,7 +25,6 @@ namespace iWeibo.WP8.ViewModels.Tencent
     public class TimelineViewModel : ViewModel
     {
         #region Fields
-
         private IMessageBox messageBox;
 
         private StatusesService statusesService;
@@ -30,10 +35,12 @@ namespace iWeibo.WP8.ViewModels.Tencent
         private IsoStorage mtStorage = new IsoStorage(Constants.TencentMentionsTimeline);
         private IsoStorage ftStorage = new IsoStorage(Constants.TencentFavoritesTimeline);
 
-
-        private long ht_lastTimeStamp = 0;
-        private long mt_lastTimeStamp = 0;
-        private long ft_lastTimeStamp = 0;
+        //private long ht_firstTimeStamp = 0;
+        //private long ht_lastTimeStamp = 0;
+        //private long mt_firstTimeStamp = 0;
+        //private long mt_lastTimeStamp = 0;
+        //private long ft_firstTimeStamp = 0;
+        //private long ft_lastTimeStamp = 0;
 
 
         #endregion
@@ -54,9 +61,83 @@ namespace iWeibo.WP8.ViewModels.Tencent
                 {
                     isSyncing = value;
                     RaisePropertyChanged(() => this.IsSyncing);
+                    //HandleCommandCanExecuteChange();
                 }
             }
         }
+
+        private bool isRefreshEnd;
+
+        public bool IsRefreshEnd
+        {
+            get
+            {
+                return isRefreshEnd;
+            }
+            set
+            {
+                if (value != isRefreshEnd)
+                {
+                    isRefreshEnd = value;
+                    RaisePropertyChanged(() => this.IsRefreshEnd);
+                }
+            }
+        }
+
+        private bool isHTLoadingEnd;
+
+        public bool IsHTLoadingEnd
+        {
+            get
+            {
+                return isHTLoadingEnd;
+            }
+            set
+            {
+                if (value != isHTLoadingEnd)
+                {
+                    isHTLoadingEnd = value;
+                    RaisePropertyChanged(() => this.IsHTLoadingEnd);
+                }
+            }
+        }
+
+        private bool isMTLoadingEnd;
+
+        public bool IsMTLoadingEnd
+        {
+            get
+            {
+                return isMTLoadingEnd;
+            }
+            set
+            {
+                if (value != isMTLoadingEnd)
+                {
+                    isMTLoadingEnd = value;
+                    RaisePropertyChanged(() => this.IsMTLoadingEnd);
+                }
+            }
+        }
+
+        private bool isFTLoadingEnd;
+
+        public bool IsFTLoadingEnd
+        {
+            get
+            {
+                return isFTLoadingEnd;
+            }
+            set
+            {
+                if (value != isFTLoadingEnd)
+                {
+                    isFTLoadingEnd = value;
+                    RaisePropertyChanged(() => this.IsFTLoadingEnd);
+                }
+            }
+        }
+
 
         private int selectedPivotIndex;
 
@@ -72,6 +153,7 @@ namespace iWeibo.WP8.ViewModels.Tencent
                 {
                     selectedPivotIndex = value;
                     RaisePropertyChanged(() => this.SelectedPivotIndex);
+                    HandlePivotSelectedIndexChange();
                 }
             }
         }
@@ -90,6 +172,7 @@ namespace iWeibo.WP8.ViewModels.Tencent
                 {
                     selectedStatus = value;
                     RaisePropertyChanged(() => this.SelectedStatus);
+                    HandleSelectedStatusChange();
                 }
             }
         }
@@ -98,17 +181,16 @@ namespace iWeibo.WP8.ViewModels.Tencent
         public ObservableCollection<Status> MentionsTimeline { get; set; }
         public ObservableCollection<Status> FavoritesTimeline { get; set; }
 
-        public DelegateCommand PageLoadCommand { get; set; }
+        public DelegateCommand PageLoadedCommand { get; set; }
         public DelegateCommand RefreshCommand { get; set; }
         public DelegateCommand<string> HomeTimelineCommand { get; set; }
         public DelegateCommand<string> MentionsTimelineCommand { get; set; }
         public DelegateCommand<string> FavoritesTimelineCommand { get; set; }
         public DelegateCommand BackKeyPressCommand { get; set; }
-        public DelegateCommand<string> ViewPictureCommand { get; set; }
+        public DelegateCommand<ListBox> ViewImageCommand { get; set; }
 
         public DelegateCommand CreateNewCommand { get; set; }
 
-        
 
         #endregion
 
@@ -116,8 +198,9 @@ namespace iWeibo.WP8.ViewModels.Tencent
             INavigationService navigationService,
             IPhoneApplicationServiceFacade phoneApplicationServiceFacade,
             IMessageBox messageBox)
-            :base(navigationService,phoneApplicationServiceFacade,new Uri(Constants.TencentTimelineView,UriKind.Relative))
+            : base(navigationService, phoneApplicationServiceFacade, new Uri(Constants.TencentTimelineView, UriKind.Relative))
         {
+
             this.messageBox = messageBox;
             this.statusesService = new StatusesService(TokenIsoStorage.TencentTokenStorage.LoadData<TencentAccessToken>());
             this.requestNumber = 20;
@@ -126,60 +209,140 @@ namespace iWeibo.WP8.ViewModels.Tencent
             this.MentionsTimeline = new ObservableCollection<Status>();
             this.FavoritesTimeline = new ObservableCollection<Status>();
 
-            this.PageLoadCommand = new DelegateCommand(LoadDataFromCache, () => !this.IsSyncing);
-            this.RefreshCommand = new DelegateCommand(Refresh,()=>!this.IsSyncing);
+            this.PageLoadedCommand = new DelegateCommand(Loaded, () => !this.IsSyncing);
+            this.RefreshCommand = new DelegateCommand(Refresh, () => !this.IsSyncing);
 
             this.HomeTimelineCommand = new DelegateCommand<string>(p =>
             {
                 if (p == "Next")
-                    GetHomeTimelineAsync(1, ht_lastTimeStamp);
+                {
+                    var lastTimeStamp = HomeTimeline.Count > 0 ? HomeTimeline.Last().TimeStamp : 0;
+                    GetHomeTimelineAsync(1, lastTimeStamp);
+                }
                 else
-                    GetHomeTimelineAsync();
+                {
+                    Refresh();
+                }
             }, p => !this.IsSyncing);
 
             this.MentionsTimelineCommand = new DelegateCommand<string>(p =>
             {
                 if (p == "Next")
-                    GetMentionsTimelineAsync(1, mt_lastTimeStamp);
+                {
+                    var lastTimeStamp = MentionsTimeline.Count > 0 ? MentionsTimeline.Last().TimeStamp : 0;
+                    GetMentionsTimelineAsync(1, lastTimeStamp);
+                }
                 else
-                    GetMentionsTimelineAsync();
+                {
+                    Refresh();
+                }
             }, p => !this.IsSyncing);
 
             this.FavoritesTimelineCommand = new DelegateCommand<string>(p =>
             {
                 if (p == "Next")
-                    GetFavoritesTimelineAsync(1, ft_lastTimeStamp);
+                {
+                    var lastTimeStamp = FavoritesTimeline.Count > 0 ? FavoritesTimeline.Last().TimeStamp : 0;
+                    GetFavoritesTimelineAsync(1, lastTimeStamp);
+                }
                 else
-                    GetFavoritesTimelineAsync();
+                {
+                    Refresh();
+                }
             }, p => !this.IsSyncing);
 
-            //this.BackKeyPressCommand = new DelegateCommand(null);
-            //this.ViewPictureCommand = new DelegateCommand<string>(null);
+            this.BackKeyPressCommand = new DelegateCommand(OnBackKeyPress);
+            this.ViewImageCommand = new DelegateCommand<ListBox>(ViewImage);
 
             this.CreateNewCommand = new DelegateCommand(() => this.NavigationService.Navigate(new Uri(Constants.CreateNewView, UriKind.Relative)));
 
 
         }
 
-        private void LoadDataFromCache()
+        private void ViewImage(ListBox listBox)
         {
-            //throw new NotImplementedException();
+            this.PhoneApplicationServiceFacade.Save("PicUrls", listBox.ItemsSource);
+            this.NavigationService.Navigate(new Uri(Constants.PictureView + "?index=" + listBox.SelectedIndex+"&from=tencent", UriKind.Relative));
+        }
+
+        private void Loaded()
+        {
+            StatusCollection collection;
+            if (HomeTimeline.Count <= 0)
+            {
+                if (htStorage.TryLoadData<StatusCollection>(out collection))
+                {
+                    collection.ForEach(a => HomeTimeline.Add(a));
+                }
+                else
+                {
+                    Refresh();
+                }
+            }
         }
 
         private void Refresh()
         {
-            switch(this.SelectedPivotIndex)
+            switch (this.SelectedPivotIndex)
             {
                 case 0:
-                    GetHomeTimelineAsync();
+                    var htFirstTimeStamp = HomeTimeline.Count > 0 ? HomeTimeline.First().TimeStamp : 0;
+                    GetHomeTimelineAsync(2, htFirstTimeStamp);
                     break;
                 case 1:
-                    GetMentionsTimelineAsync();
+                    var mtFirstTimeStamp = MentionsTimeline.Count > 0 ? MentionsTimeline.First().TimeStamp : 0;
+                    GetMentionsTimelineAsync(2, mtFirstTimeStamp);
                     break;
                 case 2:
-                    GetFavoritesTimelineAsync();
-                    break;                    
+                    var ftFirstTimeStamp = FavoritesTimeline.Count > 0 ? FavoritesTimeline.First().TimeStamp : 0;
+                    GetFavoritesTimelineAsync(2, ftFirstTimeStamp);
+                    break;
             }
+        }
+
+        private void HandlePivotSelectedIndexChange()
+        {
+            StatusCollection collection;
+            switch (SelectedPivotIndex)
+            {
+                case 0:
+                    Loaded();
+                    break;
+                case 1:
+                    if (MentionsTimeline.Count <= 0)
+                    {
+                        if (mtStorage.TryLoadData<StatusCollection>(out collection))
+                        {
+                            collection.ForEach(a => MentionsTimeline.Add(a));
+                        }
+                        else
+                        {
+                            Refresh();
+                        }
+                    }
+                    break;
+                case 2:
+                    if (FavoritesTimeline.Count <= 0)
+                    {
+                        if (ftStorage.TryLoadData<StatusCollection>(out collection))
+                        {
+                            collection.ForEach(a => FavoritesTimeline.Add(a));
+                        }
+                        else
+                        {
+                            Refresh();
+                        }
+                    }
+                    break;
+            }
+        }
+
+        private void ChangeRefreshState()
+        {
+            if (!IsRefreshEnd)
+                this.IsRefreshEnd = true;
+            if (IsSyncing)
+                this.IsSyncing = false;
         }
 
 
@@ -216,105 +379,232 @@ namespace iWeibo.WP8.ViewModels.Tencent
         //}
 
 
-        public async void GetHomeTimelineAsync(int pageFlag = 0, long pageTime = 0)
+        public async void GetHomeTimelineAsync(int pageFlag, long pageTime)
         {
-            this.IsSyncing = true;
-
-            var result = await GetStatusesAsync(TimelineType.HomeTimeline, pageFlag, pageTime);
-
-            if (result.Succeed)
+            if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                if (pageFlag == 0)
-                {
-                    HomeTimeline.Clear();
-                    htStorage.SaveData(result.Data);
-                }
-                ht_lastTimeStamp = result.Data.LastTimeStamp;
-                result.Data.ForEach(a => HomeTimeline.Add(a));
-            }
-            else
-            {
-                this.messageBox.Show(result.ExceptionMsg);
+                this.messageBox.Show(AppResources.NoNetworkText);
+                return;
             }
 
-            this.IsSyncing = false;
-        }
+            if (pageFlag == 2)
+                this.IsSyncing = true;
+            if (IsRefreshEnd)
+                this.IsRefreshEnd = false;
 
-
-        private Task<Callback<StatusCollection>> GetStatusesAsync(TimelineType type,int pageFlag=0,long pageTime=0)
-        {
             var source = new TaskCompletionSource<Callback<StatusCollection>>();
-            switch(type)
-            {
-                case TimelineType.HomeTimeline:
-                    this.statusesService.HomeTimeline(
-                        new ServiceArgument() { Reqnum = this.requestNumber, PageFlag = pageFlag, PageTime = pageTime },
-                        callback => source.TrySetResult(callback));
-                    return source.Task;
-                case TimelineType.MentionsTimeline:
-                    this.statusesService.MentionsTimeline(
-                        new ServiceArgument() { Reqnum = this.requestNumber, PageFlag = pageFlag, PageTime = pageTime },
-                        callback => source.SetResult(callback));
-                    return source.Task;
-                case TimelineType.FavoritesTimeline:
-                    this.statusesService.FavoritesTimeline(
-                        new ServiceArgument() { Reqnum = this.requestNumber, PageFlag = pageFlag, PageTime = pageTime },
-                        callback => source.SetResult(callback));
-                    return source.Task;
-                default:
-                    return source.Task;
-            }
 
-        }
+            this.statusesService.HomeTimeline(
+                new ServiceArgument() { Reqnum = this.requestNumber, PageFlag = pageFlag, PageTime = pageTime },
+                callback => source.SetResult(callback));
 
 
-        public async void GetMentionsTimelineAsync(int pageFlag=0,long pageTime=0)
-        {
-            this.IsSyncing = true;
-            var result = await GetStatusesAsync(TimelineType.MentionsTimeline, pageFlag, pageTime);
-            if(result.Succeed)
-            {
-                if(pageFlag==0)
-                {
-                    HomeTimeline.Clear();
-                    mtStorage.SaveData(result.Data);
-                }
-                mt_lastTimeStamp = result.Data.LastTimeStamp;
-                result.Data.ForEach(a => MentionsTimeline.Add(a));
-            }
-            else
-            {
-                this.messageBox.Show(result.ExceptionMsg);
-            }
+            var result = await source.Task;
 
-            this.IsSyncing = false;
-        }
-
-
-        public async void GetFavoritesTimelineAsync(int pageFlag=0,long pageTime=0)
-        {
-            this.IsSyncing = true;
-
-            var result = await GetStatusesAsync(TimelineType.FavoritesTimeline, pageFlag, pageTime);
             if (result.Succeed)
             {
-                if (pageFlag == 0)
+                if (pageFlag == 2)
                 {
-                    FavoritesTimeline.Clear();
-                    ftStorage.SaveData(result.Data);
+                    if (result.Data.Count > 0)
+                    {
+                        if (result.Data.Count >= 20)
+                        {
+                            HomeTimeline.Clear();
+                        }
+                        for (int i = result.Data.Count - 1; i >= 0; i--)
+                        {
+                            HomeTimeline.Insert(0, result.Data[i]);
+                        }
+                        if (pageTime != 0)
+                            ToastNotification.Show(true, count: result.Data.Count);
+
+                        var collection = new StatusCollection();
+                        collection.AddRange(HomeTimeline.Take(20).ToList());
+                        htStorage.SaveData(collection);
+                    }
+                    else
+                    {
+                        ToastNotification.Show(true, msg: AppResources.NoNewText);
+                    }
                 }
-                ft_lastTimeStamp = result.Data.LastTimeStamp;
-                result.Data.ForEach(a => FavoritesTimeline.Add(a));
+                else
+                {
+                    if (result.Data.Count > 0)
+                    {
+                        result.Data.ForEach(a => HomeTimeline.Add(a));
+                    }
+                    else
+                        if (!this.IsHTLoadingEnd)
+                            this.IsHTLoadingEnd = true;
+                }
             }
             else
             {
-                this.messageBox.Show(result.ExceptionMsg);
+                ToastNotification.Show(false, msg: result.ErrorMsg);
             }
 
-            this.IsSyncing = false;
+            ChangeRefreshState();
+        }
+
+        public async void GetMentionsTimelineAsync(int pageFlag, long pageTime)
+        {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                this.messageBox.Show(AppResources.NoNetworkText);
+                return;
+            }
+
+            if (pageFlag == 2)
+                this.IsSyncing = true;
+            if (IsRefreshEnd)
+                this.IsRefreshEnd = false;
+
+
+            var source = new TaskCompletionSource<Callback<StatusCollection>>();
+
+            this.statusesService.MentionsTimeline(
+                new ServiceArgument() { Reqnum = this.requestNumber, PageFlag = pageFlag, PageTime = pageTime },
+                callback => source.SetResult(callback));
+
+            var result = await source.Task;
+
+            if (result.Succeed)
+            {
+                if (pageFlag == 2)
+                {
+                    if (result.Data.Count > 0)
+                    {
+                        if (result.Data.Count >= 20)
+                        {
+                            MentionsTimeline.Clear();
+                        }
+                        for (int i = result.Data.Count - 1; i >= 0; i--)
+                        {
+                            MentionsTimeline.Insert(0, result.Data[i]);
+                        }
+                        if (pageTime != 0)
+                            ToastNotification.Show(true, count: result.Data.Count);
+
+                        var collection = new StatusCollection();
+                        collection.AddRange(MentionsTimeline.Take(20).ToList());
+                        mtStorage.SaveData(collection);
+                    }
+                    else
+                    {
+                        ToastNotification.Show(true, msg: AppResources.NoNewText);
+                    }
+                }
+                else
+                {
+                    if (result.Data.Count > 0)
+                    {
+                        result.Data.ForEach(a => MentionsTimeline.Add(a));
+                    }
+                    else
+                        if (!this.IsMTLoadingEnd)
+                            this.IsMTLoadingEnd = true;
+                }
+            }
+            else
+            {
+                ToastNotification.Show(false, msg: result.ErrorMsg);
+            }
+
+            ChangeRefreshState();
         }
 
 
+        public async void GetFavoritesTimelineAsync(int pageFlag, long pageTime)
+        {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                this.messageBox.Show(AppResources.NoNetworkText);
+                return;
+            }
+
+            if (pageFlag == 2)
+                this.IsSyncing = true;
+            if (IsRefreshEnd)
+                this.IsRefreshEnd = false;
+
+            var source = new TaskCompletionSource<Callback<StatusCollection>>();
+
+            this.statusesService.FavoritesTimeline(
+                new ServiceArgument() { Reqnum = this.requestNumber, PageFlag = pageFlag, PageTime = pageTime },
+                callback => source.SetResult(callback));
+
+            var result = await source.Task;
+
+            if (result.Succeed)
+            {
+                if (pageFlag == 2)
+                {
+                    if (result.Data.Count > 0)
+                    {
+                        if (result.Data.Count >= 20)
+                        {
+                            FavoritesTimeline.Clear();
+                        }
+                        for (int i = result.Data.Count - 1; i >= 0; i--)
+                        {
+                            FavoritesTimeline.Insert(0, result.Data[i]);
+                        }
+                        if (pageTime != 0)
+                            ToastNotification.Show(true, count: result.Data.Count);
+
+                        var collection = new StatusCollection();
+                        collection.AddRange(FavoritesTimeline.Take(20).ToList());
+                        mtStorage.SaveData(collection);
+                    }
+                    else
+                    {
+                        ToastNotification.Show(true, msg: AppResources.NoNewText);
+                    }
+                }
+                else
+                {
+                    if (result.Data.Count > 0)
+                    {
+                        result.Data.ForEach(a => FavoritesTimeline.Add(a));
+                    }
+                    else
+                        if (!this.IsFTLoadingEnd)
+                            this.IsFTLoadingEnd = true;
+                }
+            }
+            else
+            {
+                ToastNotification.Show(false, msg: result.ErrorMsg);
+            }
+
+            ChangeRefreshState();
+        }
+
+        private void HandleSelectedStatusChange()
+        {
+            if (this.SelectedStatus != null)
+            {
+                var id = this.SelectedStatus.Id;
+                new IsoStorage(Constants.TencentSelectedStatus).SaveData(this.SelectedStatus);
+                this.NavigationService.Navigate(new Uri(Constants.TencentStatusDetailView + "?id=" + id, UriKind.Relative));
+
+                this.SelectedStatus = null;
+            }
+        }
+
+        private void OnBackKeyPress()
+        {
+            this.NavigationService.Navigate(new Uri(Constants.MainPageView, UriKind.Relative));
+        }
+
+
+        //private void HandleCommandCanExecuteChange()
+        //{
+        //    this.RefreshCommand.RaiseCanExecuteChanged();
+        //    this.HomeTimelineCommand.RaiseCanExecuteChanged();
+        //    this.MentionsTimelineCommand.RaiseCanExecuteChanged();
+        //    this.FavoritesTimelineCommand.RaiseCanExecuteChanged();
+        //}
 
         public override void OnPageResumeFromTombstoning()
         {

@@ -91,7 +91,7 @@ namespace WeiboSdk.Models
         public bool Truncated { get; set; }
 
         [DataMember(Name = "pic_urls")]
-        public PicUrl[] PicUrls { get; set; }
+        public List<PicUrl> PicUrls { get; set; }
 
         /// <summary>
         /// 缩略图片地址
@@ -165,7 +165,7 @@ namespace WeiboSdk.Models
         {
             get
             {
-                return PicUrls == null ? false : true;
+                return string.IsNullOrEmpty(ThumbnailPic) ? false : true;
             }
         }
 
@@ -196,11 +196,31 @@ namespace WeiboSdk.Models
         //            return false;
         //    }
         //}
+
+
     }
 
+    [DataContract]
     public class PicUrl
     {
-        public string thumbnail_pic { get; set; }
+        [DataMember(Name = "thumbnail_pic")]
+        public string ThumbnailPic { get; set; }
+
+        public string BMiddlePic
+        {
+            get
+            {
+                return this.ThumbnailPic.Replace("thumbnail", "bmiddle");
+            }
+        }
+
+        public bool IsGif
+        {
+            get
+            {
+                return this.ThumbnailPic.EndsWith("*.gif") ? true : false;
+            }
+        }
 
     }
 }

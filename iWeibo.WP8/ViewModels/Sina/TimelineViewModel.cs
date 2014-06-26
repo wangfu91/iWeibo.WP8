@@ -1,31 +1,32 @@
 ﻿using iWeibo.Adapters;
 using iWeibo.Services;
-using iWeibo.WP8.Models;
 using Microsoft.Practices.Prism.Commands;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using WeiboSdk.Models;
 using WeiboSdk.Services;
+using Coding4Fun.Toolkit.Controls;
+using Shared;
+using System.Net.NetworkInformation;
+using iWeibo.WP8.Resources;
+using System.Windows.Controls;
 
 namespace iWeibo.WP8.ViewModels.Sina
 {
     public class TimelineViewModel : ViewModel
     {
-
         private IMessageBox messageBox;
 
-        //private long htPreviousCursor=0;
-        private long htNextCursor;
-        //private long mtPreviousCursor=0;
-        private long mtNextCursor;
-        //private long ftPreviousCursor=0;
-        private long ftNextCursor;
+        //private long htPreviousCursor = 0;
+        //private int htPage = 1;
+        private int htTotalNumber = 0;
+        //private long mtPreviousCursor = 0;
+        //private int mtPage = 1;
+        private int mtTotalNumber = 0;
+        private int ftPage = 1;
+        private int ftTotalNumber = 0;
 
         private IsoStorage htStorage = new IsoStorage(Constants.SinaHomeTime);
         private IsoStorage mtStorage = new IsoStorage(Constants.SinaMentionsTimeline);
@@ -55,6 +56,80 @@ namespace iWeibo.WP8.ViewModels.Sina
         }
 
 
+        private bool isRefreshEnd;
+
+        public bool IsRefreshEnd
+        {
+            get
+            {
+                return isRefreshEnd;
+            }
+            set
+            {
+                if (value != isRefreshEnd)
+                {
+                    isRefreshEnd = value;
+                    RaisePropertyChanged(() => this.IsRefreshEnd);
+                }
+            }
+        }
+
+        private bool isHTLoadingEnd;
+
+        public bool IsHTLoadingEnd
+        {
+            get
+            {
+                return isHTLoadingEnd;
+            }
+            set
+            {
+                if (value != isHTLoadingEnd)
+                {
+                    isHTLoadingEnd = value;
+                    RaisePropertyChanged(() => this.IsHTLoadingEnd);
+                }
+            }
+        }
+
+        private bool isMTLoadingEnd;
+
+        public bool IsMTLoadingEnd
+        {
+            get
+            {
+                return isMTLoadingEnd;
+            }
+            set
+            {
+                if (value != isMTLoadingEnd)
+                {
+                    isMTLoadingEnd = value;
+                    RaisePropertyChanged(() => this.IsMTLoadingEnd);
+                }
+            }
+        }
+
+        private bool isFTLoadingEnd;
+
+        public bool IsFTLoadingEnd
+        {
+            get
+            {
+                return isFTLoadingEnd;
+            }
+            set
+            {
+                if (value != isFTLoadingEnd)
+                {
+                    isFTLoadingEnd = value;
+                    RaisePropertyChanged(() => this.IsFTLoadingEnd);
+                }
+            }
+        }
+
+
+
         private WStatus selectedStatus;
 
         public WStatus SelectedStatus
@@ -69,6 +144,7 @@ namespace iWeibo.WP8.ViewModels.Sina
                 {
                     selectedStatus = value;
                     RaisePropertyChanged(() => this.SelectedStatus);
+                    HandleSelectedStatusChange();
                 }
             }
         }
@@ -87,10 +163,10 @@ namespace iWeibo.WP8.ViewModels.Sina
                 {
                     selectedPivotIndex = value;
                     RaisePropertyChanged(() => this.SelectedPivotIndex);
+                    HandlePivotSelectedIndexChange();
                 }
             }
         }
-
 
         public ObservableCollection<WStatus> HomeTimeline { get; set; }
 
@@ -105,8 +181,8 @@ namespace iWeibo.WP8.ViewModels.Sina
         public DelegateCommand CreateNewCommand { get; set; }
         public DelegateCommand<string> HomeTimelineCommand { get; set; }
         public DelegateCommand<string> MentionsTimelineCommand { get; set; }
-        public DelegateCommand<string> FavoritesTimelineCommand { get; set; }
-
+        public DelegateCommand FavoritesTimelineCommand { get; set; }
+        public DelegateCommand<ListBox> ViewImageCommand { get; set; }
 
 
         public TimelineViewModel(
@@ -120,92 +196,107 @@ namespace iWeibo.WP8.ViewModels.Sina
             this.MentionsTimeline = new ObservableCollection<WStatus>();
             this.FavoritesTimeline = new ObservableCollection<WStatus>();
 
-            this.PageLoadedCommand = new DelegateCommand(LoadDataFromCache, () => !this.IsSyncing);
+            this.PageLoadedCommand = new DelegateCommand(Loaded, () => !this.IsSyncing);
             this.BackKeyPressCommand = new DelegateCommand(OnBackKeyPress, () => true);
             this.RefreshCommand = new DelegateCommand(Refresh, () => !this.IsSyncing);
             this.CreateNewCommand = new DelegateCommand(() => this.NavigationService.Navigate(new Uri(Constants.CreateNewView, UriKind.Relative)));
             this.HomeTimelineCommand = new DelegateCommand<string>(p =>
                 {
                     if (p == "Next")
-                        GetHomeTimeline(htNextCursor);
+                    {
+                        var lastCursor = HomeTimeline.Count > 0 ? HomeTimeline.Last().Id : 0;
+                        GetHomeTimeline(0, lastCursor);
+                    }
                     else
-                        GetHomeTimeline();
+                    {
+                        Refresh();
+                    }
                 }, p => !this.IsSyncing);
 
             this.MentionsTimelineCommand = new DelegateCommand<string>(p =>
                 {
                     if (p == "Next")
-                        GetMentionsTimeline(mtNextCursor);
+                    {
+                        var lastCursor = MentionsTimeline.Count > 0 ? MentionsTimeline.Last().Id : 0;
+                        GetMentionsTimeline(0, lastCursor);
+                    }
                     else
-                        GetMentionsTimeline();
+                    {
+                        Refresh();
+                    }
                 }, p => !this.IsSyncing);
 
-            this.FavoritesTimelineCommand = new DelegateCommand<string>(p =>
-                {
-                    if (p == "Next")
-                        GetFavoritesTimeline(ftNextCursor);
-                    else
-                        GetFavoritesTimeline();
-                }, p => !this.IsSyncing);
+            this.FavoritesTimelineCommand = new DelegateCommand(() => GetFavoritesTimeline(ftPage), () => !this.IsSyncing);
 
+            this.ViewImageCommand = new DelegateCommand<ListBox>(p => ViewImage(p));
         }
 
 
         #region Methods
 
-        private void LoadDataFromCache()
+        private void ViewImage(ListBox listBox)
         {
+            this.PhoneApplicationServiceFacade.Save("PicUrls", listBox.ItemsSource);
+            this.NavigationService.Navigate(new Uri(Constants.PictureView + "?index=" + listBox.SelectedIndex+"&from=sina", UriKind.Relative));
+        }
+
+        private async void Loaded()
+        { 
             WStatusCollection collection;
             if (HomeTimeline.Count <= 0)
             {
-                if (htStorage.TryLoadData<WStatusCollection>(out collection))
+                var source = new TaskCompletionSource<bool>();
+                source.SetResult(htStorage.TryLoadData<WStatusCollection>(out collection));
+
+                if (await source.Task)
                 {
-                    //this.htPreviousCursor = collection.PreviousCursor;
-                    this.htNextCursor = collection.NextCursor;
+                    this.htTotalNumber = collection.TotalNumber;
                     collection.Statuses.ForEach(a => HomeTimeline.Add(a));
                 }
                 else
                 {
-                    GetHomeTimeline();
-                }
-            }
-            if (MentionsTimeline.Count <= 0)
-            {
-                if (mtStorage.TryLoadData<WStatusCollection>(out collection))
-                {
-                    //this.mtPreviousCursor = collection.PreviousCursor;
-                    this.mtNextCursor = collection.NextCursor;
-                    collection.Statuses.ForEach(a => MentionsTimeline.Add(a));
-                }
-
-            }
-            WFavoriteCollection fCollection;
-            if (FavoritesTimeline.Count <= 0)
-            {
-                if (ftStorage.TryLoadData<WFavoriteCollection>(out fCollection))
-                {
-                    //this.ftPreviousCursor = fCollection.PreviousCursor;
-                    this.ftNextCursor = fCollection.NextCursor;
-                    fCollection.Favorites.ForEach(a => FavoritesTimeline.Add(a));
+                    Refresh();
                 }
             }
         }
 
-        private void HandlePivotSelectedIndexChange()
+        private async void HandlePivotSelectedIndexChange()
         {
             switch (SelectedPivotIndex)
             {
                 case 0:
-                    if (HomeTimeline.Count <= 0)
-                        GetHomeTimeline();
+                    Loaded();
                     break;
-                case 1:
+                case 1: 
+                    WStatusCollection mtCollection;
                     if (MentionsTimeline.Count <= 0)
-                        GetMentionsTimeline();
+                    {
+                        if (mtStorage.TryLoadData<WStatusCollection>(out mtCollection))
+                        {
+                            this.mtTotalNumber = mtCollection.TotalNumber;
+                            mtCollection.Statuses.ForEach(a => MentionsTimeline.Add(a));
+                        }
+                        else
+                        {
+                            Refresh();
+                        }
+                    }
+
                     break;
                 case 2:
+                    WFavoriteCollection fCollection;
                     if (FavoritesTimeline.Count <= 0)
-                        GetFavoritesTimeline();
+                    {
+                        if (ftStorage.TryLoadData<WFavoriteCollection>(out fCollection))
+                        {
+                            this.ftTotalNumber = fCollection.TotalNumber;
+                            fCollection.Favorites.ForEach(a => FavoritesTimeline.Add(a));
+                        }
+                        else
+                        {
+                            Refresh();
+                        }
+                    }
                     break;
             }
         }
@@ -227,10 +318,12 @@ namespace iWeibo.WP8.ViewModels.Sina
             switch (SelectedPivotIndex)
             {
                 case 0:
-                    GetHomeTimeline();
+                    var htFirstCursor = HomeTimeline.Count > 0 ? HomeTimeline.First().Id : 0;
+                    GetHomeTimeline(htFirstCursor, 0);
                     break;
                 case 1:
-                    GetMentionsTimeline();
+                    var mtFirstCursor = MentionsTimeline.Count > 0 ? MentionsTimeline.First().Id : 0;
+                    GetMentionsTimeline(mtFirstCursor, 0);
                     break;
                 case 2:
                     GetFavoritesTimeline();
@@ -240,111 +333,278 @@ namespace iWeibo.WP8.ViewModels.Sina
 
         private void OnBackKeyPress()
         {
-            //if (this.NavigationService.CanGoBack)
-            //    this.NavigationService.GoBack();
             this.NavigationService.Navigate(new Uri(Constants.MainPageView, UriKind.Relative));
         }
 
-
-        private Task<Callback<WStatusCollection>> GetStatusesAsync(TimelineType type, long maxId = 0)
+        private void ShowNotification(bool succeed, int count = 0, string msg = "")
         {
+            if (succeed)
+            {
+                var toast = new ToastPrompt()
+                {
+                    Message = string.IsNullOrEmpty(msg) ? string.Format(AppResources.ReceivedWeiboText, count) : msg,
+                    MillisecondsUntilHidden = 3000
+                };
+                toast.Show();
+            }
+            else
+            {
+                this.messageBox.Show(msg);
+            }
+        }
+
+        private void ChangeRefreshState()
+        {
+            if (!IsRefreshEnd)
+                this.IsRefreshEnd = true;
+            if (IsSyncing)
+                this.IsSyncing = false;
+
+        }
+
+        private async void GetHomeTimeline(long sinceId, long maxId)
+        {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                this.messageBox.Show(AppResources.NoNetworkText);
+                return;
+            }
+
+            //if (HomeTimeline.Count > 0 && HomeTimeline.Count >= htTotalNumber)
+            //{
+            //    ChangeRefreshState();
+            //    return;
+            //}
+
+
+            if (maxId == 0)
+                this.IsSyncing = true;
+            if (IsRefreshEnd)
+                this.IsRefreshEnd = false;
+
             var source = new TaskCompletionSource<Callback<WStatusCollection>>();
-            switch (type)
-            {
-                case TimelineType.HomeTimeline:
-                    this.timelineService.GetFriendsTimeline(
-                        requestCount, maxId, 0,
-                        callback => source.TrySetResult(callback));
-                    return source.Task;
-                case TimelineType.MentionsTimeline:
-                    this.timelineService.GetMentionsTimeline(
-                        requestCount, maxId, 0,
-                        callback => source.SetResult(callback));
-                    return source.Task;
-                case TimelineType.FavoritesTimeline:
-                    //this.timelineService.GetFavoritesTimeline(
-                    //    requestCount, maxId, 0,
-                    //    callback => source.SetResult(callback));
-                    return source.Task;
-                default:
-                    return source.Task;
-            }
+            this.timelineService.GetFriendsTimeline(
+                requestCount, maxId, sinceId,
+                callback => source.SetResult(callback));
 
-        }
-
-        private async void GetHomeTimeline(long maxId = 0)
-        {
-            this.IsSyncing = true;
-            var result = await GetStatusesAsync(TimelineType.HomeTimeline, maxId);
+            var result = await source.Task;
 
             if (result.Succeed)
             {
+                htTotalNumber = result.Data.TotalNumber;
+
                 if (maxId == 0)
                 {
-                    HomeTimeline.Clear();
-                    htStorage.SaveData(result.Data);
-                    //htPreviousCursor = callback.Data.PreviousCursor;
+                    if (result.Data.Statuses.Count > 0)
+                    {
+                        //var inOrder = from s in result.Data.Statuses
+                        //              orderby s.CreateDateTime ascending
+                        //              select s;
+
+                        //foreach (var item in inOrder)
+                        //{
+                        //    HomeTimeline.Insert(0, item);
+                        //}
+                        if (result.Data.Statuses.Count >= 20 && HomeTimeline.Count > 0)
+                        {
+                            HomeTimeline.Clear();
+                        }
+
+                        for (int i = result.Data.Statuses.Count - 1; i >= 0; i--)
+                        {
+                            HomeTimeline.Insert(0, result.Data.Statuses[i]);
+                        }
+
+                        if (sinceId != 0)
+                            ShowNotification(true, count: result.Data.Statuses.Count);
+
+                        var collection = new WStatusCollection()
+                        {
+                            Statuses = HomeTimeline.Take(20).ToList(),
+                            TotalNumber = result.Data.TotalNumber
+                        };
+                        htStorage.SaveData(collection);
+
+                    }
+                    else
+                    {
+                        ShowNotification(true, msg: AppResources.NoNewText);
+                    }
                 }
-                htNextCursor = result.Data.NextCursor;
-                result.Data.Statuses.ForEach(a => HomeTimeline.Add(a));
+                else
+                {
+                    if (result.Data.Statuses.Count > 1)
+                    {
+                        result.Data.Statuses.RemoveAt(0);
+                        result.Data.Statuses.ForEach(a => HomeTimeline.Add(a));
+                    }
+                    else
+                        if (!this.IsHTLoadingEnd)
+                            this.IsHTLoadingEnd = true;
+                }
             }
             else
             {
-                this.messageBox.Show(result.ErrorMsg);
+                ShowNotification(false, msg: result.ErrorMsg);
             }
-            this.IsSyncing = false;
 
+            ChangeRefreshState();
         }
 
-        private async void GetMentionsTimeline(long maxId = 0)
+        private async void GetMentionsTimeline(long sinceId, long maxId)
         {
-            this.IsSyncing = true;
-            var result = await GetStatusesAsync(TimelineType.MentionsTimeline, maxId);
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                this.messageBox.Show(AppResources.NoNetworkText);
+                return;
+            }
+
+            //if (MentionsTimeline.Count > 0 && MentionsTimeline.Count >= mtTotalNumber)
+            //{
+            //    ChangeRefreshState();
+            //    return;
+            //}
+
+
+            if (maxId == 0)
+                this.IsSyncing = true;
+            if (IsRefreshEnd)
+                this.IsRefreshEnd = false;
+
+            var source = new TaskCompletionSource<Callback<WStatusCollection>>();
+
+
+            this.timelineService.GetMentionsTimeline(
+                requestCount, maxId, sinceId,
+                callback => source.SetResult(callback));
+
+            var result = await source.Task;
 
             if (result.Succeed)
             {
+                mtTotalNumber = result.Data.TotalNumber;
                 if (maxId == 0)
                 {
-                    MentionsTimeline.Clear();
-                    mtStorage.SaveData(result.Data);
-                    //mtPreviousCursor=callback.Data.PreviousCursor;
+                    if (result.Data.Statuses.Count > 0)
+                    {
+                        if(result.Data.Statuses.Count>=20&&MentionsTimeline.Count>0)
+                        {
+                            MentionsTimeline.Clear();
+                        }
+
+                        for (int i = result.Data.Statuses.Count - 1; i >= 0; i--)
+                        {
+                            MentionsTimeline.Insert(0, result.Data.Statuses[i]);
+                        }
+                        if (sinceId != 0)
+                            ShowNotification(true, count: result.Data.Statuses.Count);
+
+                        var collection = new WStatusCollection()
+                        {
+                            Statuses = MentionsTimeline.Take(20).ToList(),
+                            TotalNumber = result.Data.TotalNumber
+                        };
+                        mtStorage.SaveData(collection);
+
+                    }
+                    else
+                    {
+                        ShowNotification(true, msg: AppResources.NoNewText);
+                    }
                 }
-                mtNextCursor = result.Data.NextCursor;
-                result.Data.Statuses.ForEach(a => MentionsTimeline.Add(a));
+                else
+                {
+                    if (result.Data.Statuses.Count > 1)
+                    {
+                        result.Data.Statuses.RemoveAt(0);
+                        result.Data.Statuses.ForEach(a => MentionsTimeline.Add(a));
+                    }
+                    else
+                        if (!this.IsMTLoadingEnd)
+                            this.IsMTLoadingEnd = true;
+                }
             }
             else
             {
-                this.messageBox.Show(result.ErrorMsg);
+                ShowNotification(false, msg: result.ErrorMsg);
             }
-            this.IsSyncing = false;
 
+            ChangeRefreshState();
         }
 
-        private async void GetFavoritesTimeline(long maxId = 0)
+        private async void GetFavoritesTimeline(int page = 1)
         {
-            this.IsSyncing = true;
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                this.messageBox.Show(AppResources.NoNetworkText);
+                return;
+            }
 
-            //var result = await GetStatusesAsync(TimelineType.FavoritesTimeline, maxId);
-
-
-            //if (result.Succeed)
+            //if (FavoritesTimeline.Count > 0 && FavoritesTimeline.Count >= ftTotalNumber)
             //{
-            //    if (maxId == 0)
-            //    {
-            //        FavoritesTimeline.Clear();
-            //        ftStorage.SaveData(result.Data);
-            //        //ftPreviousCursor=callback.Data.PreviousCursor;
-            //    }
-            //    ftNextCursor = result.Data.NextCursor;
-            //    result.Data.Favorites.ForEach(a => FavoritesTimeline.Add(a));
-            //}
-            //else
-            //{
-            //    this.messageBox.Show(result.ErrorMsg);
+            //    ChangeRefreshState();
+            //    return;
             //}
 
-            this.IsSyncing = false;
+            if (page == 1)
+                this.IsSyncing = true;
+            if (IsRefreshEnd)
+                this.IsRefreshEnd = false;
 
+            var source = new TaskCompletionSource<Callback<WFavoriteCollection>>();
+            this.timelineService.GetFavoritesTimeline(
+                requestCount, page,
+                callback => source.SetResult(callback));
+
+            var result = await source.Task;
+
+            if (result.Succeed)
+            {
+                ftTotalNumber = result.Data.TotalNumber;
+
+                if (page == 1)
+                {
+                    if (result.Data.Favorites.Count > 0)
+                    {
+                        this.ftPage++;
+                        FavoritesTimeline.Clear();
+                        this.IsFTLoadingEnd = false;
+                        for (int i = result.Data.Favorites.Count - 1; i >= 0; i--)
+                        {
+                            FavoritesTimeline.Insert(0, result.Data.Favorites[i]);
+                        }
+                        //ShowNotification(true, count: result.Data.Favorites.Count);
+                        var collection = new WFavoriteCollection()
+                        {
+                            Favorites = FavoritesTimeline.ToList(),
+                            TotalNumber = result.Data.TotalNumber
+                        };
+                        ftStorage.SaveData(collection);
+
+                    }
+                    else
+                    {
+                        ShowNotification(true, msg: AppResources.NoNewText);
+                    }
+                }
+                else
+                {
+                    if (result.Data.Favorites.Count > 0)
+                    {
+                        this.ftPage++;
+                        result.Data.Favorites.ForEach(a => FavoritesTimeline.Add(a));
+                    }
+                    else
+                        if (!this.IsFTLoadingEnd)
+                            this.IsFTLoadingEnd = true;
+
+                }
+            }
+            else
+            {
+                ShowNotification(false, msg: result.ErrorMsg);
+            }
+            ChangeRefreshState();
         }
 
         public override void OnPageResumeFromTombstoning()
