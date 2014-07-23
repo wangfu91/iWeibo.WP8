@@ -160,6 +160,44 @@ namespace iWeibo.WP8.ViewModels.Sina
             }
         }
 
+        private bool isViewingImage;
+
+        public bool IsViewingImage
+        {
+            get
+            {
+                return isViewingImage;
+            }
+            set
+            {
+                if (value != isViewingImage)
+                {
+                    isViewingImage = value;
+                    RaisePropertyChanged(() => this.IsViewingImage);
+                }
+            }
+        }
+
+        private ImageViewModel imageViewModel;
+
+        public ImageViewModel ImageViewModel
+        {
+            get
+            {
+                return imageViewModel;
+            }
+            set
+            {
+                if (value != imageViewModel)
+                {
+                    imageViewModel = value;
+                    RaisePropertyChanged(() => this.ImageViewModel);
+                }
+            }
+        }
+
+
+
         public string StatusId { get; set; }
 
         public bool CanDelete { get; set; }

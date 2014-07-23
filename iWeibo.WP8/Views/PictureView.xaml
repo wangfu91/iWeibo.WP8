@@ -28,7 +28,7 @@
                                         IsFilmstripModeEnabled="False"
                                         ItemRealizationMode="Default"
                                         TransitionMode="Slide"
-                                        IsLoopingEnabled="False"
+                                        IsLoopingEnabled="False"                                        
                                         SelectionChanged="slideView_SelectionChanged">
             <telerikPrimitives:RadSlideView.ItemTemplate>
                 <DataTemplate>

@@ -85,13 +85,13 @@ namespace iWeibo.WP8.ViewModels
             }
         }
 
-        //public PictureViewViewModel PictureViewViewModel
-        //{
-        //    get
-        //    {
-        //        return this.containerLocator.Container.Resolve<PictureViewViewModel>();
-        //    }
-        //}
+        public ImageViewModel ImageViewModel
+        {
+            get
+            {
+                return this.containerLocator.Container.Resolve<ImageViewModel>();
+            }
+        }
 
         public SettingsViewModel SettingsViewModel
         {

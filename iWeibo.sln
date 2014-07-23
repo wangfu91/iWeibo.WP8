@@ -1,50 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30626.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iWeibo.WP8", "iWeibo.WP8\iWeibo.WP8.csproj", "{B697D966-7447-4ED1-A5D4-3E152C37373E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeiboSdk", "H:\iWeibo.WP8\WeiboSdk\WeiboSdk.csproj", "{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TencentWeiboSDK", "H:\iWeibo.WP8\SDKSrc\TencentWeiboSDK.csproj", "{32287EA3-030F-4CFC-826A-80460A9BE708}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iWeibo.Adapters", "H:\iWeibo.WP8\iWeibo.Adapters\iWeibo.Adapters.csproj", "{3A76F086-8CDA-42EA-810C-7EAC217DFDE6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iWeibo.Services", "H:\iWeibo.WP8\iWeibo.Service\iWeibo.Services.csproj", "{361AD518-9057-4012-B5AA-49492F6E5300}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iWeibo.Utils", "H:\iWeibo.WP8\Utils\iWeibo.Utils.csproj", "{66B5E147-4D9C-4663-8F44-F6367A6C21BE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{17077A04-E91D-4B8F-A3D2-A4828A5032A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iWeibo.Adapters", "iWeibo.Adapters\iWeibo.Adapters.csproj", "{3A76F086-8CDA-42EA-810C-7EAC217DFDE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iWeibo.Services", "iWeibo.Service\iWeibo.Services.csproj", "{361AD518-9057-4012-B5AA-49492F6E5300}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iWeibo.Utils", "Utils\iWeibo.Utils.csproj", "{66B5E147-4D9C-4663-8F44-F6367A6C21BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeiboSdk", "WeiboSdk\WeiboSdk.csproj", "{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TencentWeiboSDK", "SDKSrc\TencentWeiboSDK.csproj", "{32287EA3-030F-4CFC-826A-80460A9BE708}"
+EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 8
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://coding4u.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = iWeibo.WP8\\iWeibo.WP8.csproj
-		SccProjectName1 = iWeibo.WP8
-		SccLocalPath1 = iWeibo.WP8
-		SccProjectUniqueName2 = Shared\\Shared.csproj
-		SccProjectName2 = Shared
-		SccLocalPath2 = Shared
-		SccProjectUniqueName3 = H:\\iWeibo.WP8\\iWeibo.Adapters\\iWeibo.Adapters.csproj
-		SccProjectName3 = iWeibo.Adapters
-		SccLocalPath3 = H:\\iWeibo.WP8\\iWeibo.Adapters
-		SccProjectUniqueName4 = H:\\iWeibo.WP8\\iWeibo.Service\\iWeibo.Services.csproj
-		SccProjectName4 = iWeibo.Service
-		SccLocalPath4 = H:\\iWeibo.WP8\\iWeibo.Service
-		SccProjectUniqueName5 = H:\\iWeibo.WP8\\SDKSrc\\TencentWeiboSDK.csproj
-		SccProjectName5 = SDKSrc
-		SccLocalPath5 = H:\\iWeibo.WP8\\SDKSrc
-		SccProjectUniqueName6 = H:\\iWeibo.WP8\\Utils\\iWeibo.Utils.csproj
-		SccProjectName6 = Utils
-		SccLocalPath6 = H:\\iWeibo.WP8\\Utils
-		SccProjectUniqueName7 = H:\\iWeibo.WP8\\WeiboSdk\\WeiboSdk.csproj
-		SccProjectName7 = WeiboSdk
-		SccLocalPath7 = H:\\iWeibo.WP8\\WeiboSdk
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM = Debug|ARM
@@ -72,30 +45,18 @@ Global
 		{B697D966-7447-4ED1-A5D4-3E152C37373E}.Release|x86.ActiveCfg = Release|x86
 		{B697D966-7447-4ED1-A5D4-3E152C37373E}.Release|x86.Build.0 = Release|x86
 		{B697D966-7447-4ED1-A5D4-3E152C37373E}.Release|x86.Deploy.0 = Release|x86
-		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Debug|ARM.ActiveCfg = Debug|ARM
-		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Debug|ARM.Build.0 = Debug|ARM
-		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Debug|x86.ActiveCfg = Debug|x86
-		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Debug|x86.Build.0 = Debug|x86
-		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Release|ARM.ActiveCfg = Release|ARM
-		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Release|ARM.Build.0 = Release|ARM
-		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Release|x86.ActiveCfg = Release|x86
-		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Release|x86.Build.0 = Release|x86
-		{32287EA3-030F-4CFC-826A-80460A9BE708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{32287EA3-030F-4CFC-826A-80460A9BE708}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{32287EA3-030F-4CFC-826A-80460A9BE708}.Debug|ARM.ActiveCfg = Debug|ARM
-		{32287EA3-030F-4CFC-826A-80460A9BE708}.Debug|ARM.Build.0 = Debug|ARM
-		{32287EA3-030F-4CFC-826A-80460A9BE708}.Debug|x86.ActiveCfg = Debug|x86
-		{32287EA3-030F-4CFC-826A-80460A9BE708}.Debug|x86.Build.0 = Debug|x86
-		{32287EA3-030F-4CFC-826A-80460A9BE708}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{32287EA3-030F-4CFC-826A-80460A9BE708}.Release|Any CPU.Build.0 = Release|Any CPU
-		{32287EA3-030F-4CFC-826A-80460A9BE708}.Release|ARM.ActiveCfg = Release|ARM
-		{32287EA3-030F-4CFC-826A-80460A9BE708}.Release|ARM.Build.0 = Release|ARM
-		{32287EA3-030F-4CFC-826A-80460A9BE708}.Release|x86.ActiveCfg = Release|x86
-		{32287EA3-030F-4CFC-826A-80460A9BE708}.Release|x86.Build.0 = Release|x86
+		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Debug|ARM.ActiveCfg = Debug|ARM
+		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Debug|ARM.Build.0 = Debug|ARM
+		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Debug|x86.ActiveCfg = Debug|x86
+		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Debug|x86.Build.0 = Debug|x86
+		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Release|ARM.ActiveCfg = Release|ARM
+		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Release|ARM.Build.0 = Release|ARM
+		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Release|x86.ActiveCfg = Release|x86
+		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Release|x86.Build.0 = Release|x86
 		{3A76F086-8CDA-42EA-810C-7EAC217DFDE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3A76F086-8CDA-42EA-810C-7EAC217DFDE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A76F086-8CDA-42EA-810C-7EAC217DFDE6}.Debug|ARM.ActiveCfg = Debug|ARM
@@ -132,18 +93,30 @@ Global
 		{66B5E147-4D9C-4663-8F44-F6367A6C21BE}.Release|ARM.Build.0 = Release|ARM
 		{66B5E147-4D9C-4663-8F44-F6367A6C21BE}.Release|x86.ActiveCfg = Release|x86
 		{66B5E147-4D9C-4663-8F44-F6367A6C21BE}.Release|x86.Build.0 = Release|x86
-		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Debug|ARM.ActiveCfg = Debug|ARM
-		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Debug|ARM.Build.0 = Debug|ARM
-		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Debug|x86.ActiveCfg = Debug|x86
-		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Debug|x86.Build.0 = Debug|x86
-		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Release|ARM.ActiveCfg = Release|ARM
-		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Release|ARM.Build.0 = Release|ARM
-		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Release|x86.ActiveCfg = Release|x86
-		{17077A04-E91D-4B8F-A3D2-A4828A5032A4}.Release|x86.Build.0 = Release|x86
+		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Debug|ARM.ActiveCfg = Debug|ARM
+		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Debug|ARM.Build.0 = Debug|ARM
+		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Debug|x86.ActiveCfg = Debug|x86
+		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Debug|x86.Build.0 = Debug|x86
+		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Release|ARM.ActiveCfg = Release|ARM
+		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Release|ARM.Build.0 = Release|ARM
+		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Release|x86.ActiveCfg = Release|x86
+		{C8BBA7E0-7D2A-491F-ABD9-2144335A3D9D}.Release|x86.Build.0 = Release|x86
+		{32287EA3-030F-4CFC-826A-80460A9BE708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32287EA3-030F-4CFC-826A-80460A9BE708}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32287EA3-030F-4CFC-826A-80460A9BE708}.Debug|ARM.ActiveCfg = Debug|ARM
+		{32287EA3-030F-4CFC-826A-80460A9BE708}.Debug|ARM.Build.0 = Debug|ARM
+		{32287EA3-030F-4CFC-826A-80460A9BE708}.Debug|x86.ActiveCfg = Debug|x86
+		{32287EA3-030F-4CFC-826A-80460A9BE708}.Debug|x86.Build.0 = Debug|x86
+		{32287EA3-030F-4CFC-826A-80460A9BE708}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32287EA3-030F-4CFC-826A-80460A9BE708}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32287EA3-030F-4CFC-826A-80460A9BE708}.Release|ARM.ActiveCfg = Release|ARM
+		{32287EA3-030F-4CFC-826A-80460A9BE708}.Release|ARM.Build.0 = Release|ARM
+		{32287EA3-030F-4CFC-826A-80460A9BE708}.Release|x86.ActiveCfg = Release|x86
+		{32287EA3-030F-4CFC-826A-80460A9BE708}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

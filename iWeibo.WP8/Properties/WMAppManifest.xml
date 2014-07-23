@@ -3,6 +3,7 @@
   <DefaultLanguage xmlns="" code="zh-CN" />
   <Languages xmlns="">
     <Language code="zh-CN" />
+    <Language code="en-US" />
   </Languages>
   <App xmlns="" ProductID="{b697d966-7447-4ed1-a5d4-3e152c37373e}" Title="iWeibo" RuntimeType="Silverlight" Version="1.0.0.4" Genre="apps.normal" Author="iWeibo.WP8 author" Description="Sample description" Publisher="iWeibo.WP8" PublisherID="{9ebc6f36-16fd-4e41-b761-45b8a09d0e88}">
     <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>

@@ -14,21 +14,52 @@
     xmlns:bar="clr-namespace:BindableApplicationBar;assembly=BindableApplicationBar"
     xmlns:telerikCore="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Core"
     xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
+    xmlns:telerikPrimitivesSlideView="clr-namespace:Telerik.Windows.Controls.SlideView;assembly=Telerik.Windows.Controls.Primitives"
+    xmlns:imagetools="clr-namespace:ImageTools.Controls;assembly=ImageTools.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  Orientation="Portrait"
     Style="{StaticResource TransitionPageStyle}"    
     DataContext="{Binding Source={StaticResource ViewModelLocator},Path=SinaTimelineViewModel}"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="{Binding IsFullScreen,Converter={StaticResource NegativeBoolConverter}}">
 
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator IsIndeterminate="True" IsVisible="{Binding IsSyncing}" Text="{Binding LocalizedResources.LoadingText,Source={StaticResource LocalizedStrings}}"/>
     </shell:SystemTray.ProgressIndicator>
+    
+    <phone:PhoneApplicationPage.Resources>
+        <Storyboard x:Name="PivotTitleDispear">
+            <DoubleAnimation 
+            Duration="0:0:1" To="-158"
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+            Storyboard.TargetName="TimelinePivot">
+                
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+                
+            </DoubleAnimation>
+        </Storyboard>
+
+        <Storyboard x:Name="PivotTitleAppear">
+            <DoubleAnimation 
+            Duration="0:0:1" To="0"
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+            Storyboard.TargetName="TimelinePivot">
+                
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+                
+            </DoubleAnimation>
+        </Storyboard>
+
+    </phone:PhoneApplicationPage.Resources>
 
 
     <!--LayoutRoot 是包含所有页面内容的根网格-->
-    <Grid Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="Transparent">
         <!--<telerikPrimitives:RadBusyIndicator 
                                             VerticalAlignment="Center"
                                             Content="{Binding LocalizedResources.LoadingText,Source={StaticResource LocalizedStrings}}"
@@ -36,9 +67,15 @@
                                             AnimationStyle="AnimationStyle7"/>-->
 
         <!--枢轴控件-->
-        <utils:MTPivot HeaderTemplate="{StaticResource PivotHeaderTemplate}"
-            x:Name="SinaTimelinePivot"            
+        <!--<utils:MTPivot HeaderTemplate="{StaticResource PivotHeaderTemplate}"-->
+        <utils:MTPivot 
+            x:Name="TimelinePivot"            
             SelectedIndex="{Binding SelectedPivotIndex,Mode=TwoWay}">
+            <!--IsLocked="{Binding IsFullScreen}">-->
+            <utils:MTPivot.RenderTransform>
+                <CompositeTransform/>
+            </utils:MTPivot.RenderTransform>
+            
             <utils:MTPivot.Title>
                 <StackPanel Orientation="Horizontal">
                     <Image Height="20" Width="20" Stretch="Uniform"
@@ -47,9 +84,9 @@
                                Text="{Binding Path=LocalizedResources.SinaTitle,Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </utils:MTPivot.Title>
+            
             <!--枢轴项一-->
             <phone:PivotItem Header="{Binding Path=LocalizedResources.MainPageText,Source={StaticResource LocalizedStrings}}">
-                <Grid >
                     <telerikPrimitives:RadDataBoundListBox 
                         common:RadDataBoundListBoxExtensions.PullToRefreshEnd="{Binding IsRefreshEnd}"
                         common:RadDataBoundListBoxExtensions.IsEnd="{Binding IsHTLoadingEnd}"
@@ -74,9 +111,12 @@
                             </i:EventTrigger>
                         </i:Interaction.Triggers>                      
                         
-                    </telerikPrimitives:RadDataBoundListBox>                    
+                    </telerikPrimitives:RadDataBoundListBox>
+                
+                <toolkit:GestureService.GestureListener>
+                    <toolkit:GestureListener Flick="GestureListener_Flick"/>
+                </toolkit:GestureService.GestureListener>
 
-                </Grid>
             </phone:PivotItem>
 
             <!--枢轴项二-->
@@ -137,6 +177,68 @@
             </phone:PivotItem>
         </utils:MTPivot>
         
+        <telerikPrimitives:RadWindow x:Name="ImageWindow"
+                                     PlacementTarget="{Binding ElementName=LayoutRoot}"
+                                     HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Stretch"
+                                     IsOpen="{Binding IsViewingImage,Mode=TwoWay}"
+                                     OpenAnimation="{StaticResource RadWindowOpen}"
+                                     CloseAnimation="{StaticResource RadWindowClose}" 
+                                     Placement="CenterCenter" 
+                                     IsClosedOnOutsideTap="True"
+                                     IsFullScreen="True">
+            
+            <telerikPrimitives:RadWindow.ApplicationBarInfo>
+                <telerikPrimitives:ApplicationBarInfo Opacity="0.5">
+                    <telerikPrimitives:ApplicationBarButton 
+                        IconUri="/Assets/AppBar/appbar.save.png"
+                        Text="{Binding LocalizedResources.SaveText,Source={StaticResource LocalizedStrings}}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction Command="{Binding ImageViewModel.SaveImageCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </telerikPrimitives:ApplicationBarButton>
+                </telerikPrimitives:ApplicationBarInfo>
+            </telerikPrimitives:RadWindow.ApplicationBarInfo>
+            
+            <Grid >
+                <telerikPrimitives:RadSlideView x:Name="ImageSlideView"
+                                                IsFilmstripModeEnabled="False"
+                                                ItemRealizationMode="Default"
+                                                TransitionMode="Slide"
+                                                IsLoopingEnabled="False"
+                                                ItemsSource="{Binding Path=ImageViewModel.PicUrls}"
+                                                SelectedItem="{Binding ImageViewModel.SelectedItem,Mode=TwoWay}">
+                    <telerikPrimitives:RadSlideView.Background>
+                        <ImageBrush Stretch="Uniform" ImageSource="/Assets/Icons/imageLoading.png"/>
+                    </telerikPrimitives:RadSlideView.Background>
+                    
+                    <telerikPrimitives:RadSlideView.ItemTemplate>
+                        <DataTemplate>
+                            <telerikPrimitivesSlideView:PanAndZoomImage
+                                Stretch="Uniform"
+                                Source="{Binding }"
+                                ZoomMode="Free">
+                                
+                                <!--<telerikPrimitivesSlideView:PanAndZoomImage.Template>j
+                                    <ControlTemplate>
+                                        <Grid>
+                                            <Image Visibility="{Binding .,Converter={StaticResource NegativeUrlToVisibilityConverter}}"/>
+                                            --><!--<imagetools:AnimatedImage Visibility="{Binding .,Converter={StaticResource UrlToVisibilityConverter}}"/>--><!--
+                                        </Grid>
+                                    </ControlTemplate>
+                                </telerikPrimitivesSlideView:PanAndZoomImage.Template>-->
+                                
+                            </telerikPrimitivesSlideView:PanAndZoomImage>
+                        </DataTemplate>
+                    </telerikPrimitives:RadSlideView.ItemTemplate>
+                    
+                </telerikPrimitives:RadSlideView>
+            </Grid>
+            
+        </telerikPrimitives:RadWindow>
+        
 
     </Grid>
 
@@ -144,27 +246,35 @@
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding PageLoadedCommand}"/>
         </i:EventTrigger>
-        <i:EventTrigger EventName="BackKeyPress">
+        <!--<i:EventTrigger EventName="BackKeyPress">
             <i:InvokeCommandAction Command="{Binding BackKeyPressCommand}"/>
-        </i:EventTrigger>
+        </i:EventTrigger>-->
     </i:Interaction.Triggers>
 
 
     <bar:Bindable.ApplicationBar >
-        <bar:BindableApplicationBar IsMenuEnabled="True" Mode="Minimized">
+        <bar:BindableApplicationBar 
+            x:Name="TimelineAppBar"
+            IsMenuEnabled="True" 
+            Mode="Default"
+            IsVisible="{Binding IsFullScreen,Converter={StaticResource NegativeBoolConverter}}">
+            
             <bar:BindableApplicationBarButton
                 Text="{Binding Path=LocalizedResources.RefreshText,Source={StaticResource LocalizedStrings}}"
                 IconUri="/Assets/AppBar/appbar.refresh.png"
                 Command="{Binding RefreshCommand}"/>
+            
             <bar:BindableApplicationBarButton 
                 Text="{Binding Path=LocalizedResources.CreateNewText,Source={StaticResource LocalizedStrings}}"
                 IconUri="/Assets/AppBar/appbar.edit.png"
                 Command="{Binding CreateNewCommand}"/>
+            
             <!--<bar:BindableApplicationBar.MenuItems>
                 <bar:BindableApplicationBarMenuItem 
                     Text="{Binding Path=LocalizedResources.SettingsText,Source={StaticResource LocalizedStrings}}"
                     Command="{Binding EnterSettingsCommand}"/>
             </bar:BindableApplicationBar.MenuItems>-->
+            
         </bar:BindableApplicationBar>
     </bar:Bindable.ApplicationBar>
 

@@ -55,6 +55,42 @@ namespace iWeibo.WP8.ViewModels.Sina
             }
         }
 
+        private bool isFullScreen;
+
+        public bool IsFullScreen
+        {
+            get
+            {
+                return isFullScreen;
+            }
+            set
+            {
+                if (value != isFullScreen)
+                {
+                    isFullScreen = value;
+                    RaisePropertyChanged(() => this.IsFullScreen);
+                }
+            }
+        }
+
+        private bool isViewingImage;
+
+        public bool IsViewingImage
+        {
+            get
+            {
+                return isViewingImage;
+            }
+            set
+            {
+                if (value != isViewingImage)
+                {
+                    isViewingImage = value;
+                    RaisePropertyChanged(() => this.IsViewingImage);
+                }
+            }
+        }
+
 
         private bool isRefreshEnd;
 
@@ -130,24 +166,24 @@ namespace iWeibo.WP8.ViewModels.Sina
 
 
 
-        private WStatus selectedStatus;
+        //private WStatus selectedStatus;
 
-        public WStatus SelectedStatus
-        {
-            get
-            {
-                return selectedStatus;
-            }
-            set
-            {
-                if (value != selectedStatus)
-                {
-                    selectedStatus = value;
-                    RaisePropertyChanged(() => this.SelectedStatus);
-                    HandleSelectedStatusChange();
-                }
-            }
-        }
+        //public WStatus SelectedStatus
+        //{
+        //    get
+        //    {
+        //        return selectedStatus;
+        //    }
+        //    set
+        //    {
+        //        if (value != selectedStatus)
+        //        {
+        //            selectedStatus = value;
+        //            RaisePropertyChanged(() => this.SelectedStatus);
+        //            HandleSelectedStatusChange();
+        //        }
+        //    }
+        //}
 
         private int selectedPivotIndex;
 
@@ -168,6 +204,24 @@ namespace iWeibo.WP8.ViewModels.Sina
             }
         }
 
+        private ImageViewModel imageViewModel;
+
+        public ImageViewModel ImageViewModel
+        {
+            get
+            {
+                return imageViewModel;
+            }
+            set
+            {
+                if (value != imageViewModel)
+                {
+                    imageViewModel = value;
+                    RaisePropertyChanged(() => this.ImageViewModel);
+                }
+            }
+        }
+
         public ObservableCollection<WStatus> HomeTimeline { get; set; }
 
         public ObservableCollection<WStatus> MentionsTimeline { get; set; }
@@ -183,7 +237,8 @@ namespace iWeibo.WP8.ViewModels.Sina
         public DelegateCommand<string> MentionsTimelineCommand { get; set; }
         public DelegateCommand FavoritesTimelineCommand { get; set; }
         public DelegateCommand<ListBox> ViewImageCommand { get; set; }
-
+        public DelegateCommand<WStatus> StatusDetailCommand { get; set; }
+        
 
         public TimelineViewModel(
             INavigationService navigationService,
@@ -229,6 +284,8 @@ namespace iWeibo.WP8.ViewModels.Sina
             this.FavoritesTimelineCommand = new DelegateCommand(() => GetFavoritesTimeline(ftPage), () => !this.IsSyncing);
 
             this.ViewImageCommand = new DelegateCommand<ListBox>(p => ViewImage(p));
+
+            this.StatusDetailCommand = new DelegateCommand<WStatus>(ViewStatusDetail);
         }
 
 
@@ -236,12 +293,28 @@ namespace iWeibo.WP8.ViewModels.Sina
 
         private void ViewImage(ListBox listBox)
         {
-            this.PhoneApplicationServiceFacade.Save("PicUrls", listBox.ItemsSource);
-            this.NavigationService.Navigate(new Uri(Constants.PictureView + "?index=" + listBox.SelectedIndex+"&from=sina", UriKind.Relative));
+            if (ImageViewModel == null)
+                ImageViewModel = new ImageViewModel();
+
+            ImageViewModel.Initialize(listBox.ItemsSource, listBox.SelectedIndex, ServiceProvider.SinaWeibo);
+
+            this.IsViewingImage = true;
+
+            //this.PhoneApplicationServiceFacade.Save("PicUrls", listBox.ItemsSource);
+            //this.NavigationService.Navigate(new Uri(Constants.PictureView + "?index=" + listBox.SelectedIndex + "&from=sina", UriKind.Relative));
+        }
+
+
+        private void ViewStatusDetail(WStatus status)
+        {
+            var id = status.Id;
+            new IsoStorage(Constants.SinaSelectedStatus).SaveData(status);
+            this.NavigationService.Navigate(new Uri(Constants.SinaStatusDetailView + "?id=" + id, UriKind.Relative));
+
         }
 
         private async void Loaded()
-        { 
+        {
             WStatusCollection collection;
             if (HomeTimeline.Count <= 0)
             {
@@ -260,14 +333,14 @@ namespace iWeibo.WP8.ViewModels.Sina
             }
         }
 
-        private async void HandlePivotSelectedIndexChange()
+        private void HandlePivotSelectedIndexChange()
         {
             switch (SelectedPivotIndex)
             {
                 case 0:
                     Loaded();
                     break;
-                case 1: 
+                case 1:
                     WStatusCollection mtCollection;
                     if (MentionsTimeline.Count <= 0)
                     {
@@ -301,17 +374,17 @@ namespace iWeibo.WP8.ViewModels.Sina
             }
         }
 
-        private void HandleSelectedStatusChange()
-        {
-            if (this.SelectedStatus != null)
-            {
-                var id = this.SelectedStatus.Id;
-                new IsoStorage(Constants.SinaSelectedStatus).SaveData(this.SelectedStatus);
-                this.NavigationService.Navigate(new Uri(Constants.SinaStatusDetailView + "?id=" + id, UriKind.Relative));
+        //private void HandleSelectedStatusChange()
+        //{
+        //    if (!this.IsViewingImage && this.SelectedStatus != null)
+        //    {
+        //        var id = this.SelectedStatus.Id;
+        //        new IsoStorage(Constants.SinaSelectedStatus).SaveData(this.SelectedStatus);
+        //        this.NavigationService.Navigate(new Uri(Constants.SinaStatusDetailView + "?id=" + id, UriKind.Relative));
 
-                this.SelectedStatus = null;
-            }
-        }
+        //        this.SelectedStatus = null;
+        //    }
+        //}
 
         private void Refresh()
         {
@@ -487,7 +560,7 @@ namespace iWeibo.WP8.ViewModels.Sina
                 {
                     if (result.Data.Statuses.Count > 0)
                     {
-                        if(result.Data.Statuses.Count>=20&&MentionsTimeline.Count>0)
+                        if (result.Data.Statuses.Count >= 20 && MentionsTimeline.Count > 0)
                         {
                             MentionsTimeline.Clear();
                         }

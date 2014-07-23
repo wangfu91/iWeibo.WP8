@@ -31,6 +31,7 @@ namespace iWeibo.WP8.ViewModels
         }
 
 
+
         private void OnNavigationService_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             if (currentPageUri == null || pageUri == null) return;

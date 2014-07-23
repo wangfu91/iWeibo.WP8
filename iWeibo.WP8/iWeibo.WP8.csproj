@@ -103,9 +103,12 @@
     <Compile Include="Converters\BoolToOpacityConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
+    <Compile Include="Converters\NegativeBoolConverter.cs" />
     <Compile Include="Converters\SourceConverter.cs" />
+    <Compile Include="Converters\UrlToVisbilityConverter.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Models\Sina\SinaConfig.cs" />
+    <Compile Include="Models\Sina\StatusDataContext.cs" />
     <Compile Include="Models\Tencent\TencentConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
@@ -122,6 +125,7 @@
     <Compile Include="ViewModels\Sina\TimelineViewModel.cs" />
     <Compile Include="ViewModels\Tencent\StatusDetailViewModel.cs" />
     <Compile Include="ViewModels\Tencent\TimelineViewModel.cs" />
+    <Compile Include="ViewModels\ImageViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Views\CreateNew.xaml.cs">
@@ -250,6 +254,7 @@
     <Content Include="Assets\Icons\Cancel.png" />
     <Content Include="Assets\Icons\CreatNew.png" />
     <Content Include="Assets\Icons\DetailDefaultImage.png" />
+    <Content Include="Assets\Icons\GifMark.png" />
     <Content Include="Assets\Icons\imageLoadFailure.png" />
     <Content Include="Assets\Icons\imageLoading.png" />
     <Content Include="Assets\Icons\isliked.png" />
@@ -367,27 +372,27 @@
     <Reference Include="Telerik.Windows.Core, Version=2014.1.226.3040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\iWeibo.Adapters\iWeibo.Adapters.csproj">
+      <Project>{3a76f086-8cda-42ea-810c-7eac217dfde6}</Project>
+      <Name>iWeibo.Adapters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\iWeibo.Service\iWeibo.Services.csproj">
+      <Project>{361ad518-9057-4012-b5aa-49492f6e5300}</Project>
+      <Name>iWeibo.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SDKSrc\TencentWeiboSDK.csproj">
+      <Project>{32287ea3-030f-4cfc-826a-80460a9be708}</Project>
+      <Name>TencentWeiboSDK</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Shared\Shared.csproj">
       <Project>{17077a04-e91d-4b8f-a3d2-a4828a5032a4}</Project>
       <Name>Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="H:\iWeibo.WP8\iWeibo.Adapters\iWeibo.Adapters.csproj">
-      <Project>{3a76f086-8cda-42ea-810c-7eac217dfde6}</Project>
-      <Name>iWeibo.Adapters</Name>
-    </ProjectReference>
-    <ProjectReference Include="H:\iWeibo.WP8\iWeibo.Service\iWeibo.Services.csproj">
-      <Project>{361ad518-9057-4012-b5aa-49492f6e5300}</Project>
-      <Name>iWeibo.Services</Name>
-    </ProjectReference>
-    <ProjectReference Include="H:\iWeibo.WP8\SDKSrc\TencentWeiboSDK.csproj">
-      <Project>{32287ea3-030f-4cfc-826a-80460a9be708}</Project>
-      <Name>TencentWeiboSDK</Name>
-    </ProjectReference>
-    <ProjectReference Include="H:\iWeibo.WP8\Utils\iWeibo.Utils.csproj">
+    <ProjectReference Include="..\Utils\iWeibo.Utils.csproj">
       <Project>{66b5e147-4d9c-4663-8f44-f6367a6c21be}</Project>
       <Name>iWeibo.Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="H:\iWeibo.WP8\WeiboSdk\WeiboSdk.csproj">
+    <ProjectReference Include="..\WeiboSdk\WeiboSdk.csproj">
       <Project>{c8bba7e0-7d2a-491f-abd9-2144335a3d9d}</Project>
       <Name>WeiboSdk</Name>
     </ProjectReference>

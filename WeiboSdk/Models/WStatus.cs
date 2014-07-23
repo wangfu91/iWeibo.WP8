@@ -218,7 +218,7 @@ namespace WeiboSdk.Models
         {
             get
             {
-                return this.ThumbnailPic.EndsWith("*.gif") ? true : false;
+                return this.ThumbnailPic.EndsWith(".gif") ? true : false;
             }
         }
 
