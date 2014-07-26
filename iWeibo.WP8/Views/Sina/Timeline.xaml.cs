@@ -20,6 +20,7 @@ namespace iWeibo.WP8.Views.Sina
             InitializeComponent();
 
             viewModel = this.DataContext as sinavm.TimelineViewModel;
+
         }
 
         private void GestureListener_Flick(object sender, FlickGestureEventArgs e)

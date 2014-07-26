@@ -9,14 +9,48 @@ using WeiboSdk.Models;
 
 namespace WeiboSdk.Services
 {
-    public class TimelineService:BaseService
+    public class TimelineService : BaseService
     {
         public TimelineService(SinaAccessToken accessToken)
-            :base(accessToken)
+            : base(accessToken)
         {
 
         }
 
+
+        public void GetFriendsTimelineId(
+            int count,
+            long maxId,
+            long sinceId,
+            Action<Callback<List<string>>> action)
+        {
+            SdkCmdBase cmdArg = new CmdStatusTimeline
+            {
+                acessToken = this.Token,
+                count = count.ToString(),
+                max_id = maxId.ToString(),
+                since_id = sinceId.ToString()
+            };
+
+            this.NetEngine.RequestCmd(SdkRequestType.FRIENDS_TIMELINE_ID, cmdArg, (requestType, response) =>
+                {
+                    if (action != null)
+                    {
+                        if (response.errCode == SdkErrCode.SUCCESS)
+                        {
+                            List<string> collection = null;
+                            collection = JsonConvert.DeserializeObject<List<string>>(response.content);
+
+                            action(new Callback<List<string>>(collection));
+                        }
+                        else
+                        {
+                            action(new Callback<List<string>>(ErrCodeToMsg.GetMsg(response.errCode)));
+                        }
+                    }
+                });
+
+        }
 
         public void GetFriendsTimeline(
             int count,
@@ -28,7 +62,7 @@ namespace WeiboSdk.Services
             {
                 acessToken = this.Token,
                 count = count.ToString(),
-                max_id=maxId.ToString(),
+                max_id = maxId.ToString(),
                 since_id = sinceId.ToString()
             };
 
@@ -62,7 +96,7 @@ namespace WeiboSdk.Services
             {
                 acessToken = this.Token,
                 count = count.ToString(),
-                max_id=maxId.ToString(),
+                max_id = maxId.ToString(),
                 since_id = sinceId.ToString()
             };
 
@@ -95,9 +129,9 @@ namespace WeiboSdk.Services
             SdkCmdBase cmdArg = new CmdCommentsTimeline
             {
                 acessToken = this.Token,
-                id=id.ToString(),
+                id = id.ToString(),
                 count = count.ToString(),
-                max_id =maxId.ToString(),
+                max_id = maxId.ToString(),
                 since_id = sinceId.ToString()
             };
 
@@ -129,7 +163,7 @@ namespace WeiboSdk.Services
             {
                 acessToken = this.Token,
                 count = count.ToString(),
-                page=page.ToString()
+                page = page.ToString()
             };
 
             this.NetEngine.RequestCmd(SdkRequestType.FAVORITE_TIMLINE, cmdArg, (requestType, response) =>

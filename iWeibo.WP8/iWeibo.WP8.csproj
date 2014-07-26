@@ -123,6 +123,7 @@
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\Sina\StatusDetailViewModel.cs" />
     <Compile Include="ViewModels\Sina\TimelineViewModel.cs" />
+    <Compile Include="ViewModels\StatusViewModel.cs" />
     <Compile Include="ViewModels\Tencent\StatusDetailViewModel.cs" />
     <Compile Include="ViewModels\Tencent\TimelineViewModel.cs" />
     <Compile Include="ViewModels\ImageViewModel.cs" />

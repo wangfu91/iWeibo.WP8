@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Data.Linq;
+using System.Data.Linq.Mapping;
 
 namespace WeiboSdk.Models
 {
@@ -10,6 +12,7 @@ namespace WeiboSdk.Models
     /// 新浪微博Model类
     /// </summary>
     [DataContract]
+    [Table]
     public class WStatus:BaseModel
     {
         /// <summary>
@@ -28,12 +31,14 @@ namespace WeiboSdk.Models
         /// 微博MID
         /// </summary>
         [DataMember(Name="mid")]
+        [Column]
         public long MId { get; set; }
 
         /// <summary>
         /// 字符串型的微博ID
         /// </summary>
         [DataMember(Name="idstr")]
+        [Column(IsPrimaryKey = true, IsDbGenerated = false, DbType = "NVarChar(16) NOT NULL", CanBeNull = false, AutoSync = AutoSync.Default)]
         public string IdStr { get; set; }
 
         [DataMember(Name="text")]

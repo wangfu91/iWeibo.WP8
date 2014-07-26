@@ -15,11 +15,18 @@ using System.Windows.Controls;
 using System.Globalization;
 using System.Threading;
 using Microsoft.Phone.Info;
+using iWeibo.WP8.ViewModels;
 
 namespace iWeibo.WP8
 {
     public partial class App : Application
     {
+        /// <summary>
+        /// The static ViewModel, to be used across the application.
+        /// </summary>
+        public static StatusViewModel StatusViewModel { get; private set; }
+
+
         /// <summary>
         ///提供对电话应用程序的根框架的轻松访问。
         /// </summary>
@@ -77,6 +84,29 @@ namespace iWeibo.WP8
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
+            ConfigAppKey();
+
+            CreateDatabase();
+        }
+
+
+        private void CreateDatabase()
+        {
+            var statusDBConnStr = "Data Source=isostore:/Status.sdf";
+            using (var statusDB=new StatusDataContext(statusDBConnStr))
+            {
+                if(!statusDB.DatabaseExists())
+                {
+                    statusDB.CreateDatabase();
+                }
+            }
+
+            StatusViewModel = new StatusViewModel(statusDBConnStr);
+        }
+
+
+        private void  ConfigAppKey()
+        {
             TencentWeiboSDK.OAuthConfigruation.APP_KEY = TencentConfig.AppKey;
             TencentWeiboSDK.OAuthConfigruation.APP_SECRET = TencentConfig.AppSecret;
             TencentWeiboSDK.OAuthConfigruation.IfSaveAccessToken = false;
@@ -87,6 +117,7 @@ namespace iWeibo.WP8
 
 
             CreateDirectoriesAsync();
+
         }
 
         private async void CreateDirectoriesAsync()

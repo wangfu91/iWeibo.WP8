@@ -12,6 +12,7 @@ using Shared;
 using System.Net.NetworkInformation;
 using iWeibo.WP8.Resources;
 using System.Windows.Controls;
+using System.Collections.Generic;
 
 namespace iWeibo.WP8.ViewModels.Sina
 {
@@ -260,7 +261,8 @@ namespace iWeibo.WP8.ViewModels.Sina
                     if (p == "Next")
                     {
                         var lastCursor = HomeTimeline.Count > 0 ? HomeTimeline.Last().Id : 0;
-                        GetHomeTimeline(0, lastCursor);
+                        //GetHomeTimeline(0, lastCursor);
+                        GetFriendsTimelineIds(0,lastCursor);
                     }
                     else
                     {
@@ -523,6 +525,97 @@ namespace iWeibo.WP8.ViewModels.Sina
 
             ChangeRefreshState();
         }
+
+        private async void GetFriendsTimelineIds(long sinceId, long maxId)
+        {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                this.messageBox.Show(AppResources.NoNetworkText);
+                return;
+            }
+
+            //if (HomeTimeline.Count > 0 && HomeTimeline.Count >= htTotalNumber)
+            //{
+            //    ChangeRefreshState();
+            //    return;
+            //}
+
+
+            if (maxId == 0)
+                this.IsSyncing = true;
+            if (IsRefreshEnd)
+                this.IsRefreshEnd = false;
+
+            var source = new TaskCompletionSource<Callback<List<string>>>();
+            this.timelineService.GetFriendsTimelineId(
+                requestCount, maxId, sinceId,
+                callback => source.SetResult(callback));
+
+            var result = await source.Task;
+
+            //if (result.Succeed)
+            //{
+            //    htTotalNumber = result.Data.TotalNumber;
+
+            //    if (maxId == 0)
+            //    {
+            //        if (result.Data.Statuses.Count > 0)
+            //        {
+            //            //var inOrder = from s in result.Data.Statuses
+            //            //              orderby s.CreateDateTime ascending
+            //            //              select s;
+
+            //            //foreach (var item in inOrder)
+            //            //{
+            //            //    HomeTimeline.Insert(0, item);
+            //            //}
+            //            if (result.Data.Statuses.Count >= 20 && HomeTimeline.Count > 0)
+            //            {
+            //                HomeTimeline.Clear();
+            //            }
+
+            //            for (int i = result.Data.Statuses.Count - 1; i >= 0; i--)
+            //            {
+            //                HomeTimeline.Insert(0, result.Data.Statuses[i]);
+            //            }
+
+            //            if (sinceId != 0)
+            //                ShowNotification(true, count: result.Data.Statuses.Count);
+
+            //            var collection = new WStatusCollection()
+            //            {
+            //                Statuses = HomeTimeline.Take(20).ToList(),
+            //                TotalNumber = result.Data.TotalNumber
+            //            };
+            //            htStorage.SaveData(collection);
+
+            //        }
+            //        else
+            //        {
+            //            ShowNotification(true, msg: AppResources.NoNewText);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (result.Data.Statuses.Count > 1)
+            //        {
+            //            result.Data.Statuses.RemoveAt(0);
+            //            result.Data.Statuses.ForEach(a => HomeTimeline.Add(a));
+            //        }
+            //        else
+            //            if (!this.IsHTLoadingEnd)
+            //                this.IsHTLoadingEnd = true;
+            //    }
+            //}
+            //else
+            //{
+            //    ShowNotification(false, msg: result.ErrorMsg);
+            //}
+
+            ChangeRefreshState();
+        }
+
+
 
         private async void GetMentionsTimeline(long sinceId, long maxId)
         {

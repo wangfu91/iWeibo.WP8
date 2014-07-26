@@ -233,6 +233,15 @@ namespace WeiboSdk
                     break;
                 #endregion
 
+                #region FRIENDS_TIMELINE_ID
+                case SdkRequestType.FRIENDS_TIMELINE_ID:
+                    {
+                        request.Path = "/statuses/frineds_timeline/ids.json";
+                        request.Method = WebMethod.Get;
+                    }
+                    break;
+                #endregion
+
                 #region STATUS_SHOW
                 case SdkRequestType.STATUSES_SHOW:
                     {

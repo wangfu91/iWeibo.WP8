@@ -127,6 +127,7 @@ namespace WeiboSdk
     {
         NULL_TYPE = -1,
         FRIENDS_TIMELINE = 0,        //获取主页时间线(cmdNormalMessages)
+        FRIENDS_TIMELINE_ID,
         UPLOAD_MESSAGE,             //发送微博(cmdUploadMessage)
         UPLOAD_MESSAGE_PIC,         //发送带图片微博(cmdUploadPic)
         FRIENDSHIP_CREATE,          //关注某用户(cmdFriendShip)
