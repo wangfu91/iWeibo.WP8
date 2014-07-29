@@ -12,7 +12,6 @@ namespace WeiboSdk.Models
     /// 新浪微博Model类
     /// </summary>
     [DataContract]
-    [Table]
     public class WStatus:BaseModel
     {
         /// <summary>
@@ -31,21 +30,19 @@ namespace WeiboSdk.Models
         /// 微博MID
         /// </summary>
         [DataMember(Name="mid")]
-        [Column]
         public long MId { get; set; }
 
         /// <summary>
         /// 字符串型的微博ID
         /// </summary>
         [DataMember(Name="idstr")]
-        [Column(IsPrimaryKey = true, IsDbGenerated = false, DbType = "NVarChar(16) NOT NULL", CanBeNull = false, AutoSync = AutoSync.Default)]
         public string IdStr { get; set; }
 
-        [DataMember(Name="text")]
         private string text;
         /// <summary>
         /// 微博信息内容
         /// </summary>
+        [DataMember(Name = "text")]
         public string Text
         {
             get
@@ -68,11 +65,11 @@ namespace WeiboSdk.Models
         [DataMember(Name="source")]
         public string Source { get; set; }
 
-        [DataMember(Name="favorited")]
         private bool favorited;
         /// <summary>
         /// 是否已收藏
         /// </summary>
+        [DataMember(Name = "favorited")]
         public bool Favorited
         {
             get
@@ -95,7 +92,7 @@ namespace WeiboSdk.Models
         [DataMember(Name="truncated")]
         public bool Truncated { get; set; }
 
-        [DataMember(Name = "pic_urls")]
+        [DataMember(Name = "pic_urls")]        //[Column(DbType = "sql_variant")]
         public List<PicUrl> PicUrls { get; set; }
 
         /// <summary>
@@ -126,6 +123,7 @@ namespace WeiboSdk.Models
         /// 微博作者的用户信息
         /// </summary>
         [DataMember(Name="user")]
+        //[Column(DbType = "sql_variant")]
         public WUser User { get; set; }
 
         /// <summary>
@@ -187,20 +185,6 @@ namespace WeiboSdk.Models
                 return DateTime.ParseExact(text, "ddd MMM dd HH:mm:ff zzz yyyy", new System.Globalization.CultureInfo("en-US"));
             }
         }
-
-        /// <summary>
-        /// 图片是否包含gif格式 
-        /// </summary>
-        //public bool IsGIF
-        //{
-        //    get
-        //    {
-        //        if (HasPic && PicUrls.Any(a => a.ToString().EndsWith(".gif")))
-        //            return true;
-        //        else
-        //            return false;
-        //    }
-        //}
 
 
     }

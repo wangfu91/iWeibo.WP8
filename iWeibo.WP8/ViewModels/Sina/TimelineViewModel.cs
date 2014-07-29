@@ -36,7 +36,7 @@ namespace iWeibo.WP8.ViewModels.Sina
         private int requestCount = 20;
 
         private TimelineService timelineService = new TimelineService(TokenIsoStorage.SinaTokenStorage.LoadData<SinaAccessToken>());
-
+        private WStatusService statusService = new WStatusService(TokenIsoStorage.SinaTokenStorage.LoadData<SinaAccessToken>());
 
         private bool isSyncing;
 
@@ -239,7 +239,7 @@ namespace iWeibo.WP8.ViewModels.Sina
         public DelegateCommand FavoritesTimelineCommand { get; set; }
         public DelegateCommand<ListBox> ViewImageCommand { get; set; }
         public DelegateCommand<WStatus> StatusDetailCommand { get; set; }
-        
+
 
         public TimelineViewModel(
             INavigationService navigationService,
@@ -262,7 +262,7 @@ namespace iWeibo.WP8.ViewModels.Sina
                     {
                         var lastCursor = HomeTimeline.Count > 0 ? HomeTimeline.Last().Id : 0;
                         //GetHomeTimeline(0, lastCursor);
-                        GetFriendsTimelineIds(0,lastCursor);
+                        GetFriendsTimelineIds(0, lastCursor);
                     }
                     else
                     {
@@ -394,7 +394,7 @@ namespace iWeibo.WP8.ViewModels.Sina
             {
                 case 0:
                     var htFirstCursor = HomeTimeline.Count > 0 ? HomeTimeline.First().Id : 0;
-                    GetHomeTimeline(htFirstCursor, 0);
+                    GetFriendsTimelineIds(htFirstCursor, 0);
                     break;
                 case 1:
                     var mtFirstCursor = MentionsTimeline.Count > 0 ? MentionsTimeline.First().Id : 0;
@@ -437,94 +437,94 @@ namespace iWeibo.WP8.ViewModels.Sina
 
         }
 
-        private async void GetHomeTimeline(long sinceId, long maxId)
-        {
-            if (!NetworkInterface.GetIsNetworkAvailable())
-            {
-                this.messageBox.Show(AppResources.NoNetworkText);
-                return;
-            }
+        //private async void GetHomeTimeline(long sinceId, long maxId)
+        //{
+        //    if (!NetworkInterface.GetIsNetworkAvailable())
+        //    {
+        //        this.messageBox.Show(AppResources.NoNetworkText);
+        //        return;
+        //    }
 
-            //if (HomeTimeline.Count > 0 && HomeTimeline.Count >= htTotalNumber)
-            //{
-            //    ChangeRefreshState();
-            //    return;
-            //}
+        //    //if (HomeTimeline.Count > 0 && HomeTimeline.Count >= htTotalNumber)
+        //    //{
+        //    //    ChangeRefreshState();
+        //    //    return;
+        //    //}
 
 
-            if (maxId == 0)
-                this.IsSyncing = true;
-            if (IsRefreshEnd)
-                this.IsRefreshEnd = false;
+        //    if (maxId == 0)
+        //        this.IsSyncing = true;
+        //    if (IsRefreshEnd)
+        //        this.IsRefreshEnd = false;
 
-            var source = new TaskCompletionSource<Callback<WStatusCollection>>();
-            this.timelineService.GetFriendsTimeline(
-                requestCount, maxId, sinceId,
-                callback => source.SetResult(callback));
+        //    var source = new TaskCompletionSource<Callback<WStatusCollection>>();
+        //    this.timelineService.GetFriendsTimeline(
+        //        requestCount, maxId, sinceId,
+        //        callback => source.SetResult(callback));
 
-            var result = await source.Task;
+        //    var result = await source.Task;
 
-            if (result.Succeed)
-            {
-                htTotalNumber = result.Data.TotalNumber;
+        //    if (result.Succeed)
+        //    {
+        //        htTotalNumber = result.Data.TotalNumber;
 
-                if (maxId == 0)
-                {
-                    if (result.Data.Statuses.Count > 0)
-                    {
-                        //var inOrder = from s in result.Data.Statuses
-                        //              orderby s.CreateDateTime ascending
-                        //              select s;
+        //        if (maxId == 0)
+        //        {
+        //            if (result.Data.Statuses.Count > 0)
+        //            {
+        //                //var inOrder = from s in result.Data.Statuses
+        //                //              orderby s.CreateDateTime ascending
+        //                //              select s;
 
-                        //foreach (var item in inOrder)
-                        //{
-                        //    HomeTimeline.Insert(0, item);
-                        //}
-                        if (result.Data.Statuses.Count >= 20 && HomeTimeline.Count > 0)
-                        {
-                            HomeTimeline.Clear();
-                        }
+        //                //foreach (var item in inOrder)
+        //                //{
+        //                //    HomeTimeline.Insert(0, item);
+        //                //}
+        //                if (result.Data.Statuses.Count >= 20 && HomeTimeline.Count > 0)
+        //                {
+        //                    HomeTimeline.Clear();
+        //                }
 
-                        for (int i = result.Data.Statuses.Count - 1; i >= 0; i--)
-                        {
-                            HomeTimeline.Insert(0, result.Data.Statuses[i]);
-                        }
+        //                for (int i = result.Data.Statuses.Count - 1; i >= 0; i--)
+        //                {
+        //                    HomeTimeline.Insert(0, result.Data.Statuses[i]);
+        //                }
 
-                        if (sinceId != 0)
-                            ShowNotification(true, count: result.Data.Statuses.Count);
+        //                if (sinceId != 0)
+        //                    ShowNotification(true, count: result.Data.Statuses.Count);
 
-                        var collection = new WStatusCollection()
-                        {
-                            Statuses = HomeTimeline.Take(20).ToList(),
-                            TotalNumber = result.Data.TotalNumber
-                        };
-                        htStorage.SaveData(collection);
+        //                var collection = new WStatusCollection()
+        //                {
+        //                    Statuses = HomeTimeline.Take(20).ToList(),
+        //                    TotalNumber = result.Data.TotalNumber
+        //                };
+        //                htStorage.SaveData(collection);
 
-                    }
-                    else
-                    {
-                        ShowNotification(true, msg: AppResources.NoNewText);
-                    }
-                }
-                else
-                {
-                    if (result.Data.Statuses.Count > 1)
-                    {
-                        result.Data.Statuses.RemoveAt(0);
-                        result.Data.Statuses.ForEach(a => HomeTimeline.Add(a));
-                    }
-                    else
-                        if (!this.IsHTLoadingEnd)
-                            this.IsHTLoadingEnd = true;
-                }
-            }
-            else
-            {
-                ShowNotification(false, msg: result.ErrorMsg);
-            }
+        //            }
+        //            else
+        //            {
+        //                ShowNotification(true, msg: AppResources.NoNewText);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (result.Data.Statuses.Count > 1)
+        //            {
+        //                result.Data.Statuses.RemoveAt(0);
+        //                result.Data.Statuses.ForEach(a => HomeTimeline.Add(a));
+        //            }
+        //            else
+        //                if (!this.IsHTLoadingEnd)
+        //                    this.IsHTLoadingEnd = true;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        ShowNotification(false, msg: result.ErrorMsg);
+        //    }
 
-            ChangeRefreshState();
-        }
+        //    ChangeRefreshState();
+        //}
 
         private async void GetFriendsTimelineIds(long sinceId, long maxId)
         {
@@ -546,12 +546,37 @@ namespace iWeibo.WP8.ViewModels.Sina
             if (IsRefreshEnd)
                 this.IsRefreshEnd = false;
 
-            var source = new TaskCompletionSource<Callback<List<string>>>();
+            var IdsSource = new TaskCompletionSource<Callback<StatusIds>>();
             this.timelineService.GetFriendsTimelineId(
                 requestCount, maxId, sinceId,
-                callback => source.SetResult(callback));
+                callback => IdsSource.SetResult(callback));
 
-            var result = await source.Task;
+            var idsResult = await IdsSource.Task;
+
+            if (idsResult.Succeed)
+            {
+                if (idsResult.Data.Statuses.Count > 0)
+                {
+                    foreach (var id in idsResult.Data.Statuses)
+                    {
+                        var status = await (App.Current as App).StatusViewModel.GetStatusByIdAsync(id);
+                        //if (!HomeTimeline.Contains(status))
+                        HomeTimeline.Add(status);
+                    }
+                }
+                else
+                {
+                    if (!this.IsHTLoadingEnd)
+                        this.IsHTLoadingEnd = true;
+                }
+            }
+            else
+            {
+                ShowNotification(false, msg: idsResult.ErrorMsg);
+
+            }
+
+
 
             //if (result.Succeed)
             //{

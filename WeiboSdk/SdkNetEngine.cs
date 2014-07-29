@@ -236,16 +236,25 @@ namespace WeiboSdk
                 #region FRIENDS_TIMELINE_ID
                 case SdkRequestType.FRIENDS_TIMELINE_ID:
                     {
-                        request.Path = "/statuses/frineds_timeline/ids.json";
+                        request.Path = "/statuses/friends_timeline/ids.json";
                         request.Method = WebMethod.Get;
                     }
                     break;
                 #endregion
 
-                #region STATUS_SHOW
+                #region STATUSES_SHOW
                 case SdkRequestType.STATUSES_SHOW:
                     {
                         request.Path = "/statuses/show.json";
+                        request.Method = WebMethod.Get;
+                    }
+                    break;
+                #endregion
+
+                #region STATUSES_SHOW_BATCH
+                case SdkRequestType.STATUSES_SHOW_BATCH:
+                    {
+                        request.Path = "/statuses/show_batch.json";
                         request.Method = WebMethod.Get;
                     }
                     break;
@@ -295,8 +304,6 @@ namespace WeiboSdk
                     }
                     break;
                 #endregion
-
-
 
                 #region MENTIONS_TIMELINE
                 case SdkRequestType.MENTIONS_TIMELINE:

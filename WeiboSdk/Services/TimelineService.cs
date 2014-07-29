@@ -22,7 +22,7 @@ namespace WeiboSdk.Services
             int count,
             long maxId,
             long sinceId,
-            Action<Callback<List<string>>> action)
+            Action<Callback<StatusIds>> action)
         {
             SdkCmdBase cmdArg = new CmdStatusTimeline
             {
@@ -38,14 +38,14 @@ namespace WeiboSdk.Services
                     {
                         if (response.errCode == SdkErrCode.SUCCESS)
                         {
-                            List<string> collection = null;
-                            collection = JsonConvert.DeserializeObject<List<string>>(response.content);
+                            StatusIds collection = null;
+                            collection = JsonConvert.DeserializeObject<StatusIds>(response.content);
 
-                            action(new Callback<List<string>>(collection));
+                            action(new Callback<StatusIds>(collection));
                         }
                         else
                         {
-                            action(new Callback<List<string>>(ErrCodeToMsg.GetMsg(response.errCode)));
+                            action(new Callback<StatusIds>(ErrCodeToMsg.GetMsg(response.errCode)));
                         }
                     }
                 });

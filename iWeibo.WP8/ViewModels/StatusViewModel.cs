@@ -1,6 +1,7 @@
 ﻿using iWeibo.Services;
 using iWeibo.WP8.Models.Sina;
 using Microsoft.Practices.Prism.ViewModel;
+using Newtonsoft.Json;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using WeiboSdk.Services;
 
 namespace iWeibo.WP8.ViewModels
 {
-    public class StatusViewModel:NotificationObject
+    public class StatusViewModel : NotificationObject
     {
         private StatusDataContext statusDB;
 
@@ -24,26 +25,34 @@ namespace iWeibo.WP8.ViewModels
             statusDB = new StatusDataContext(statusDBConnectionString);
         }
 
-        public void SaveChangesToDB()
-        {
-            statusDB.SubmitChanges();
-        }
 
         public async Task<WStatus> GetStatusByIdAsync(long statusId)
         {
             var status = LoadStatusFromDB(statusId);
-            if(status==null)
+            if (status == null)
             {
-                var source=new TaskCompletionSource<Callback<WStatus>>();
-                statusService.GetStatus(statusId.ToString(),callback=>source.SetResult(callback));
-                var result =await source.Task;
-                if(result.Succeed)
+                var source = new TaskCompletionSource<Callback<string>>();
+                statusService.GetStatusContent(statusId, callback => source.SetResult(callback));
+                var result = await source.Task;
+                if (result.Succeed)
                 {
-                    status = result.Data;
+                    if (!string.IsNullOrEmpty(result.Data))
+                    {
+                        var len = result.Data.Length;
+                        var statusContent=new StatusContent
+                        {
+                            Id=statusId,
+                            JsonContentA=result.Data.Substring(0,len/2),
+                            JsonContentB=result.Data.Substring(len/2,len/2)
+                        };
+                        InsertStatusToDB(statusContent);
+
+                        status = ConvertContentToStatus(result.Data);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show(result.ErrorMsg);
+                    Deployment.Current.Dispatcher.BeginInvoke(() => MessageBox.Show(result.ErrorMsg));
                 }
             }
 
@@ -52,29 +61,42 @@ namespace iWeibo.WP8.ViewModels
 
         private WStatus LoadStatusFromDB(long statusId)
         {
-            var statusInDB = (from WStatus status in statusDB.StatusTable
-                              where status.Id == statusId
-                              select status).FirstOrDefault();
+            var statusContent = (from StatusContent s in statusDB.StatusContents
+                              where s.Id == statusId
+                              select s.JsonContentA+s.JsonContentB).FirstOrDefault();
 
-            return statusInDB;
+            return ConvertContentToStatus(statusContent);
         }
 
-
-        public void AddStatusToDB(WStatus status)
+        private WStatus ConvertContentToStatus(string content)
         {
-            statusDB.StatusTable.InsertOnSubmit(status);
+            WStatus status = null;
+
+            if (!string.IsNullOrEmpty(content))
+            {
+                status = JsonConvert.DeserializeObject<WStatus>(content);
+            }
+
+            return status;
+        }
+
+        public void InsertStatusToDB(StatusContent content)
+        {
+            statusDB.StatusContents.InsertOnSubmit(content);
 
             statusDB.SubmitChanges();
         }
 
-        public void DeleteStatusFromDB(WStatus status)
+        public void DeleteStatusFromDB(StatusContent content)
         {
-            statusDB.StatusTable.DeleteOnSubmit(status);
+            statusDB.StatusContents.DeleteOnSubmit(content);
+            statusDB.SubmitChanges();
         }
 
         public void DeleteDB()
         {
             statusDB.DeleteDatabase();
+            statusDB.SubmitChanges();
         }
     }
 }

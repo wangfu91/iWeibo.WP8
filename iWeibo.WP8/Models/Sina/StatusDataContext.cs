@@ -14,7 +14,7 @@ namespace iWeibo.WP8.Models.Sina
         public StatusDataContext(string connectionString)
             : base(connectionString) { }
 
-        public Table<WStatus> StatusTable;
+        public Table<StatusContent> StatusContents;
     }
 
 }

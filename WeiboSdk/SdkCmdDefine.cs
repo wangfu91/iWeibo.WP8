@@ -143,6 +143,7 @@ namespace WeiboSdk
         USERS_SHOW,                  //根据用户ID获取用户信息
         GET_UID,                      //OAuth授权之后，获取授权用户的UID 
         STATUSES_SHOW,                //根据Id获取单条微博的详细信息
+        STATUSES_SHOW_BATCH,
         STATUSES_REPOST,              //转发一条微博
         STATUSES_DESTROY,             //删除一条微博
         COMMENTS_CREAT,               //对一条微博进行评论 
@@ -208,6 +209,7 @@ namespace WeiboSdk
     public class CmdStatus : SdkCmdBase
     {
         public string id = "";
+        public string ids = "";
     }
 
     public class CmdStatusRepost : CmdStatus

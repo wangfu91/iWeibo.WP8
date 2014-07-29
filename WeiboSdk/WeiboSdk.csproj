@@ -77,12 +77,14 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SinaBase">
-      <HintPath>..\SDKLibrary\SinaBase.dll</HintPath>
+      <HintPath>..\packages\WeiboBase\SinaBase.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\SinaAccessToken.cs" />
+    <Compile Include="Models\StatusContent.cs" />
+    <Compile Include="Models\StatusIds.cs" />
     <Compile Include="Models\WCollection.cs" />
     <Compile Include="Models\WStatus.cs" />
     <Compile Include="Models\WUser.cs" />
