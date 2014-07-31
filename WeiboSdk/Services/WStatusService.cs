@@ -55,7 +55,8 @@ namespace WeiboSdk.Services
             SdkCmdBase cmdBase = new CmdStatus
             {
                 acessToken = this.Token,
-                id = id.ToString()
+                id = id.ToString(),
+                ids=string.Empty
             };
 
             this.NetEngine.RequestCmd(SdkRequestType.STATUSES_SHOW, cmdBase, (requestType, response) =>

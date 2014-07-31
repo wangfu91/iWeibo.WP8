@@ -32,7 +32,7 @@ namespace iWeibo.WP8.ViewModels
             if (status == null)
             {
                 var source = new TaskCompletionSource<Callback<string>>();
-                statusService.GetStatusContent(statusId, callback => source.SetResult(callback));
+                statusService.GetStatusContent(statusId, callback => source.TrySetResult(callback));
                 var result = await source.Task;
                 if (result.Succeed)
                 {
@@ -42,8 +42,7 @@ namespace iWeibo.WP8.ViewModels
                         var statusContent=new StatusContent
                         {
                             Id=statusId,
-                            JsonContentA=result.Data.Substring(0,len/2),
-                            JsonContentB=result.Data.Substring(len/2,len/2)
+                            JsonContent=result.Data
                         };
                         InsertStatusToDB(statusContent);
 
@@ -63,7 +62,7 @@ namespace iWeibo.WP8.ViewModels
         {
             var statusContent = (from StatusContent s in statusDB.StatusContents
                               where s.Id == statusId
-                              select s.JsonContentA+s.JsonContentB).FirstOrDefault();
+                              select s.JsonContent).FirstOrDefault();
 
             return ConvertContentToStatus(statusContent);
         }

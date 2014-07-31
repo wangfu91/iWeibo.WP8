@@ -549,19 +549,22 @@ namespace iWeibo.WP8.ViewModels.Sina
             var IdsSource = new TaskCompletionSource<Callback<StatusIds>>();
             this.timelineService.GetFriendsTimelineId(
                 requestCount, maxId, sinceId,
-                callback => IdsSource.SetResult(callback));
+                callback => IdsSource.TrySetResult(callback));
 
             var idsResult = await IdsSource.Task;
 
             if (idsResult.Succeed)
             {
-                if (idsResult.Data.Statuses.Count > 0)
+                if (idsResult.Data != null && idsResult.Data.Statuses != null && idsResult.Data.Statuses.Count > 0)
                 {
                     foreach (var id in idsResult.Data.Statuses)
                     {
                         var status = await (App.Current as App).StatusViewModel.GetStatusByIdAsync(id);
-                        //if (!HomeTimeline.Contains(status))
-                        HomeTimeline.Add(status);
+
+                        if (status != null && !HomeTimeline.Contains(status))
+                            HomeTimeline.Add(status);
+
+                        //await Task.Delay(500);
                     }
                 }
                 else

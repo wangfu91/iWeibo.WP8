@@ -141,6 +141,9 @@ namespace iWeibo.WP8.ViewModels
 
             this.CurrentIndex = index + 1;
 
+            if (this.SelectedItem == null)
+                return;
+
             this.IsGif = this.SelectedItem.EndsWith(".gif");
         }
 

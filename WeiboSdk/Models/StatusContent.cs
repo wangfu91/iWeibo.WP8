@@ -13,10 +13,8 @@ namespace WeiboSdk.Models
         [Column(IsPrimaryKey = true, IsDbGenerated = false, CanBeNull = false)]
         public long Id { get; set; }
 
-        [Column]
-        public string JsonContentA { get; set; }
+        [Column(DbType="NTEXT")]
+        public string JsonContent { get; set; }
 
-        [Column]
-        public string JsonContentB { get; set; }
     }
 }

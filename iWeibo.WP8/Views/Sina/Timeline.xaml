@@ -99,7 +99,7 @@
                         ShowPullToRefreshWhenNoData="True"
                         EmptyContentDisplayMode="DataSourceNull" 
                         AsyncBalanceMode="FillViewportFirst" 
-                        IsAsyncBalanceEnabled="True" 
+                        IsAsyncBalanceEnabled="True" ItemAddedAnimation="{StaticResource ItemAddedAnimation}" 
                         >                        
 
                         <i:Interaction.Triggers>

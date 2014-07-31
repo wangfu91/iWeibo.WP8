@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace iWeibo.Utils
 {
@@ -23,6 +24,13 @@ namespace iWeibo.Utils
     /// </summary>
     public class ImageHelper
     {
+        #region Field
+
+        private static readonly IsolatedStorageFile IsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication();
+        private const string CachePath = "AsyncImageCache";
+
+        #endregion
+
         #region Source Attach Property
 
         public static readonly DependencyProperty SourceProperty =
@@ -47,7 +55,9 @@ namespace iWeibo.Utils
             {
                 //获取加载真正图片过程中显示的加载中的图片路径
                 SetLoadingImageSource(image);
+
                 var imageurl = ags.NewValue as string;
+
                 SetRealImageSource(image, imageurl);
             }
         }
@@ -71,12 +81,7 @@ namespace iWeibo.Utils
 
         #endregion
 
-        #region Field
 
-        private static readonly IsolatedStorageFile IsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication();
-        private const string CachePath = "ImageCache";
-
-        #endregion
 
         #region Private Method
 
@@ -100,28 +105,26 @@ namespace iWeibo.Utils
 
         private static async void SetRealImageSource(Image image, string imageurl)
         {
-            try
+
+            if (string.IsNullOrEmpty(imageurl)) return;
+
+            //如果不是网络图片则将图片路径给Image进行展示
+            if (!imageurl.StartsWith("http"))
             {
-                if (string.IsNullOrEmpty(imageurl)) return;
-                //如果不是网络图片则将图片路径给Image进行展示
-                if (!imageurl.StartsWith("http"))
-                    image.Source = new BitmapImage(new Uri(imageurl, UriKind.RelativeOrAbsolute));
+                image.Source = new BitmapImage(new Uri(imageurl, UriKind.RelativeOrAbsolute));
+            }
+            else
+            {
+                if (CacheImageExists(imageurl))
+                {
+                    image.Source = await GetImageSourceFromCache(imageurl);
+                }
                 else
                 {
-                    if (CacheImageExists(imageurl))
-                    {
-                        image.Source = await GetImageSourceFromCache(imageurl);
-                    }
-                    else
-                    {
-                        image.Source = await GetImageFromNetWork(imageurl);
-                    }
-                    StartStotyboard(image);
+                    image.Source = await GetImageFromNetWork(imageurl);
                 }
-            }
-            catch(Exception e)
-            {
 
+                RunAnimation(image);
             }
         }
 
@@ -129,13 +132,13 @@ namespace iWeibo.Utils
         /// 为image执行一段渐进的动画
         /// </summary>
         /// <param name="img"></param>
-        private static void StartStotyboard(Image img)
+        private static void RunAnimation(Image img)
         {
             var sb = new Storyboard();
-            var anim = new DoubleAnimation { From = 0, To = 1, Duration = TimeSpan.FromMilliseconds(500) };
-            Storyboard.SetTarget(anim, img);
-            Storyboard.SetTargetProperty(anim, new PropertyPath("Opacity"));
-            sb.Children.Add(anim);
+            var opacityChanged = new DoubleAnimation { From = 0, To = 1, Duration = TimeSpan.FromMilliseconds(500) };
+            Storyboard.SetTarget(opacityChanged, img);
+            Storyboard.SetTargetProperty(opacityChanged, new PropertyPath("Opacity"));
+            sb.Children.Add(opacityChanged);
             sb.Begin();
         }
 
@@ -145,10 +148,10 @@ namespace iWeibo.Utils
         /// <param name="imageurl"></param>
         /// <returns></returns>
         public static async Task<ImageSource> GetImageFromNetWork(string imageurl)
-        {
+        { 
+            var httpClient = new HttpClient();
             try
             {
-                var httpClient = new HttpClient();
                 var response = await httpClient.GetAsync(imageurl);
                 response.EnsureSuccessStatusCode();
                 using (var stream = await response.Content.ReadAsStreamAsync())
@@ -181,7 +184,7 @@ namespace iWeibo.Utils
             {
                 return new BitmapImage();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new BitmapImage();
             }
@@ -194,14 +197,16 @@ namespace iWeibo.Utils
         /// <returns></returns>
         private static async Task<ImageSource> GetImageSourceFromCache(string imageurl)
         {
-            string filePath = GetCacheFilePath(imageurl);
             BitmapImage bitmapImage;
-            StorageFile file = await ApplicationData.Current.LocalFolder.GetFileAsync(filePath);
-            using (var stream = await file.OpenStreamForReadAsync())
+
+            var storageFile = await ApplicationData.Current.LocalFolder.GetFileAsync(GetCacheFilePath(imageurl));
+
+            using (var stream = await storageFile.OpenStreamForReadAsync())
             {
                 bitmapImage = new BitmapImage();
-                bitmapImage.SetSource(stream);                
+                bitmapImage.SetSource(stream);
             }
+
             return bitmapImage;
         }
 
@@ -234,7 +239,7 @@ namespace iWeibo.Utils
         /// 获取当前图片缓存占用的空间
         /// </summary>
         /// <returns></returns>
-        public static async Task<long> GetImageCacheSizeAsync(string cachePath=CachePath)
+        public static async Task<long> GetImageCacheSizeAsync(string cachePath = CachePath)
         {
             var total = await Task.Run(() =>
             {
@@ -257,7 +262,7 @@ namespace iWeibo.Utils
         /// <summary>
         /// 清理当前的图片缓存
         /// </summary>
-        public static Task ClearImageCacheAsync(string cachePath=CachePath)
+        public static Task ClearImageCacheAsync(string cachePath = CachePath)
         {
             return Task.Run(() =>
             {
