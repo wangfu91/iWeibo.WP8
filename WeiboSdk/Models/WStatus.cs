@@ -12,37 +12,108 @@ namespace WeiboSdk.Models
     /// 新浪微博Model类
     /// </summary>
     [DataContract]
-    public class WStatus:BaseModel
+    [Table]
+    public class WStatus : BaseModel
     {
+        private string createdAt;
+
         /// <summary>
         /// 微博创建时间
         /// </summary>
-        [DataMember(Name="created_at")]
-        public string CreatedAt { get; set; }
+        [DataMember(Name = "created_at")]
+        [Column(UpdateCheck = UpdateCheck.Never)]
+        public string CreatedAt
+        {
+            get
+            {
+                return createdAt;
+            }
+            set
+            {
+                if (value != createdAt)
+                {
+                    createdAt = value;
+                    NotifyPropertyChanged("createdAt");
+                }
+            }
+        }
+
+
+        private long id;
 
         /// <summary>
-        /// 微博ID
+        /// 微博Id
         /// </summary>
-        [DataMember(Name="id")]
-        public long Id { get; set; }
+        [DataMember(Name = "id")]
+        [Column(IsPrimaryKey = true, AutoSync = AutoSync.Default, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        public long Id
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                if (value != id)
+                {
+                    id = value;
+                    NotifyPropertyChanged("id");
+                }
+            }
+        }
+
+        private long mid;
 
         /// <summary>
-        /// 微博MID
+        /// 微博MId
         /// </summary>
-        [DataMember(Name="mid")]
-        public long MId { get; set; }
+        [DataMember(Name = "mid")]
+        [Column(UpdateCheck = UpdateCheck.Never)]
+        public long MId
+        {
+            get
+            {
+                return mid;
+            }
+            set
+            {
+                if (value != mid)
+                {
+                    mid = value;
+                    NotifyPropertyChanged("mid");
+                }
+            }
+        }
+
+        private string idStr;
 
         /// <summary>
         /// 字符串型的微博ID
         /// </summary>
-        [DataMember(Name="idstr")]
-        public string IdStr { get; set; }
+        [DataMember(Name = "idstr")]
+        [Column(UpdateCheck = UpdateCheck.Never)]
+        public string IdStr
+        {
+            get
+            {
+                return idStr;
+            }
+            set
+            {
+                if (value != idStr)
+                {
+                    idStr = value;
+                    NotifyPropertyChanged("IdStr");
+                }
+            }
+        }
 
         private string text;
         /// <summary>
         /// 微博信息内容
         /// </summary>
         [DataMember(Name = "text")]
+        [Column(UpdateCheck = UpdateCheck.Never)]
         public string Text
         {
             get
@@ -59,17 +130,35 @@ namespace WeiboSdk.Models
             }
         }
 
+
+        private string source;
         /// <summary>
         /// 微博来源
         /// </summary>
-        [DataMember(Name="source")]
-        public string Source { get; set; }
+        [DataMember(Name = "source")]
+        [Column(UpdateCheck = UpdateCheck.Never)]
+        public string Source
+        {
+            get
+            {
+                return source;
+            }
+            set
+            {
+                if (value != source)
+                {
+                    source = value;
+                    NotifyPropertyChanged("Source");
+                }
+            }
+        }
 
         private bool favorited;
         /// <summary>
         /// 是否已收藏
         /// </summary>
         [DataMember(Name = "favorited")]
+        [Column(UpdateCheck = UpdateCheck.Never)]
         public bool Favorited
         {
             get
@@ -86,69 +175,296 @@ namespace WeiboSdk.Models
             }
         }
 
+
+        private bool truncated;
+
         /// <summary>
         /// 是否被截断
         /// </summary>
-        [DataMember(Name="truncated")]
-        public bool Truncated { get; set; }
+        [DataMember(Name = "truncated")]
+        [Column(UpdateCheck = UpdateCheck.Never)]
+        public bool Truncated
+        {
+            get
+            {
+                return truncated;
+            }
+            set
+            {
+                if (value != truncated)
+                {
+                    truncated = value;
+                    NotifyPropertyChanged("Truncated");
+                }
+            }
+        }
 
-        [DataMember(Name = "pic_urls")]        //[Column(DbType = "sql_variant")]
-        public List<PicUrl> PicUrls { get; set; }
+        private List<PicUrl> picUrls;
 
+        [DataMember(Name = "pic_urls")]
+        public List<PicUrl> PicUrls
+        {
+            get
+            {
+                return picUrls;
+            }
+            set
+            {
+                if (value != picUrls)
+                {
+                    picUrls = value;
+                    NotifyPropertyChanged("PicUrls");
+                }
+            }
+        }
+
+
+        private string picsStr;
+        [Column(CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        public string PicsStr
+        {
+            get
+            {
+                return picsStr;
+            }
+            set
+            {
+                if (value != picsStr)
+                {
+                    picsStr = value;
+                    NotifyPropertyChanged("PicsId");
+                }
+            }
+        }
+
+
+
+        private string thumbnailPic;
         /// <summary>
         /// 缩略图片地址
         /// </summary>
         [DataMember(Name = "thumbnail_pic")]
-        public string ThumbnailPic { get; set; }
+        [Column(CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        public string ThumbnailPic
+        {
+            get
+            {
+                return thumbnailPic;
+            }
+            set
+            {
+                if (value != thumbnailPic)
+                {
+                    thumbnailPic = value;
+                    NotifyPropertyChanged("ThumbnailPic");
+                }
+            }
+        }
+
+
+        private string bmiddlePic;
 
         /// <summary>
         /// 中等尺寸图片地址
         /// </summary>
         [DataMember(Name = "bmiddle_pic")]
-        public string BMiddlePic { get; set; }
+        [Column(CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        public string BMiddlePic
+        {
+            get
+            {
+                return bmiddlePic;
+            }
+            set
+            {
+                if (value != bmiddlePic)
+                {
+                    bmiddlePic = value;
+                    NotifyPropertyChanged("BMiddlePic");
+                }
+            }
+        }
+
+
+        private string originalPic;
 
         /// <summary>
         /// 原始图片地址
         /// </summary>
         [DataMember(Name = "original_pic")]
-        public string OriginalPic { get; set; }
+        [Column(CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        public string OriginalPic
+        {
+            get
+            {
+                return originalPic;
+            }
+            set
+            {
+                if (value != originalPic)
+                {
+                    originalPic = value;
+                    NotifyPropertyChanged("OriginalPic");
+                }
+            }
+        }
 
-        /// <summary>
-        /// 地理信息
-        /// </summary>
-        [DataMember(Name = "geo")]
-        public object Geo { get; set; }
+        ///// <summary>
+        ///// 地理信息
+        ///// </summary>
+        //[DataMember(Name = "geo")]
+        //public object Geo { get; set; }
 
+        private WUser user;
         /// <summary>
         /// 微博作者的用户信息
         /// </summary>
-        [DataMember(Name="user")]
+        [DataMember(Name = "user")]
         //[Column(DbType = "sql_variant")]
-        public WUser User { get; set; }
+        public WUser User
+        {
+            get
+            {
+                return user;
+            }
+            set
+            {
+                if (value != user)
+                {
+                    user = value;
+                    NotifyPropertyChanged("User");
+                }
+            }
+        }
 
+        private long? userId;
+        [Column(DbType = "BIGINT", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        public long? UserId
+        {
+            get
+            {
+                return userId;
+            }
+            set
+            {
+                if (value != userId)
+                {
+                    userId = value;
+                    NotifyPropertyChanged("UserId");
+                }
+            }
+        }
+
+        private WStatus retweetedStatus;
         /// <summary>
         /// 被转发的原微博信息
         /// </summary>
-        [DataMember(Name ="retweeted_status")]
-        public WStatus RetweetedStatus { get; set; }
+        [DataMember(Name = "retweeted_status")]
+        public WStatus RetweetedStatus
+        {
+            get
+            {
+                return retweetedStatus;
+            }
+            set
+            {
+                if (value != retweetedStatus)
+                {
+                    retweetedStatus = value;
+                    NotifyPropertyChanged("RetweetedStatus");
+                }
+            }
+        }
 
+
+        private long? retweetedStatusId;
+        [Column(DbType = "BIGINT", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        public long? RetweetedStatusId
+        {
+            get
+            {
+                return retweetedStatusId;
+            }
+            set
+            {
+                if (value != retweetedStatusId)
+                {
+                    retweetedStatusId = value;
+                    NotifyPropertyChanged("RetweetedStatusId");
+                }
+            }
+        }
+
+
+
+        private int repostsCount;
         /// <summary>
         /// 转发数
         /// </summary>
-        [DataMember(Name="reposts_count")]
-        public int RepostsCount { get; set; }
+        [DataMember(Name = "reposts_count")]
+        [Column(UpdateCheck = UpdateCheck.Never)]
+        public int RepostsCount
+        {
+            get
+            {
+                return repostsCount;
+            }
+            set
+            {
+                if (value != repostsCount)
+                {
+                    repostsCount = value;
+                    NotifyPropertyChanged("RepostsCount");
+                }
+            }
+        }
 
+
+        private int commentsCount;
         /// <summary>
         /// 评论数
         /// </summary>
-        [DataMember(Name="comments_count")]
-        public int CommentsCount { get; set; }
+        [DataMember(Name = "comments_count")]
+        [Column(UpdateCheck = UpdateCheck.Never)]
+        public int CommentsCount
+        {
+            get
+            {
+                return commentsCount;
+            }
+            set
+            {
+                if (value != commentsCount)
+                {
+                    commentsCount = value;
+                    NotifyPropertyChanged("CommentsCount");
+                }
+            }
+        }
 
+
+        private int attitudesCount;
         /// <summary>
         /// 赞数
         /// </summary>
         [DataMember(Name = "attitudes_count")]
-        public int AttitudesCount { get; set; }
+        [Column(UpdateCheck = UpdateCheck.Never)]
+        public int AttitudesCount
+        {
+            get
+            {
+                return attitudesCount;
+            }
+            set
+            {
+                if (value != attitudesCount)
+                {
+                    attitudesCount = value;
+                    NotifyPropertyChanged("AttitudesCount");
+                }
+            }
+        }
+
 
         /// <summary>
         /// 是否是转发的微博

@@ -24,7 +24,9 @@ namespace iWeibo.WP8
         /// <summary>
         /// The static ViewModel, to be used across the application.
         /// </summary>
-        public StatusViewModel StatusViewModel { get; private set; }
+        public static StatusViewModel StatusViewModel { get; private set; }
+
+        public static UserViewModel UserViewModel { get; private set; }
 
 
         /// <summary>
@@ -102,6 +104,7 @@ namespace iWeibo.WP8
             }
 
             StatusViewModel = new StatusViewModel(statusDBConnStr);
+            UserViewModel = new UserViewModel(statusDBConnStr);
         }
 
 

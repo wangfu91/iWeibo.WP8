@@ -50,31 +50,31 @@ namespace WeiboSdk.Services
                 });
         }
 
-        public void GetStatusContent(long id, Action<Callback<string>> action)
-        {
-            SdkCmdBase cmdBase = new CmdStatus
-            {
-                acessToken = this.Token,
-                id = id.ToString(),
-                ids=string.Empty
-            };
+        //public void GetStatusContent(long id, Action<Callback<string>> action)
+        //{
+        //    SdkCmdBase cmdBase = new CmdStatus
+        //    {
+        //        acessToken = this.Token,
+        //        id = id.ToString(),
+        //        ids=string.Empty
+        //    };
 
-            this.NetEngine.RequestCmd(SdkRequestType.STATUSES_SHOW, cmdBase, (requestType, response) =>
-            {
-                if (action != null)
-                {
-                    if (response.errCode == SdkErrCode.SUCCESS)
-                    {
-                        action(new Callback<string>(data:response.content));
-                    }
-                    else
-                    {
-                        action(new Callback<string>(ErrCodeToMsg.GetMsg(response.errCode)));
-                    }
-                }
-            });
+        //    this.NetEngine.RequestCmd(SdkRequestType.STATUSES_SHOW, cmdBase, (requestType, response) =>
+        //    {
+        //        if (action != null)
+        //        {
+        //            if (response.errCode == SdkErrCode.SUCCESS)
+        //            {
+        //                action(new Callback<string>(data:response.content));
+        //            }
+        //            else
+        //            {
+        //                action(new Callback<string>(ErrCodeToMsg.GetMsg(response.errCode)));
+        //            }
+        //        }
+        //    });
 
-        }
+        //}
 
 
 

@@ -559,7 +559,7 @@ namespace iWeibo.WP8.ViewModels.Sina
                 {
                     foreach (var id in idsResult.Data.Statuses)
                     {
-                        var status = await (App.Current as App).StatusViewModel.GetStatusByIdAsync(id);
+                        var status = await App.StatusViewModel.GetStatusByIdAsync(id);
 
                         if (status != null && !HomeTimeline.Contains(status))
                             HomeTimeline.Add(status);

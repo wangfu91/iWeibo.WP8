@@ -127,6 +127,7 @@
     <Compile Include="ViewModels\Tencent\StatusDetailViewModel.cs" />
     <Compile Include="ViewModels\Tencent\TimelineViewModel.cs" />
     <Compile Include="ViewModels\ImageViewModel.cs" />
+    <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Views\CreateNew.xaml.cs">
